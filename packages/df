@@ -1,0 +1,71 @@
+[33mcommit b0c5559c1a1fb8a7a52b850598f6f45324950e34[m[33m ([m[1;36mHEAD -> [m[1;32mdev_shg[m[33m, [m[1;31morigin/dev_shg[m[33m)[m
+Author: 송현규 <lego39@naver.com>
+Date:   Thu Feb 24 14:05:38 2022 +0900
+
+    kte rebase
+
+[33mcommit a626b639425e8c7e24c317d9235a7b5a4659fff3[m
+Author: 송현규 <lego39@naver.com>
+Date:   Thu Feb 24 10:34:22 2022 +0900
+
+    Add Worker Manual
+
+[33mcommit 863cf38bf77a481c87e5d3d6e8277e6b92255e91[m[33m ([m[1;32mmain[m[33m)[m
+Merge: 87a6b5c e2c2e3d
+Author: 김태은/지능화기술그룹(생기연)/삼성전자 <taeeun05.kim@samsung.com>
+Date:   Tue Feb 22 19:39:37 2022 +0900
+
+    Merge pull request #2 from GT8-AutomationVision/dev_kte
+    
+    기본프로그램 구현
+
+[33mcommit e2c2e3d389025e25ccff27495fb9b60607307795[m
+Author: 김태은/FA선행기술그룹(GTC)/Engineer/삼성전자 <taeeun05.kim@samsung.com>
+Date:   Tue Feb 22 19:38:20 2022 +0900
+
+    기본프로그램 구현
+    
+    구현한 부분
+    - Defines
+    - Forms : Param
+    - Machine
+    - Modules : Comm, IO, Lights, Motors
+    - Parameters
+    - Process : Basic
+    - Sequence : 기본구현
+    - Utilities
+    
+    구현안된 부분
+    - Forms
+    - Materials
+    - Modules : DICE, Camera, Barcode, LaserSensor
+    - Process
+    - Sequences
+    - Workers
+
+[33mcommit 87a6b5cbca2047d08f933283844204ba4a20409d[m
+Merge: 8403edd 77e1eb3
+Author: 김태은/지능화기술그룹(생기연)/삼성전자 <taeeun05.kim@samsung.com>
+Date:   Mon Feb 21 18:08:59 2022 +0900
+
+    Merge pull request #1 from GT8-AutomationVision/dev_kte
+    
+    add initial project
+
+[33mcommit 77e1eb327df96e40c26ec761b609a0e4d8257a45[m
+Author: 김태은/FA선행기술그룹(GTC)/Engineer/삼성전자 <taeeun05.kim@samsung.com>
+Date:   Mon Feb 21 18:07:09 2022 +0900
+
+    add initial project
+
+[33mcommit b8a28b19f5eccf40af923b49c349b0613de76c96[m[33m ([m[1;31morigin/dev[m[33m)[m
+Author: 송현규 <lego39@naver.com>
+Date:   Mon Feb 21 13:35:57 2022 +0900
+
+    init
+
+[33mcommit 8403edd24ad939ecadbee89161125b4878c1c1f1[m
+Author: 송현규/지능화기술그룹(생기연)/삼성전자 <hg96.song@samsung.com>
+Date:   Mon Feb 21 13:31:11 2022 +0900
+
+    Create new

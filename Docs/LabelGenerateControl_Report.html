@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Label Generate Control Report</title>
+  <style>
+    :root {
+      --window: #0c0e12;
+      --surface: #16191f;
+      --surface-alt: #1e222a;
+      --border: #404754;
+      --text: #dbeafe;
+      --muted: #a0a9b5;
+      --accent: #0078d7;
+      --cyan: #80ffff;
+      --success: #58c779;
+      --warning: #f5ba41;
+      --green: #37d67a;
+      --blue: #29a8ff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--window);
+      color: var(--text);
+      font-family: "Segoe UI", Arial, sans-serif;
+      line-height: 1.62;
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 40px 24px 64px;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px;
+      padding-bottom: 22px;
+    }
+
+    h1, h2, h3 {
+      color: var(--cyan);
+      line-height: 1.25;
+      margin: 0;
+    }
+
+    h1 { font-size: 32px; }
+    h2 { font-size: 22px; margin-top: 34px; }
+    h3 { font-size: 17px; margin-top: 22px; }
+
+    p { margin: 10px 0; }
+
+    .subtitle {
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .chip {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-top: 18px;
+      padding: 20px;
+    }
+
+    ul, ol {
+      margin: 10px 0 0 22px;
+      padding: 0;
+    }
+
+    li { margin: 7px 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--surface-alt);
+      color: var(--cyan);
+      font-weight: 600;
+    }
+
+    code, pre {
+      background: #0f1116;
+      border: 1px solid #2e3540;
+      border-radius: 4px;
+      color: #ffffff;
+      font-family: Consolas, "Cascadia Mono", monospace;
+      font-size: 0.95em;
+    }
+
+    code { padding: 1px 5px; }
+
+    pre {
+      overflow-x: auto;
+      padding: 14px;
+      white-space: pre;
+    }
+
+    .flow {
+      counter-reset: step;
+      list-style: none;
+      margin-left: 0;
+    }
+
+    .flow li {
+      border-left: 3px solid var(--accent);
+      padding-left: 14px;
+      margin: 12px 0;
+    }
+
+    .flow li::before {
+      counter-increment: step;
+      content: "Step " counter(step) ". ";
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .note {
+      border-left: 4px solid var(--warning);
+      background: #1d1a10;
+      padding: 12px 14px;
+      margin-top: 14px;
+    }
+
+    .swatches {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .swatch {
+      height: 14px;
+      flex: 1;
+      border-radius: 3px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: linear-gradient(90deg, var(--green), #28d0c2, var(--blue));
+    }
+
+    .source-list {
+      color: var(--muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Label Generate Control Report</h1>
+    <p class="subtitle">Detection 모델을 이용해 이미지별 rectangle label JSON을 생성하고, 결과를 Preview로 검토하는 기능 설명서입니다.</p>
+    <div class="meta">
+      <span class="chip">Control: LabelGeneratorControl</span>
+      <span class="chip">Generated: 2026-05-30</span>
+      <span class="chip">Model: Detection</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>1. 목적</h2>
+    <p>
+      <code>Label Generate</code> 화면은 사용자가 선택한 source folder 아래의 이미지 파일을 재귀적으로 찾고,
+      Detection 모델 추론 결과를 Labeler 형식의 JSON 파일로 저장합니다.
+      생성된 JSON은 원본 이미지와 같은 폴더에 같은 파일명으로 저장되며 확장자만 <code>.json</code>으로 바뀝니다.
+    </p>
+    <p>
+      생성 후에는 결과 목록에서 이미지 또는 JSON을 선택해 우측 Preview에서 이미지와 rectangle label을 확인할 수 있습니다.
+    </p>
+  </section>
+
+  <section>
+    <h2>2. 화면 구성</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>영역</th>
+          <th>주요 UI</th>
+          <th>역할</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Label Gen Settings</td>
+          <td><code>Source Folder</code>, <code>Browse</code></td>
+          <td>label을 생성할 이미지 폴더를 선택합니다. 하위 폴더까지 재귀적으로 처리합니다.</td>
+        </tr>
+        <tr>
+          <td>Label Gen Settings</td>
+          <td><code>Minimum Confidence (0~1)</code></td>
+          <td>Detection confidence가 이 값보다 낮은 rect는 JSON 생성과 Preview 표시에서 제외합니다.</td>
+        </tr>
+        <tr>
+          <td>Label Gen Settings</td>
+          <td><code>Existing JSON File Skip</code></td>
+          <td>체크 시 같은 이름의 JSON이 이미 존재하는 이미지는 label 생성을 건너뜁니다.</td>
+        </tr>
+        <tr>
+          <td>Detection Model</td>
+          <td><code>Detection Model Path</code>, <code>Browse</code>, <code>Load Model</code></td>
+          <td>Detection 모델 경로를 선택하고, 필요하면 명시적으로 모델을 로드합니다.</td>
+        </tr>
+        <tr>
+          <td>Execution</td>
+          <td><code>Label Generate</code></td>
+          <td>모델이 로드되지 않은 상태면 자동으로 로드한 뒤 label 생성을 시작합니다.</td>
+        </tr>
+        <tr>
+          <td>Generate Results</td>
+          <td>Image mode, JSON mode, 결과 ListView</td>
+          <td>이미지 목록 또는 JSON 목록을 표시하고, 선택한 항목을 Preview로 보여줍니다.</td>
+        </tr>
+        <tr>
+          <td>Image Preview</td>
+          <td>PictureBox, Preview info label</td>
+          <td>이미지와 rect overlay, 파일명, 이미지 크기, detection/label 수를 표시합니다.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>3. 모델 로드 흐름</h2>
+    <ul>
+      <li>Detection 모델은 프로그램 시작 시 즉시 로드하지 않고, Label Generate 화면에서 필요할 때 lazy-load합니다.</li>
+      <li><code>Load Model</code> 버튼을 누르면 사용자가 선택한 model path를 저장하고 Detection 모델을 로드합니다.</li>
+      <li><code>Label Generate</code> 실행 시 모델이 아직 로드되지 않았다면 자동으로 모델을 로드한 뒤 작업을 이어갑니다.</li>
+      <li>모델 로드 중에는 안내 popup이 프로그램 창 중앙에 표시되고, 로드가 완료되면 자동으로 닫힙니다.</li>
+      <li>모델 상태는 <code>Loaded</code> 또는 <code>Not Loaded</code>로 표시됩니다.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>4. 실행 흐름</h2>
+    <ol class="flow">
+      <li>Source folder가 선택되어 있고 실제 존재하는지 확인합니다.</li>
+      <li>Detection model path가 비어 있지 않고 실제 존재하는지 확인합니다.</li>
+      <li>Minimum Confidence, Existing JSON File Skip, model path 설정을 config에 저장합니다.</li>
+      <li>Detection 모델이 로드되지 않았다면 popup을 표시하고 모델을 로드합니다.</li>
+      <li>Source folder 아래의 <code>.jpg</code>, <code>.jpeg</code>, <code>.png</code>, <code>.bmp</code> 파일을 재귀적으로 수집합니다.</li>
+      <li>각 이미지에 대해 Detection inference를 수행합니다.</li>
+      <li>유효한 rect만 Labeler JSON 형식으로 변환합니다.</li>
+      <li>이미지와 같은 폴더에 같은 base name의 <code>.json</code> 파일을 저장합니다.</li>
+      <li>작업 완료 후 결과 목록을 다시 불러오고 로그와 progress bar를 갱신합니다.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>5. JSON 생성 규칙</h2>
+    <p>각 이미지의 출력 파일은 <code>Path.ChangeExtension(imagePath, ".json")</code> 방식으로 결정됩니다.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>항목</th>
+          <th>생성 규칙</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>대상 이미지 확장자</td>
+          <td><code>.jpg</code>, <code>.jpeg</code>, <code>.png</code>, <code>.bmp</code></td>
+        </tr>
+        <tr>
+          <td>기존 JSON 처리</td>
+          <td><code>Existing JSON File Skip</code> 체크 시 기존 JSON이 있으면 해당 이미지는 건너뜁니다. 체크 해제 시 새 JSON으로 덮어씁니다.</td>
+        </tr>
+        <tr>
+          <td>Confidence filter</td>
+          <td>rect confidence가 <code>Minimum Confidence</code>보다 낮으면 제외합니다.</td>
+        </tr>
+        <tr>
+          <td>Bounds filter</td>
+          <td>rect가 이미지 영역 밖으로 나가면 제외합니다.</td>
+        </tr>
+        <tr>
+          <td>Size filter</td>
+          <td>rect width 또는 height가 0 이하이면 제외합니다.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>JSON 구조 예시</h3>
+    <pre>{
+  "version": "0.10.7",
+  "task_type": "det",
+  "shapes": [
+    {
+      "label": "class_name",
+      "points": [[x1, y1], [x2, y2]],
+      "group_id": null,
+      "shape_type": "rectangle",
+      "flags": {}
+    }
+  ],
+  "split": "train",
+  "imageHeight": 1024,
+  "imageWidth": 1280,
+  "imageDepth": 3
+}</pre>
+  </section>
+
+  <section>
+    <h2>6. Generate Results와 Preview</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>표시 모드</th>
+          <th>목록 대상</th>
+          <th>Preview 동작</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>Image + Detection Display Results</code></td>
+          <td>Source folder 아래의 이미지 파일</td>
+          <td>
+            선택한 이미지에 대해 Detection을 다시 수행하고, confidence 기준을 통과한 rect를 이미지 위에 표시합니다.
+            Detection model이 로드되지 않았다면 Preview 전에 자동 로드 popup이 표시됩니다.
+          </td>
+        </tr>
+        <tr>
+          <td><code>Label + JSON Parsing Display</code></td>
+          <td>Source folder 아래의 JSON 파일</td>
+          <td>
+            JSON을 읽고 같은 폴더에서 같은 base name의 이미지 파일을 찾은 뒤,
+            JSON의 rectangle points를 이미지 위에 표시합니다.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Class별 Rect 색상</h3>
+    <p>
+      Rect와 label text 색상은 class 이름 기준으로 생성됩니다.
+      같은 class는 항상 같은 색상으로 표시되고, 색상 범위는 초록색에서 파란색 계열로 제한되어 있습니다.
+    </p>
+    <div class="swatches">
+      <div class="swatch" title="green to blue class color range"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>7. 저장되는 설정</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>설정</th>
+          <th>내용</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>LastLabelGenSourceFolder</code></td>
+          <td>마지막으로 선택한 source folder</td>
+        </tr>
+        <tr>
+          <td><code>LabelGeneration.MinConfidence</code></td>
+          <td>Detection 결과를 JSON으로 저장할 최소 confidence</td>
+        </tr>
+        <tr>
+          <td><code>LabelGeneration.SkipExistingJson</code></td>
+          <td>기존 JSON 파일이 있을 때 건너뛸지 여부</td>
+        </tr>
+        <tr>
+          <td><code>DiceModels.DetectModel.Path</code></td>
+          <td>Detection 모델 경로</td>
+        </tr>
+        <tr>
+          <td><code>DiceModels.DetectModel.Use</code></td>
+          <td>Detection 모델 사용 여부</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>8. 주의사항</h2>
+    <ul>
+      <li>Label JSON은 별도 output folder가 아니라 원본 이미지와 같은 폴더에 생성됩니다.</li>
+      <li>Image preview 모드는 기존 JSON을 읽지 않고 Detection을 다시 수행해서 표시합니다.</li>
+      <li>JSON preview 모드는 모델 없이도 저장된 JSON을 기준으로 rect를 표시할 수 있습니다.</li>
+      <li>JSON preview에서 매칭 이미지는 같은 폴더, 같은 파일명, 확장자 <code>.jpg</code>, <code>.jpeg</code>, <code>.png</code>, <code>.bmp</code> 순서로 찾습니다.</li>
+      <li>Detection 결과가 없거나 유효한 rect가 하나도 없으면 JSON을 생성하지 않습니다.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>9. 코드 기준</h2>
+    <p class="source-list">
+      Main source: <code>TestUtilApp/Form/LabelGeneratorControl.cs</code><br>
+      Designer source: <code>TestUtilApp/Form/LabelGeneratorControl.Designer.cs</code><br>
+      Label service: <code>TestUtilApp/Services/LabelGeneratorService.cs</code><br>
+      Model loading popup: <code>TestUtilApp/Form/ModelLoadingDialog.cs</code><br>
+      Model manager: <code>TestUtilApp/Dice/DiceManager.cs</code>
+    </p>
+  </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Image Crop Control Report</title>
+  <style>
+    :root {
+      --window: #0c0e12;
+      --surface: #16191f;
+      --surface-alt: #1e222a;
+      --border: #404754;
+      --text: #dbeafe;
+      --muted: #a0a9b5;
+      --accent: #0078d7;
+      --cyan: #80ffff;
+      --success: #58c779;
+      --warning: #f5ba41;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--window);
+      color: var(--text);
+      font-family: "Segoe UI", Arial, sans-serif;
+      line-height: 1.62;
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 40px 24px 64px;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px;
+      padding-bottom: 22px;
+    }
+
+    h1, h2, h3 {
+      color: var(--cyan);
+      line-height: 1.25;
+      margin: 0;
+    }
+
+    h1 { font-size: 32px; }
+    h2 { font-size: 22px; margin-top: 34px; }
+    h3 { font-size: 17px; margin-top: 22px; }
+
+    p { margin: 10px 0; }
+
+    .subtitle {
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .chip {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-top: 18px;
+      padding: 20px;
+    }
+
+    ul, ol {
+      margin: 10px 0 0 22px;
+      padding: 0;
+    }
+
+    li { margin: 7px 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--surface-alt);
+      color: var(--cyan);
+      font-weight: 600;
+    }
+
+    code {
+      background: #0f1116;
+      border: 1px solid #2e3540;
+      border-radius: 4px;
+      color: #ffffff;
+      padding: 1px 5px;
+      font-family: Consolas, "Cascadia Mono", monospace;
+      font-size: 0.95em;
+    }
+
+    .flow {
+      counter-reset: step;
+      list-style: none;
+      margin-left: 0;
+    }
+
+    .flow li {
+      border-left: 3px solid var(--accent);
+      padding-left: 14px;
+      margin: 12px 0;
+    }
+
+    .flow li::before {
+      counter-increment: step;
+      content: "Step " counter(step) ". ";
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .note {
+      border-left: 4px solid var(--warning);
+      background: #1d1a10;
+      padding: 12px 14px;
+      margin-top: 14px;
+    }
+
+    .source-list {
+      color: var(--muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Image Crop Control Report</h1>
+    <p class="subtitle">이미지 폴더를 선택해 Detection 기반 자동 크롭 또는 고정 좌표 수동 크롭을 수행하는 화면 설명서입니다.</p>
+    <div class="meta">
+      <span class="chip">Control: CropControl</span>
+      <span class="chip">Generated: 2026-05-31</span>
+      <span class="chip">Modes: Auto Detect Crop / Manual Crop</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>1. 목적</h2>
+    <p>
+      <code>Image Crop</code> 화면은 선택한 source folder 아래의 이미지 파일을 대상으로 crop 이미지를 생성합니다.
+      Auto Detect mode에서는 Detection 모델이 찾아낸 object rectangle을 기준으로 class별 crop 이미지를 저장하고,
+      Manual Crop mode에서는 사용자가 입력한 고정 좌표와 크기를 모든 이미지에 적용합니다.
+    </p>
+    <p>
+      결과는 source folder의 부모 폴더 아래에 <code>SourceFolderName_crop</code> 폴더로 생성되며,
+      실행 후 결과 리스트에서 crop 이미지를 선택해 우측 Preview로 확인할 수 있습니다.
+    </p>
+  </section>
+
+  <section>
+    <h2>2. 화면 구성</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>영역</th>
+          <th>주요 UI</th>
+          <th>역할</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Crop Settings</td>
+          <td><code>Source Folder</code>, <code>Browse</code>, <code>Images Found</code></td>
+          <td>크롭 대상 이미지 폴더를 선택하고, 하위 폴더를 포함한 이미지 개수를 표시합니다.</td>
+        </tr>
+        <tr>
+          <td>Crop Mode</td>
+          <td><code>Manual Crop (Disable Auto Detect)</code></td>
+          <td>체크 시 Detection 모델을 사용하지 않고, 사용자가 입력한 고정 crop 영역을 사용합니다.</td>
+        </tr>
+        <tr>
+          <td>Manual Area</td>
+          <td><code>X</code>, <code>Y</code>, <code>W</code>, <code>H</code></td>
+          <td>Manual Crop mode에서 사용할 좌상단 좌표와 crop 크기를 입력합니다.</td>
+        </tr>
+        <tr>
+          <td>Detection Model</td>
+          <td><code>Model Path</code>, <code>Browse</code>, <code>Load Model</code>, status label</td>
+          <td>Auto Detect Crop에 사용할 Detection model path를 관리하고 명시적으로 모델을 로드합니다.</td>
+        </tr>
+        <tr>
+          <td>Execution</td>
+          <td><code>Start Crop</code></td>
+          <td>선택한 모드에 따라 crop 처리를 시작합니다. Auto Detect mode에서는 모델이 필요하면 자동 로드합니다.</td>
+        </tr>
+        <tr>
+          <td>Crop Results</td>
+          <td>결과 ListBox, result count</td>
+          <td>생성된 crop 이미지 파일명을 표시합니다.</td>
+        </tr>
+        <tr>
+          <td>Preview</td>
+          <td>PictureBox, preview info</td>
+          <td>선택한 crop 이미지와 파일 정보를 표시합니다. Auto Detect 결과인 경우 원본 기준 detection box도 함께 표시합니다.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>3. 모델 경로와 로드 흐름</h2>
+    <ul>
+      <li>Detection model path는 <code>Browse</code>로 선택하면 즉시 config에 저장됩니다.</li>
+      <li>Path TextBox를 직접 수정한 경우, 입력창에서 포커스가 빠질 때 자동 저장됩니다.</li>
+      <li><code>Load Model</code> 버튼은 Detection 모델을 명시적으로 로드합니다.</li>
+      <li><code>Start Crop</code>은 Auto Detect mode에서만 Detection 모델을 확인합니다.</li>
+      <li>이미 같은 경로의 모델이 로드되어 있으면 다시 로드하지 않고 crop을 진행합니다.</li>
+      <li>모델 로드 중에는 프로그램 창 중앙에 안내 popup이 표시되고, 로드 완료 후 자동으로 닫힙니다.</li>
+    </ul>
+    <div class="note">
+      Manual Crop mode에서는 Detection 모델이 필요하지 않으므로 모델 경로가 비어 있어도 수동 크롭을 실행할 수 있습니다.
+    </div>
+  </section>
+
+  <section>
+    <h2>4. 실행 흐름</h2>
+    <ol class="flow">
+      <li>Source folder가 선택되어 있고 실제 존재하는지 확인합니다.</li>
+      <li>Manual Crop mode 여부를 확인합니다.</li>
+      <li>Manual mode라면 X/Y/W/H 값이 유효한지 검사하고 config에 저장합니다.</li>
+      <li>Auto Detect mode라면 Detection model path를 검증하고 저장합니다.</li>
+      <li>Auto Detect mode에서 모델이 아직 로드되지 않았다면 popup을 띄우고 모델을 로드합니다.</li>
+      <li>이미지 파일을 재귀적으로 수집합니다. 대상 확장자는 <code>.jpg</code>, <code>.jpeg</code>, <code>.png</code>, <code>.bmp</code>입니다.</li>
+      <li>선택된 모드에 따라 <code>ProcessCropImages</code> 또는 <code>ProcessManualCropImages</code>를 실행합니다.</li>
+      <li>작업 완료 후 output folder에서 crop 결과 파일을 다시 읽어 결과 리스트를 갱신합니다.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>5. Auto Detect Crop 규칙</h2>
+    <ul>
+      <li>Detection 모델 추론 결과 중 confidence가 <code>0.5</code> 미만인 rect는 제외됩니다.</li>
+      <li>각 detection rect는 이미지 bounds 안으로 조정된 뒤 crop됩니다.</li>
+      <li>Class별 폴더가 output folder 아래에 생성됩니다.</li>
+      <li>저장 파일명은 <code>{ClassName}_{OriginalFileName}</code> 형태입니다.</li>
+      <li>원본 source folder의 하위 폴더 구조는 class folder 아래에 유지됩니다.</li>
+    </ul>
+    <table>
+      <thead>
+        <tr>
+          <th>입력 예</th>
+          <th>출력 예</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>Source/sub/image001.jpg</code>, class <code>BELT_TOP</code></td>
+          <td><code>Source_crop/BELT_TOP/sub/BELT_TOP_image001.jpg</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>6. Manual Crop 규칙</h2>
+    <ul>
+      <li>사용자가 입력한 <code>X</code>, <code>Y</code>, <code>W</code>, <code>H</code> 값을 모든 이미지에 적용합니다.</li>
+      <li>Crop 영역이 이미지 bounds를 벗어나면 가능한 영역으로 조정됩니다.</li>
+      <li>Width 또는 height가 0 이하가 되는 경우 해당 이미지는 저장하지 않습니다.</li>
+      <li>결과는 output folder 아래 <code>MANUAL</code> 폴더에 저장됩니다.</li>
+      <li>저장 파일명은 <code>MANUAL_{OriginalFileName}</code> 형태입니다.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>7. Preview 동작</h2>
+    <ul>
+      <li>Crop Results 리스트에서 파일을 선택하면 crop 이미지를 Preview에 표시합니다.</li>
+      <li>Auto Detect mode에서 생성된 결과라면 crop 파일명에서 원본 파일명을 추정하고, 원본 이미지에 Detection box를 그려 표시합니다.</li>
+      <li>Preview 하단에는 파일명, 이미지 크기, 파일 크기가 표시됩니다.</li>
+      <li>원본 이미지가 없거나 모델이 로드되지 않은 경우 Detection box overlay는 생략될 수 있습니다.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>8. 저장되는 설정</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>설정</th>
+          <th>내용</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>LastCropSourceFolder</code></td>
+          <td>마지막으로 선택한 crop source folder</td>
+        </tr>
+        <tr>
+          <td><code>DefaultCropArea</code></td>
+          <td>Manual Crop에서 사용한 X/Y/W/H 값</td>
+        </tr>
+        <tr>
+          <td><code>DiceModels.DetectModel.Path</code></td>
+          <td>Auto Detect Crop에 사용할 Detection model path</td>
+        </tr>
+        <tr>
+          <td><code>DiceModels.DetectModel.Use</code></td>
+          <td>Detection model 사용 여부</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>9. 주의사항</h2>
+    <ul>
+      <li>Output folder는 source folder의 부모 폴더 아래에 <code>_crop</code> postfix로 생성됩니다.</li>
+      <li>Auto Detect Crop은 Detection 모델이 필요하며, Manual Crop은 모델 없이 동작할 수 있습니다.</li>
+      <li>기존 output folder를 자동 삭제하지 않기 때문에 이전 crop 결과가 함께 표시될 수 있습니다.</li>
+      <li>Auto Detect Preview의 원본 파일명 추정은 crop 파일명의 class prefix 구조에 의존합니다.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>10. 코드 기준</h2>
+    <p class="source-list">
+      Main source: <code>TestUtilApp/Form/CropControl.cs</code><br>
+      Designer source: <code>TestUtilApp/Form/CropControl.Designer.cs</code><br>
+      Processing service: <code>TestUtilApp/Services/ImageProcessorService.cs</code><br>
+      Model manager: <code>TestUtilApp/Dice/DiceManager.cs</code>
+    </p>
+  </section>
+</main>
+</body>
+</html>

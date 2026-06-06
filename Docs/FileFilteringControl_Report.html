@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>File Filtering Control Report</title>
+  <style>
+    :root {
+      --window: #0c0e12;
+      --surface: #16191f;
+      --surface-alt: #1e222a;
+      --border: #404754;
+      --text: #dbeafe;
+      --muted: #a0a9b5;
+      --accent: #0078d7;
+      --cyan: #80ffff;
+      --success: #58c779;
+      --warning: #f5ba41;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--window);
+      color: var(--text);
+      font-family: "Segoe UI", Arial, sans-serif;
+      line-height: 1.62;
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 40px 24px 64px;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px;
+      padding-bottom: 22px;
+    }
+
+    h1, h2, h3 {
+      color: var(--cyan);
+      line-height: 1.25;
+      margin: 0;
+    }
+
+    h1 { font-size: 32px; }
+    h2 { font-size: 22px; margin-top: 34px; }
+    h3 { font-size: 17px; margin-top: 22px; }
+
+    p { margin: 10px 0; }
+
+    .subtitle {
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .chip {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-top: 18px;
+      padding: 20px;
+    }
+
+    ul, ol {
+      margin: 10px 0 0 22px;
+      padding: 0;
+    }
+
+    li { margin: 7px 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--surface-alt);
+      color: var(--cyan);
+      font-weight: 600;
+    }
+
+    code {
+      background: #0f1116;
+      border: 1px solid #2e3540;
+      border-radius: 4px;
+      color: #ffffff;
+      padding: 1px 5px;
+      font-family: Consolas, "Cascadia Mono", monospace;
+      font-size: 0.95em;
+    }
+
+    .flow {
+      counter-reset: step;
+      list-style: none;
+      margin-left: 0;
+    }
+
+    .flow li {
+      border-left: 3px solid var(--accent);
+      padding-left: 14px;
+      margin: 12px 0;
+    }
+
+    .flow li::before {
+      counter-increment: step;
+      content: "Step " counter(step) ". ";
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .note {
+      border-left: 4px solid var(--warning);
+      background: #1d1a10;
+      padding: 12px 14px;
+      margin-top: 14px;
+    }
+
+    .source-list {
+      color: var(--muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>File Filtering Control Report</h1>
+    <p class="subtitle">대상 폴더에서 조건에 맞는 폴더와 파일을 선별한 뒤, 허용된 파일을 출력 폴더로 복사하는 기능 설명서입니다.</p>
+    <div class="meta">
+      <span class="chip">Control: FilterControl</span>
+      <span class="chip">Generated: 2026-05-30</span>
+      <span class="chip">Mode: Copy only</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>1. 목적</h2>
+    <p>
+      <code>File Filtering</code> 화면은 사용자가 선택한 <code>Target Folder</code> 전체를 탐색하고,
+      현재 선택된 Preset 조건에 맞는 폴더를 찾은 뒤, 각 폴더 안의 허용된 파일만 출력 폴더로 복사합니다.
+      복사 시 원본 폴더의 상대 경로 구조를 유지합니다.
+    </p>
+    <p>
+      이 기능은 특정 이름의 폴더만 모으거나, 특정 파일을 포함한 폴더만 가져오거나,
+      임시 파일/백업 파일/특정 확장자를 제외하고 필요한 파일 세트만 정리할 때 사용합니다.
+    </p>
+  </section>
+
+  <section>
+    <h2>2. 화면 구성</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>영역</th>
+          <th>주요 UI</th>
+          <th>역할</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Filtering Settings</td>
+          <td><code>Target Folder</code>, <code>Browse</code></td>
+          <td>필터링을 시작할 기준 폴더를 선택합니다. 선택된 폴더 경로는 설정에 저장됩니다.</td>
+        </tr>
+        <tr>
+          <td>Preset Tabs</td>
+          <td><code>Preset 1</code>, <code>Preset 2</code>, <code>Preset 3</code></td>
+          <td>서로 다른 필터 조건 조합을 3개까지 보관하고 탭으로 전환합니다.</td>
+        </tr>
+        <tr>
+          <td>Folder Filtering</td>
+          <td>Folder name include, File name include</td>
+          <td>어떤 폴더를 복사 대상 폴더로 삼을지 결정합니다.</td>
+        </tr>
+        <tr>
+          <td>File Filtering</td>
+          <td>File name exclude, Extension exclude</td>
+          <td>선택된 폴더 안에서 어떤 파일을 실제 복사에서 제외할지 결정합니다.</td>
+        </tr>
+        <tr>
+          <td>Execution Options</td>
+          <td>Output mode, postfix, custom folder, Open, Start Filtering</td>
+          <td>출력 위치를 결정하고 필터링 복사를 실행합니다.</td>
+        </tr>
+        <tr>
+          <td>Progress</td>
+          <td>ProgressBar, Log</td>
+          <td>처리 진행률과 복사/제외/오류 로그를 표시합니다.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>3. Preset과 필터 조건</h2>
+    <p>
+      각 Preset은 아래 4가지 조건과 enable/disable 체크 상태를 독립적으로 저장합니다.
+      값은 쉼표로 구분하며, 비교는 대소문자를 구분하지 않는 부분 문자열 방식입니다.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>조건</th>
+          <th>분류</th>
+          <th>동작</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>Use folder name include filter</code></td>
+          <td>Folder Filtering</td>
+          <td>
+            체크 시 폴더 이름에 include keyword 중 하나라도 포함된 폴더만 대상 폴더가 됩니다.
+            체크 해제 또는 keyword가 비어 있으면 target root와 모든 하위 폴더가 대상이 됩니다.
+          </td>
+        </tr>
+        <tr>
+          <td><code>Use file name include filter</code></td>
+          <td>Folder Filtering</td>
+          <td>
+            체크 시 폴더 안에 include keyword와 일치하는 파일명이 하나라도 있는 폴더만 유지합니다.
+            이 조건은 “해당 파일을 가진 폴더를 가져오기” 위한 폴더 선별 조건입니다.
+          </td>
+        </tr>
+        <tr>
+          <td><code>Use file name exclude filter</code></td>
+          <td>File Filtering</td>
+          <td>
+            체크 시 복사 단계에서 파일명에 exclude keyword가 포함된 파일을 제외합니다.
+            예: <code>_temp, backup</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>Use extension exclude filter</code></td>
+          <td>File Filtering</td>
+          <td>
+            체크 시 복사 단계에서 지정된 확장자의 파일을 제외합니다.
+            확장자는 점 없이 입력하며, 입력 시 점이 있어도 내부적으로 제거됩니다.
+            예: <code>tmp, bak</code>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      File name include 조건은 폴더를 선별하는 조건이고, File name exclude 및 Extension exclude 조건은 실제 복사할 파일을 선별하는 조건입니다.
+    </div>
+  </section>
+
+  <section>
+    <h2>4. 출력 폴더 옵션</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>옵션</th>
+          <th>출력 위치</th>
+          <th>특징</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>Create next to target folder</code></td>
+          <td>Target folder의 부모 폴더 아래에 <code>TargetFolderName + postfix</code>로 생성</td>
+          <td>
+            기본 postfix는 <code>_filtered</code>입니다.
+            실행 전 같은 output 폴더가 있으면 삭제 후 새로 생성합니다.
+          </td>
+        </tr>
+        <tr>
+          <td><code>Use selected output folder</code></td>
+          <td>사용자가 선택한 임의의 output folder</td>
+          <td>
+            폴더가 없으면 복사 전에 생성합니다.
+            기존 폴더 내용은 전체 삭제하지 않지만, 동일한 파일명은 복사 시 덮어씁니다.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <code>Open</code> 버튼은 현재 계산된 output folder를 Windows Explorer에서 엽니다.
+      아직 생성되지 않은 폴더라면 안내 메시지를 표시합니다.
+    </p>
+  </section>
+
+  <section>
+    <h2>5. 실행 흐름</h2>
+    <ol class="flow">
+      <li>Target folder가 선택되어 있고 실제 존재하는지 확인합니다.</li>
+      <li>Output folder 경로를 계산하고, target folder와 동일한 경로인지 검사합니다.</li>
+      <li>사용자에게 target folder와 output folder를 보여주고 실행 확인을 받습니다.</li>
+      <li>현재 Preset, output 옵션, filter 값을 config에 저장합니다.</li>
+      <li>Target root와 모든 하위 폴더를 수집합니다.</li>
+      <li>Folder name include filter를 적용해 1차 대상 폴더를 고릅니다.</li>
+      <li>File name include filter를 적용해 특정 파일명을 가진 폴더만 남깁니다.</li>
+      <li>Output folder가 target 아래에 있는 경우, output folder 자신과 그 하위 폴더는 대상에서 제외합니다.</li>
+      <li>각 대상 폴더의 파일을 검사하고, file name exclude 및 extension exclude 조건에 걸리지 않는 파일만 복사합니다.</li>
+      <li>복사가 끝나면 output folder 아래의 빈 폴더를 정리합니다.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>6. 복사 규칙</h2>
+    <ul>
+      <li>폴더 검색은 target root를 포함하며, 하위 폴더는 재귀적으로 탐색합니다.</li>
+      <li>각 대상 폴더에서 파일 복사는 해당 폴더 바로 아래 파일만 처리합니다.</li>
+      <li>복사된 파일은 target folder 기준 상대 경로를 output folder 아래에 유지합니다.</li>
+      <li>동일한 파일명이 output 위치에 있으면 <code>File.Copy(..., true)</code>로 덮어씁니다.</li>
+      <li>조건 비교는 대소문자를 구분하지 않습니다.</li>
+      <li>현재 실행 모드는 복사 전용이며, 삭제 모드는 UI와 실행 흐름에서 제거되어 있습니다.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>7. 저장되는 설정</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>설정</th>
+          <th>내용</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>LastTargetFolder</code></td>
+          <td>마지막으로 선택한 target folder</td>
+        </tr>
+        <tr>
+          <td><code>OutputPostfix</code></td>
+          <td>자동 output folder 생성 시 붙일 postfix</td>
+        </tr>
+        <tr>
+          <td><code>LastOutputFolder</code></td>
+          <td>마지막으로 선택한 custom output folder</td>
+        </tr>
+        <tr>
+          <td><code>UseCustomOutputFolder</code></td>
+          <td>custom output folder 사용 여부</td>
+        </tr>
+        <tr>
+          <td><code>ActiveProfileIndex</code></td>
+          <td>마지막으로 선택한 Preset 탭 번호</td>
+        </tr>
+        <tr>
+          <td><code>ConditionProfiles</code></td>
+          <td>3개 Preset의 keyword 목록과 각 filter enable 상태</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>8. 주의사항</h2>
+    <ul>
+      <li>Keyword 조건은 정규식이 아니라 단순 포함 검색입니다.</li>
+      <li>Comma-separated 입력에서 빈 항목은 무시됩니다.</li>
+      <li>Extension exclude는 <code>.jpg</code>처럼 점을 입력해도 내부적으로 <code>jpg</code>로 비교합니다.</li>
+      <li>자동 output mode는 기존 output folder를 삭제한 뒤 다시 만들기 때문에, output 폴더 안에 보존할 파일이 있으면 custom output mode를 사용하는 편이 안전합니다.</li>
+      <li>Custom output mode에서는 기존 폴더 전체를 삭제하지 않으므로 이전 결과 파일이 남아 있을 수 있습니다.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>9. 코드 기준</h2>
+    <p class="source-list">
+      Main source: <code>TestUtilApp/Form/FilterControl.cs</code><br>
+      Designer source: <code>TestUtilApp/Form/FilterControl.Designer.cs</code><br>
+      Config model: <code>TestUtilApp/Models/AppConfig.cs</code>
+    </p>
+  </section>
+</main>
+</body>
+</html>

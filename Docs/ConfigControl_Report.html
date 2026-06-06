@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Config Control Report</title>
+  <style>
+    :root {
+      --window: #0c0e12;
+      --surface: #16191f;
+      --surface-alt: #1e222a;
+      --border: #404754;
+      --text: #dbeafe;
+      --muted: #a0a9b5;
+      --accent: #0078d7;
+      --cyan: #80ffff;
+      --success: #58c779;
+      --warning: #f5ba41;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--window);
+      color: var(--text);
+      font-family: "Segoe UI", Arial, sans-serif;
+      line-height: 1.62;
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 40px 24px 64px;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px;
+      padding-bottom: 22px;
+    }
+
+    h1, h2, h3 {
+      color: var(--cyan);
+      line-height: 1.25;
+      margin: 0;
+    }
+
+    h1 { font-size: 32px; }
+    h2 { font-size: 22px; margin-top: 34px; }
+    h3 { font-size: 17px; margin-top: 22px; }
+
+    p { margin: 10px 0; }
+
+    .subtitle {
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .chip {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-top: 18px;
+      padding: 22px;
+    }
+
+    ul, ol {
+      margin: 10px 0 0 22px;
+      padding: 0;
+    }
+
+    li { margin: 7px 0; }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 12px;
+      overflow: hidden;
+      border-radius: 6px;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--surface-alt);
+      color: var(--cyan);
+      font-weight: 600;
+    }
+
+    code {
+      background: #0f1116;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--cyan);
+      padding: 1px 5px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.94em;
+    }
+
+    pre {
+      background: #0f1116;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      overflow: auto;
+      padding: 14px;
+      margin: 12px 0 0;
+    }
+
+    pre code {
+      background: transparent;
+      border: 0;
+      color: inherit;
+      padding: 0;
+    }
+
+    .note {
+      border-left: 4px solid var(--accent);
+      background: #111823;
+      padding: 12px 14px;
+      margin-top: 14px;
+      color: var(--text);
+    }
+
+    .ok { color: var(--success); font-weight: 600; }
+    .warn { color: var(--warning); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Config Control Report</h1>
+      <p class="subtitle">
+        Functional report for the Config screen in TestUtilApp. This control edits application settings through a dark themed PropertyGrid and persists them to config.json.
+      </p>
+      <div class="meta">
+        <span class="chip">Control: ConfigControl</span>
+        <span class="chip">UI: WinForms PropertyGrid</span>
+        <span class="chip">Config: AppConfig + ConfigService</span>
+        <span class="chip">Updated: 2026-05-31</span>
+      </div>
+    </header>
+
+    <section>
+      <h2>Purpose</h2>
+      <p>
+        <code>ConfigControl</code> is the application's central settings editor. It exposes the current <code>AppConfig</code> object in a PropertyGrid so the user can inspect and edit model paths, confidence thresholds, file-filter settings, last-used paths, and inspection options.
+      </p>
+      <p>
+        The screen is designed for direct operator configuration rather than a guided workflow. It uses a larger font size, a widened value column, and a persistent log/status area to make config edits easier to review.
+      </p>
+    </section>
+
+    <section>
+      <h2>Main Files</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>TestUtilApp/Form/ConfigControl.cs</code></td>
+            <td>Runtime behavior, config loading, saving, reload, PropertyGrid events, DICE path Enter-save support, and log output.</td>
+          </tr>
+          <tr>
+            <td><code>TestUtilApp/Form/ConfigControl.Designer.cs</code></td>
+            <td>Layout for the title bar, Save/Reload/Open Folder buttons, PropertyGrid, log panel, and status panel.</td>
+          </tr>
+          <tr>
+            <td><code>TestUtilApp/Models/AppConfig.cs</code></td>
+            <td>Serializable settings model shown in the PropertyGrid.</td>
+          </tr>
+          <tr>
+            <td><code>TestUtilApp/Services/ConfigService.cs</code></td>
+            <td>Loads, validates, synchronizes, and saves <code>config.json</code>.</td>
+          </tr>
+          <tr>
+            <td><code>TestUtilApp/Editor/FolderBrowserEditor.cs</code></td>
+            <td>Provides the <code>...</code> folder picker for DICE model <code>Path</code> properties.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>UI Structure</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Area</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Top command bar</td>
+            <td>Displays the title and the available commands: <code>Save</code>, <code>Reload</code>, and <code>Open Folder</code>. The old Reset command has been removed.</td>
+          </tr>
+          <tr>
+            <td>PropertyGrid</td>
+            <td>Shows the expandable <code>AppConfig</code> tree. The left property-name column is adjusted to about 30%, leaving about 70% for values.</td>
+          </tr>
+          <tr>
+            <td>Log panel</td>
+            <td>Shows user actions, setting changes, load/save results, and DICE path guidance.</td>
+          </tr>
+          <tr>
+            <td>Status panel</td>
+            <td>Shows the active config path, project root config path when available, and save/reload status messages.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Activation Flow</h2>
+      <ol>
+        <li><code>OnActivated()</code> runs when the screen becomes active.</li>
+        <li><code>LoadConfig()</code> binds the current <code>AppConfig</code> instance to the PropertyGrid.</li>
+        <li>The PropertyGrid expands all items with <code>ExpandAllGridItems()</code>.</li>
+        <li>The PropertyGrid internal splitter is moved so property names use about 30% of the grid width.</li>
+        <li>The status label displays the execution config path and, when available, the project root config path.</li>
+        <li>The log records that the settings screen has been activated and loaded.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Commands</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Command</th>
+            <th>Behavior</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>Save</code></td>
+            <td>Asks for confirmation, then saves the current <code>AppConfig</code> through <code>ConfigService.SaveConfig()</code>.</td>
+          </tr>
+          <tr>
+            <td><code>Reload</code></td>
+            <td>Warns that unsaved changes will be lost, reloads settings through <code>ConfigService.LoadConfig()</code>, and rebinds the PropertyGrid.</td>
+          </tr>
+          <tr>
+            <td><code>Open Folder</code></td>
+            <td>Opens the folder containing the active execution <code>config.json</code> in Windows Explorer.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="note">
+        <span class="ok">Current design:</span> Reset is intentionally not available in this screen.
+      </div>
+    </section>
+
+    <section>
+      <h2>Editable Setting Groups</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Group</th>
+            <th>Important Properties</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>General</td>
+            <td><code>DetectionClasses</code>, <code>DefaultPadding</code>, <code>DefaultCropArea</code></td>
+            <td>Basic image-processing defaults. <code>DetectionClasses</code> uses a collection editor.</td>
+          </tr>
+          <tr>
+            <td>DICE Model Settings</td>
+            <td><code>DetectModel.Use</code>, <code>DetectModel.Path</code>, <code>ClassifyModel_A</code>, <code>ClassifyModel_B</code></td>
+            <td>Each model exposes <code>Use</code> and <code>Path</code>. Parent rows intentionally show no summary text to avoid duplicate/confusing values.</td>
+          </tr>
+          <tr>
+            <td>Label Generation</td>
+            <td><code>MinConfidence</code>, <code>SkipExistingJson</code></td>
+            <td>Controls JSON label generation behavior.</td>
+          </tr>
+          <tr>
+            <td>Classification</td>
+            <td><code>MinConfidence</code></td>
+            <td>Controls the minimum confidence threshold used by image classification.</td>
+          </tr>
+          <tr>
+            <td>File Filter</td>
+            <td><code>LastTargetFolder</code>, <code>LastOutputFolder</code>, <code>ActiveProfileIndex</code>, <code>ConditionProfiles</code>, output settings</td>
+            <td>Filtering conditions live inside <code>ConditionProfiles</code>. Root duplicate keyword fields were removed.</td>
+          </tr>
+          <tr>
+            <td>Last Paths</td>
+            <td><code>LastCropSourceFolder</code>, <code>LastClassifySourceFolder</code>, <code>LastLabelGenSourceFolder</code></td>
+            <td>Used by each workflow to restore recently selected folders.</td>
+          </tr>
+          <tr>
+            <td>Inspection</td>
+            <td><code>InspectionSpecJsonPath</code>, <code>InspectionFileNameFilter</code></td>
+            <td>Used by inspection-related workflows.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>DICE Model Path Editing</h2>
+      <p>
+        The <code>Path</code> property in each <code>DiceModelSetting</code> supports two editing methods.
+      </p>
+      <ul>
+        <li>Click the PropertyGrid's default <code>...</code> button to open <code>FolderBrowserEditor</code> and select a model folder.</li>
+        <li>Type a path manually in the <code>Path</code> value cell, then press <code>Enter</code> to commit and save the value.</li>
+      </ul>
+      <p>
+        The Enter-save behavior is implemented by listening for <code>KeyDown</code> events inside the PropertyGrid and checking whether the selected row is a DICE model <code>Path</code> item.
+      </p>
+      <pre><code>if (e.KeyCode == Keys.Enter &amp;&amp; IsDiceModelPathGridItem(propertyGridConfig.SelectedGridItem))
+{
+    CommitAndSaveDiceModelPathEdit();
+}</code></pre>
+      <div class="note">
+        <span class="warn">Implementation note:</span> The PropertyGrid's edit commit and splitter movement use reflection against the internal PropertyGrid view. This keeps the UI compact, but it should be checked if the WinForms runtime is upgraded.
+      </div>
+    </section>
+
+    <section>
+      <h2>Persistence</h2>
+      <p>
+        <code>ConfigService</code> manages two config locations when possible.
+      </p>
+      <ul>
+        <li>Execution folder config: the config next to the running executable.</li>
+        <li>Project root config: the source project <code>config.json</code>, detected from a <code>bin</code> path.</li>
+      </ul>
+      <p>
+        When saving, the execution config is written first. If the project root config path exists, it is also updated. This keeps Visual Studio debugging and source config editing aligned.
+      </p>
+    </section>
+
+    <section>
+      <h2>Validation And Feedback</h2>
+      <ul>
+        <li>All save, reload, and open-folder operations are wrapped in error handling.</li>
+        <li>Failures are displayed in a message box and written to the log.</li>
+        <li>Successful saves update the status label with a timestamp.</li>
+        <li>Property changes are logged through <code>PropertyValueChanged</code>.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Current Limitations</h2>
+      <ul>
+        <li>The PropertyGrid's built-in <code>...</code> editor button appears only when the row is active. A custom always-visible overlay button was avoided because row alignment can drift during scrolling.</li>
+        <li>Some setting changes may require feature reactivation or model reload to affect already-loaded runtime models.</li>
+        <li>The PropertyGrid is a generic config editor, so workflow-specific screens still provide the more ergonomic controls for common operations.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

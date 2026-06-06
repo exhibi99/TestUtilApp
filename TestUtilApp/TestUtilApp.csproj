@@ -1,0 +1,272 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{91DA7959-456F-4D00-8CD1-58C2AC2C6B79}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>TestUtilApp</RootNamespace>
+    <AssemblyName>TestUtilApp</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CustomMarshalers" />
+    <Reference Include="DICE_Library">
+      <HintPath>..\DICE\DICE_Library.dll</HintPath>
+    </Reference>
+    <Reference Include="Extreme.Numerics, Version=8.1.7.0, Culture=neutral, PublicKeyToken=9e513770f58567b2, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extreme.Numerics.8.1.7\lib\net462\Extreme.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.4.0, Culture=neutral, PublicKeyToken=8985beaab7ea3f04, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft-WindowsAPICodePack-Core.1.1.4\lib\net48\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.4.0, Culture=neutral, PublicKeyToken=8985beaab7ea3f04, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft-WindowsAPICodePack-Shell.1.1.4\lib\net48\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NvAPIWrapper, Version=0.8.1.100, Culture=neutral, PublicKeyToken=310fd07b25df79b3, processorArchitecture=MSIL">
+      <HintPath>..\packages\NvAPIWrapper.Net.0.8.1.101\lib\net45\NvAPIWrapper.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenCvSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6adad1e807fea099, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenCvSharp4.4.5.5.20211231\lib\net48\OpenCvSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenCvSharp.Extensions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6adad1e807fea099, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenCvSharp4.Extensions.4.5.5.20211231\lib\net48\OpenCvSharp.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Python.Runtime">
+      <HintPath>..\DICE\Python.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.6.0.0\lib\net461\System.Drawing.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Form\DiceTestForm\ClassifyControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Form\DiceTestForm\ClassifyControl.Designer.cs">
+      <DependentUpon>ClassifyControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form\DiceTestForm\ConfigControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Form\DiceTestForm\ConfigControl.Designer.cs">
+      <DependentUpon>ConfigControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form\DICETestForm.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Form\DICETestForm.Designer.cs">
+      <DependentUpon>DICETestForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form\DiceTestForm\CropControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Form\DiceTestForm\CropControl.Designer.cs">
+      <DependentUpon>CropControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form\DiceTestForm\FilterControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Form\DiceTestForm\FilterControl.Designer.cs">
+      <DependentUpon>FilterControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form\DiceTestForm\InspectionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Form\DiceTestForm\InspectionControl.Designer.cs">
+      <DependentUpon>InspectionControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form\DiceTestForm\LabelGeneratorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Form\DiceTestForm\LabelGeneratorControl.Designer.cs">
+      <DependentUpon>LabelGeneratorControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form\VisionTestForm.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Form\VisionTestForm.Designer.cs">
+      <DependentUpon>VisionTestForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form\DiceTestForm\ModelLoadingDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\ObjectData\InspectionSpec.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AppConfig.cs" />
+    <Compile Include="Process\BasicAlgorithms\BasicAlgoDisplay.cs" />
+    <Compile Include="Process\BasicAlgorithms\BasicAlgoContour.cs" />
+    <Compile Include="Process\BasicAlgorithms\BasicAlgoCoordinate.cs" />
+    <Compile Include="Process\BasicAlgorithms\BasicAlgoFocus.cs" />
+    <Compile Include="Process\BasicAlgorithms\BasicAlgoGauss.cs" />
+    <Compile Include="Process\BasicAlgorithms\BasicAlgoImage.cs" />
+    <Compile Include="Process\BasicAlgorithms\BasicAlgoMap.cs" />
+    <Compile Include="Process\BasicAlgorithms\BasicAlgoPixel.cs" />
+    <Compile Include="Process\BasicAlgorithms\BasicAlgoPoint.cs" />
+    <Compile Include="Process\BasicAlgorithms\BasicAlgoPSM.cs" />
+    <Compile Include="Process\BasicAlgorithms\BasicAlgoRect.cs" />
+    <Compile Include="Process\BasicAlgorithms\BasicAlgoThreshold.cs" />
+    <Compile Include="Process\BasicAlgorithms\DefineAlgorithm.cs" />
+    <Compile Include="Dice\ADice.cs" />
+    <Compile Include="Dice\DiceCls.cs" />
+    <Compile Include="Dice\DiceDet.cs" />
+    <Compile Include="Dice\DiceManager.cs" />
+    <Compile Include="Dice\DiceSeg.cs" />
+    <Compile Include="Process\PreProcess.cs" />
+    <Compile Include="Process\ProcessAll.cs" />
+    <Compile Include="Process\ProcessSingle.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ConfigService.cs" />
+    <Compile Include="Services\FileFilterMatcher.cs" />
+    <Compile Include="Services\FileExporter.cs" />
+    <Compile Include="Services\UiTheme.cs" />
+    <Compile Include="Editor\FolderBrowserEditor.cs" />
+    <Compile Include="Services\ImageProcessorService.cs" />
+    <Compile Include="Services\LabelGeneratorService.cs" />
+    <Compile Include="Services\PathHelper.cs" />
+    <Compile Include="Editor\StringCollectionEditor.cs" />
+    <Compile Include="Editor\StringListConverter.cs" />
+    <Compile Include="Utilities\Utils.cs" />
+    <EmbeddedResource Include="Form\DiceTestForm\ClassifyControl.resx">
+      <DependentUpon>ClassifyControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\DiceTestForm\ConfigControl.resx">
+      <DependentUpon>ConfigControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\DiceTestForm\CropControl.resx">
+      <DependentUpon>CropControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\DiceTestForm\FilterControl.resx">
+      <DependentUpon>FilterControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\DiceTestForm\InspectionControl.resx">
+      <DependentUpon>InspectionControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\DiceTestForm\LabelGeneratorControl.resx">
+      <DependentUpon>LabelGeneratorControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="config.json" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="OpenCvSharpExtern.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="README.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if not exist "$(TargetDir)DICE_Library.dll" copy /Y "$(SolutionDir)DICE\DICE_Library.dll" "$(TargetDir)DICE_Library.dll"
+if not exist "$(TargetDir)Python.Runtime.dll" copy /Y "$(SolutionDir)DICE\Python.Runtime.dll" "$(TargetDir)Python.Runtime.dll"
+if not exist "$(TargetDir)python3.dll" copy /Y "$(SolutionDir)DICE\python3.dll" "$(TargetDir)python3.dll"
+if not exist "$(TargetDir)python37.dll" copy /Y "$(SolutionDir)DICE\python37.dll" "$(TargetDir)python37.dll"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

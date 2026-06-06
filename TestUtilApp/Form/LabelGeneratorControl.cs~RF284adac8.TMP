@@ -1,0 +1,687 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+using Newtonsoft.Json;
+using OpenCvSharp;
+using TestUtilApp.Models;
+using TestUtilApp.Services;
+
+namespace TestUtilApp.UI
+{
+    public partial class LabelGeneratorControl : UserControl, IActivatable
+    {
+        private AppConfig _config;
+        private ConfigService _configService;
+        private LabelGeneratorService _labelGenService;
+
+        // Results Save
+        private List<string> _generatedFiles;
+        private Image _currentPreviewImage;
+        private string _lastSourceFolder;
+
+        public LabelGeneratorControl(AppConfig config, ConfigService configService)
+        {
+            InitializeComponent();
+            _config = config;
+            _configService = configService;
+
+            try
+            {
+                _labelGenService = new LabelGeneratorService(_config);
+
+                // Subscribe to events
+                _labelGenService.OnProgressUpdate += OnProgressUpdate;
+                _labelGenService.OnLogMessage += OnLogMessage;
+            }
+            catch (Exception ex)
+            {
+                AppendLog($"LabelGeneratorService Reset 실패: {ex.Message}");
+            }
+
+            InitializeUI();
+        }
+
+        private void InitializeUI()
+        {
+            // 마지막 Path 복원
+            if (!string.IsNullOrEmpty(_config.LastLabelGenSourceFolder))
+            {
+                txtSourceFolder.Text = _config.LastLabelGenSourceFolder;
+            }
+
+            // LabelGeneration Settings값 Load
+            if (_config.LabelGeneration != null)
+            {
+                numMinConfidence.Value = (decimal)_config.LabelGeneration.MinConfidence;
+                chkSkipExistingJson.Checked = _config.LabelGeneration.SkipExistingJson;
+            }
+            else
+            {
+                // Default value Settings
+                numMinConfidence.Value = 0.5m;
+                chkSkipExistingJson.Checked = true;
+            }
+
+            // Detect Model Display Information
+            UpdateDetectModelInfo();
+
+            // 초기 상태
+            ClearResults();
+        }
+
+        /// <summary>
+        /// Detect Model Path 및 Load Display Status
+        /// </summary>
+        private void UpdateDetectModelInfo()
+        {
+            try
+            {
+                // Detect Model Information
+                bool isDetectModelLoaded = false;
+                try
+                {
+                    isDetectModelLoaded = TestUtilApp.Dice.DiceManager.DetectModel?.IsLoaded ?? false;
+                }
+                catch { }
+
+                string detectModelPath = GetDetectModelPath();
+
+                if (isDetectModelLoaded)
+                {
+                    lblDetectModelInfo.Text = $"✓ Loaded - {detectModelPath}";
+                    lblDetectModelInfo.ForeColor = Color.DarkGreen;
+                }
+                else
+                {
+                    lblDetectModelInfo.Text = $"✗ Not Loaded - {detectModelPath}";
+                    lblDetectModelInfo.ForeColor = Color.DarkRed;
+                }
+
+                // Log 상세 정보 출력
+                AppendLog($"Detect Model: {(isDetectModelLoaded ? "Loaded" : "Not Loaded")}");
+                AppendLog($"  Path: {detectModelPath}");
+            }
+            catch (Exception ex)
+            {
+                AppendLog($"Model Display Information Error: {ex.Message}");
+                lblDetectModelInfo.Text = "✗ Cannot retrieve information.";
+                lblDetectModelInfo.ForeColor = Color.DarkRed;
+            }
+        }
+
+        /// <summary>
+        /// Detect Model Path 가져오기
+        /// </summary>
+        private string GetDetectModelPath()
+        {
+            try
+            {
+                string modelPath = _config.DiceModels.DetectModel.Path;
+
+                // File 존재 여부 Confirm
+                if (File.Exists(modelPath))
+                {
+                    return modelPath;
+                }
+
+                return "Path를 찾을 수 없습니다.";
+            }
+            catch
+            {
+                return "Path를 찾을 수 없습니다.";
+            }
+        }
+
+        public void OnActivated()
+        {
+            AppendLog("Label Gen Screen이 활성화되었습니다.");
+            UpdateDetectModelInfo();
+        }
+
+        private void btnBrowseSource_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                dialog.Description = "Label을 Generate할 Image가 있는 Source Folder를 Please select";
+                if (!string.IsNullOrEmpty(txtSourceFolder.Text))
+                {
+                    dialog.SelectedPath = txtSourceFolder.Text;
+                }
+
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    txtSourceFolder.Text = dialog.SelectedPath;
+                    _config.LastLabelGenSourceFolder = dialog.SelectedPath;
+
+                    try
+                    {
+                        _configService.SaveConfig(_config);
+                    }
+                    catch (Exception ex)
+                    {
+                        AppendLog($"Settings Save failed: {ex.Message}");
+                    }
+                }
+            }
+        }
+
+        private void btnStartLabelGen_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtSourceFolder.Text))
+            {
+                MessageBox.Show("Please select source folder.", "입력 Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!Directory.Exists(txtSourceFolder.Text))
+            {
+                MessageBox.Show("Selected folder does not exist.", "Path Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (_labelGenService == null)
+            {
+                MessageBox.Show("LabelGeneratorService가 Reset되지 not았습니다.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            try
+            {
+                // Disable UI
+                SetUIEnabled(false);
+                progressBar.Value = 0;
+                txtLog.Clear();
+                ClearResults();
+
+                // LabelGeneration Settings 업데이트
+                if (_config.LabelGeneration == null)
+                {
+                    _config.LabelGeneration = new LabelGenerationConfig();
+                }
+
+                _config.LabelGeneration.MinConfidence = (float)numMinConfidence.Value;
+                _config.LabelGeneration.SkipExistingJson = chkSkipExistingJson.Checked;
+
+                try
+                {
+                    _configService.SaveConfig(_config);
+                }
+                catch (Exception ex)
+                {
+                    AppendLog($"Settings Save failed: {ex.Message}");
+                }
+
+                // LabelGeneratorService 업데이트된 config 전달
+                _labelGenService.UpdateConfig(_config);
+
+                _lastSourceFolder = txtSourceFolder.Text;
+
+                AppendLog($"Label Gen Task when작: {txtSourceFolder.Text}");
+                AppendLog($"MinConfidence: {_config.LabelGeneration.MinConfidence:F2}");
+                AppendLog($"SkipExistingJson: {_config.LabelGeneration.SkipExistingJson}");
+
+                // Asynchronous processing
+                System.Threading.Tasks.Task.Run(() =>
+                {
+                    try
+                    {
+                        _labelGenService.GenerateLabelsForFolder(txtSourceFolder.Text);
+
+                        this.Invoke(new Action(() =>
+                        {
+                            AppendLog("Label Gen Task이 Complete되었습니다.");
+
+                            // Display Results
+                            LoadGeneratedResults();
+
+                            MessageBox.Show("Label Gen Task이 Complete되었습니다.", "Complete",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            SetUIEnabled(true);
+                        }));
+                    }
+                    catch (Exception ex)
+                    {
+                        this.Invoke(new Action(() =>
+                        {
+                            AppendLog($"Error occurred: {ex.Message}");
+                            MessageBox.Show($"Error occurred: {ex.Message}", "Error",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            SetUIEnabled(true);
+                        }));
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                AppendLog($"Error occurred: {ex.Message}");
+                MessageBox.Show($"Error occurred: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                SetUIEnabled(true);
+            }
+        }
+
+        /// <summary>
+        /// Generate된 Results Load
+        /// </summary>
+        private void LoadGeneratedResults()
+        {
+            if (string.IsNullOrEmpty(_lastSourceFolder) || !Directory.Exists(_lastSourceFolder))
+            {
+                return;
+            }
+
+            try
+            {
+                // 모드 따라 File 검색
+                if (rbShowImages.Checked)
+                {
+                    // Image File 검색
+                    string[] extensions = { "*.jpg", "*.jpeg", "*.png", "*.bmp" };
+                    _generatedFiles = extensions.SelectMany(ext =>
+                        Directory.GetFiles(_lastSourceFolder, ext, SearchOption.AllDirectories)
+                    ).ToList();
+                }
+                else
+                {
+                    // JSON File 검색
+                    _generatedFiles = Directory.GetFiles(_lastSourceFolder, "*.json", SearchOption.AllDirectories).ToList();
+                }
+
+                DisplayResults();
+            }
+            catch (Exception ex)
+            {
+                AppendLog($"Results Load 실패: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Results List Display
+        /// </summary>
+        private void DisplayResults()
+        {
+            listViewResults.BeginUpdate();
+            listViewResults.Items.Clear();
+
+            if (_generatedFiles == null || _generatedFiles.Count == 0)
+            {
+                listViewResults.EndUpdate();
+                return;
+            }
+
+            foreach (string filePath in _generatedFiles)
+            {
+                string fileName = Path.GetFileName(filePath);
+
+                ListViewItem item = new ListViewItem(fileName);
+                item.SubItems.Add(filePath);
+                item.Tag = filePath;
+
+                listViewResults.Items.Add(item);
+            }
+
+            listViewResults.EndUpdate();
+            AppendLog($"Total {listViewResults.Items.Count} File Display");
+        }
+
+        /// <summary>
+        /// Display 모드 변경 when
+        /// </summary>
+        private void rbShowMode_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbShowImages.Checked || rbShowLabels.Checked)
+            {
+                ClearPreview();
+                LoadGeneratedResults();
+            }
+        }
+
+        /// <summary>
+        /// 리스트 Select 변경 when Preview
+        /// </summary>
+        private void listViewResults_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listViewResults.SelectedItems.Count == 0)
+            {
+                return;
+            }
+
+            ListViewItem selectedItem = listViewResults.SelectedItems[0];
+            string filePath = selectedItem.Tag as string;
+
+            if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+            {
+                lblPreviewInfo.Text = "File not found.";
+                ClearPreview();
+                return;
+            }
+
+            try
+            {
+                if (rbShowImages.Checked)
+                {
+                    // Image + Detection Display Results
+                    ShowImageWithDetection(filePath);
+                }
+                else
+                {
+                    // JSON Parsing + Image Display
+                    ShowImageWithJsonLabels(filePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                lblPreviewInfo.Text = $"Preview load failed: {ex.Message}";
+                ClearPreview();
+                AppendLog($"Preview load failed: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Image + Detection Display Results
+        /// </summary>
+        private void ShowImageWithDetection(string imagePath)
+        {
+            ClearPreview();
+            float minConf = _config.LabelGeneration.MinConfidence;
+
+            using (Mat image = Cv2.ImRead(imagePath, ImreadModes.Color))
+            {
+                if (image.Empty())
+                {
+                    lblPreviewInfo.Text = "Image load failed";
+                    return;
+                }
+
+                // Image Size 비례한 굵기 및 폰트 Size 계산
+                int imageSize = Math.Max(image.Width, image.Height);
+                int thickness = Math.Max(2, imageSize / 500);  // Minimum 2, Image Size 비례
+                double fontSize = Math.Max(0.8, imageSize / 1000.0);  // Minimum 0.8
+                int fontThickness = Math.Max(2, thickness);
+
+                // Detection 수행
+                var results = TestUtilApp.Dice.DiceManager.DetectModel.Inference(image);
+
+                if (results != null && results.Count > 0)
+                {
+                    // Detection Results 그리기
+                    foreach (var rect in results[0].listRect)
+                    {
+                        if (rect.conf < minConf)
+                        {
+                            //OnLogMessage?.Invoke($"Low Confidence 제외: {rect.class_name}, {rect.conf:F3} < {minConf:F3}");
+                            continue;
+                        }
+
+                        // 사각형 그리기 (녹색)
+                        Cv2.Rectangle(image,
+                            new OpenCvSharp.Point(rect.rect.X, rect.rect.Y),
+                            new OpenCvSharp.Point(rect.rect.X + rect.rect.Width, rect.rect.Y + rect.rect.Height),
+                            Scalar.Lime, thickness);
+
+                        // Label 텍스트 Ready
+                        string label = $"{rect.class_name} {rect.conf:F2}";
+
+                        // 텍스트 Size 측정
+                        int baseline = 0;
+                        var textSize = Cv2.GetTextSize(label, HersheyFonts.HersheySimplex, fontSize, fontThickness, out baseline);
+
+                        // 텍스트 배경 그리기 (검은색 배경)
+                        int textX = (int)rect.rect.X;
+                        int textY = (int)rect.rect.Y - 10;
+                        if (textY < textSize.Height)
+                            textY = (int)(rect.rect.Y + rect.rect.Height + textSize.Height + 10);
+
+                        Cv2.Rectangle(image,
+                            new OpenCvSharp.Point(textX, textY - textSize.Height - 5),
+                            new OpenCvSharp.Point(textX + textSize.Width + 5, textY + 5),
+                            Scalar.Black, -1);
+
+                        // 텍스트 그리기 (밝은 녹색)
+                        Cv2.PutText(image, label, new OpenCvSharp.Point(textX + 2, textY),
+                            HersheyFonts.HersheySimplex, fontSize, Scalar.Lime, fontThickness);
+                    }
+
+                    lblPreviewInfo.Text = $"File: {Path.GetFileName(imagePath)}\n" +
+                                         $"Size: {image.Width} x {image.Height}\n" +
+                                         $"Detect: {results[0].listRect.Count} 객체";
+                }
+                else
+                {
+                    lblPreviewInfo.Text = $"File: {Path.GetFileName(imagePath)}\n" +
+                                         $"Size: {image.Width} x {image.Height}\n" +
+                                         $"Detect: 없음";
+                }
+
+                // Mat을 Bitmap으로 변환
+                _currentPreviewImage = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(image);
+                pictureBoxPreview.Image = _currentPreviewImage;
+            }
+        }
+
+        /// <summary>
+        /// JSON Parsing + Image Display
+        /// </summary>
+        private void ShowImageWithJsonLabels(string jsonPath)
+        {
+            ClearPreview();
+
+            // JSON File 읽기
+            string jsonContent = File.ReadAllText(jsonPath);
+            var labelData = JsonConvert.DeserializeObject<LabelData>(jsonContent);
+
+            // 해당 Image File 찾기
+            string imageDir = Path.GetDirectoryName(jsonPath);
+            string baseName = Path.GetFileNameWithoutExtension(jsonPath);
+            string[] imageExtensions = { ".jpg", ".jpeg", ".png", ".bmp" };
+
+            string imagePath = null;
+            foreach (var ext in imageExtensions)
+            {
+                string testPath = Path.Combine(imageDir, baseName + ext);
+                if (File.Exists(testPath))
+                {
+                    imagePath = testPath;
+                    break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(imagePath) || !File.Exists(imagePath))
+            {
+                lblPreviewInfo.Text = "해당 Image file not found.";
+                return;
+            }
+
+            using (Mat image = Cv2.ImRead(imagePath, ImreadModes.Color))
+            {
+                if (image.Empty())
+                {
+                    lblPreviewInfo.Text = "Image load failed";
+                    return;
+                }
+
+                // Image Size 비례한 굵기 및 폰트 Size 계산
+                int imageSize = Math.Max(image.Width, image.Height);
+                int thickness = Math.Max(2, imageSize / 500);  // Minimum 2, Image Size 비례
+                double fontSize = Math.Max(0.8, imageSize / 1000.0);  // Minimum 0.8
+                int fontThickness = Math.Max(2, thickness);
+
+                // JSON Label 그리기
+                if (labelData?.shapes != null)
+                {
+                    foreach (var shape in labelData.shapes)
+                    {
+                        if (shape.points != null && shape.points.Count >= 2)
+                        {
+                            int x1 = (int)shape.points[0][0];
+                            int y1 = (int)shape.points[0][1];
+                            int x2 = (int)shape.points[1][0];
+                            int y2 = (int)shape.points[1][1];
+
+                            // 사각형 그리기 (파란색)
+                            Cv2.Rectangle(image, new OpenCvSharp.Point(x1, y1),
+                                new OpenCvSharp.Point(x2, y2), Scalar.Cyan, thickness);
+
+                            // Label 텍스트
+                            string label = shape.label;
+
+                            // 텍스트 Size 측정
+                            int baseline = 0;
+                            var textSize = Cv2.GetTextSize(label, HersheyFonts.HersheySimplex, fontSize, fontThickness, out baseline);
+
+                            // 텍스트 배경 그리기 (검은색 배경)
+                            int textX = x1;
+                            int textY = y1 - 10;
+                            if (textY < textSize.Height)
+                                textY = y2 + textSize.Height + 10;
+
+                            Cv2.Rectangle(image,
+                                new OpenCvSharp.Point(textX, textY - textSize.Height - 5),
+                                new OpenCvSharp.Point(textX + textSize.Width + 5, textY + 5),
+                                Scalar.Black, -1);
+
+                            // 텍스트 그리기 (밝은 파란색)
+                            Cv2.PutText(image, label, new OpenCvSharp.Point(textX + 2, textY),
+                                HersheyFonts.HersheySimplex, fontSize, Scalar.Cyan, fontThickness);
+                        }
+                    }
+
+                    lblPreviewInfo.Text = $"File: {Path.GetFileName(imagePath)}\n" +
+                                         $"Size: {image.Width} x {image.Height}\n" +
+                                         $"Label: {labelData.shapes.Count}";
+                }
+                else
+                {
+                    lblPreviewInfo.Text = $"File: {Path.GetFileName(imagePath)}\n" +
+                                         $"Size: {image.Width} x {image.Height}\n" +
+                                         $"Label: 없음";
+                }
+
+                // Mat을 Bitmap으로 변환
+                _currentPreviewImage = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(image);
+                pictureBoxPreview.Image = _currentPreviewImage;
+            }
+        }
+
+        /// <summary>
+        /// 프리뷰 Image 정리
+        /// </summary>
+        private void ClearPreview()
+        {
+            if (_currentPreviewImage != null)
+            {
+                pictureBoxPreview.Image = null;
+                _currentPreviewImage.Dispose();
+                _currentPreviewImage = null;
+            }
+        }
+
+        /// <summary>
+        /// Results 데이터 정리
+        /// </summary>
+        private void ClearResults()
+        {
+            listViewResults.Items.Clear();
+            ClearPreview();
+            lblPreviewInfo.Text = "File을 Select하면 Preview가 Display됩니다.";
+            _generatedFiles = null;
+        }
+
+        private void OnProgressUpdate(int current, int total)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(() => OnProgressUpdate(current, total)));
+                return;
+            }
+
+            if (total > 0)
+            {
+                progressBar.Maximum = total;
+                progressBar.Value = Math.Min(current, total);
+            }
+        }
+
+        private void OnLogMessage(string message)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(() => OnLogMessage(message)));
+                return;
+            }
+
+            AppendLog(message);
+        }
+
+        private void AppendLog(string message)
+        {
+            if (txtLog.InvokeRequired)
+            {
+                txtLog.Invoke(new Action(() => AppendLog(message)));
+                return;
+            }
+
+            txtLog.AppendText($"[{DateTime.Now:HH:mm:ss}] {message}{Environment.NewLine}");
+            txtLog.ScrollToCaret();
+        }
+
+        private void SetUIEnabled(bool enabled)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(() => SetUIEnabled(enabled)));
+                return;
+            }
+
+            btnBrowseSource.Enabled = enabled;
+            btnStartLabelGen.Enabled = enabled;
+            numMinConfidence.Enabled = enabled;
+            chkSkipExistingJson.Enabled = enabled;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                ClearPreview();
+
+                if (_labelGenService != null)
+                {
+                    _labelGenService.OnProgressUpdate -= OnProgressUpdate;
+                    _labelGenService.OnLogMessage -= OnLogMessage;
+                }
+                components?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+
+    #region JSON Label Data Classes
+    public class LabelData
+    {
+        public string version { get; set; }
+        public string task_type { get; set; }
+        public List<Shape> shapes { get; set; }
+        public string split { get; set; }
+        public int imageHeight { get; set; }
+        public int imageWidth { get; set; }
+        public int imageDepth { get; set; }
+    }
+
+    public class Shape
+    {
+        public string label { get; set; }
+        public List<List<double>> points { get; set; }
+        public object group_id { get; set; }
+        public string shape_type { get; set; }
+        public Dictionary<string, object> flags { get; set; }
+    }
+    #endregion
+}

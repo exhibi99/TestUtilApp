@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Classification Control Report</title>
+  <style>
+    :root {
+      --window: #0c0e12;
+      --surface: #16191f;
+      --surface-alt: #1e222a;
+      --border: #404754;
+      --text: #dbeafe;
+      --muted: #a0a9b5;
+      --accent: #0078d7;
+      --cyan: #80ffff;
+      --success: #58c779;
+      --warning: #f5ba41;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--window);
+      color: var(--text);
+      font-family: "Segoe UI", Arial, sans-serif;
+      line-height: 1.62;
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 40px 24px 64px;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px;
+      padding-bottom: 22px;
+    }
+
+    h1, h2, h3 {
+      color: var(--cyan);
+      line-height: 1.25;
+      margin: 0;
+    }
+
+    h1 { font-size: 32px; }
+    h2 { font-size: 22px; margin-top: 34px; }
+    h3 { font-size: 17px; margin-top: 22px; }
+
+    p { margin: 10px 0; }
+
+    .subtitle {
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .chip {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-top: 18px;
+      padding: 20px;
+    }
+
+    ul, ol {
+      margin: 10px 0 0 22px;
+      padding: 0;
+    }
+
+    li { margin: 7px 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--surface-alt);
+      color: var(--cyan);
+      font-weight: 600;
+    }
+
+    code {
+      background: #0f1116;
+      border: 1px solid #2e3540;
+      border-radius: 4px;
+      color: #ffffff;
+      padding: 1px 5px;
+      font-family: Consolas, "Cascadia Mono", monospace;
+      font-size: 0.95em;
+    }
+
+    .flow {
+      counter-reset: step;
+      list-style: none;
+      margin-left: 0;
+    }
+
+    .flow li {
+      border-left: 3px solid var(--accent);
+      padding-left: 14px;
+      margin: 12px 0;
+    }
+
+    .flow li::before {
+      counter-increment: step;
+      content: "Step " counter(step) ". ";
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .note {
+      border-left: 4px solid var(--warning);
+      background: #1d1a10;
+      padding: 12px 14px;
+      margin-top: 14px;
+    }
+
+    .source-list {
+      color: var(--muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Classification Control Report</h1>
+    <p class="subtitle">이미지 폴더를 선택하고 Classification 모델 A 또는 B로 분류한 뒤 결과 이미지를 폴더별로 저장하는 화면 설명서입니다.</p>
+    <div class="meta">
+      <span class="chip">Control: ClassifyControl</span>
+      <span class="chip">Generated: 2026-05-31</span>
+      <span class="chip">Models: ClassifyModel_A / ClassifyModel_B</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>1. 목적</h2>
+    <p>
+      <code>Classification</code> 화면은 source folder 아래의 이미지 파일을 선택된 classification 모델로 분류하고,
+      모델명과 분류 결과에 따라 output folder에 이미지를 저장합니다.
+      분류 결과 이미지는 classification label이 표시된 annotated image로 저장됩니다.
+    </p>
+    <p>
+      결과는 source folder의 부모 폴더 아래 <code>SourceFolderName_classified</code> 폴더에 생성되며,
+      화면 하단 결과 리스트와 우측 Preview에서 확인할 수 있습니다.
+    </p>
+  </section>
+
+  <section>
+    <h2>2. 화면 구성</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>영역</th>
+          <th>주요 UI</th>
+          <th>역할</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Classification Settings</td>
+          <td><code>Source Folder</code>, <code>Browse</code></td>
+          <td>분류 대상 이미지 폴더를 선택합니다. 선택된 경로는 config에 저장됩니다.</td>
+        </tr>
+        <tr>
+          <td>Classification Model Selection</td>
+          <td><code>ClassifyModel_A</code>, <code>ClassifyModel_B</code></td>
+          <td>분류에 사용할 모델을 RadioButton으로 선택합니다.</td>
+        </tr>
+        <tr>
+          <td>Model Path</td>
+          <td>각 모델별 Path TextBox, <code>Browse</code></td>
+          <td>모델 A/B의 경로를 사용자가 직접 지정할 수 있습니다.</td>
+        </tr>
+        <tr>
+          <td>Model Load</td>
+          <td>각 모델별 <code>Load Model</code>, status label</td>
+          <td>모델 A/B를 독립적으로 명시 로드하고 Loaded/Not Loaded 상태를 표시합니다.</td>
+        </tr>
+        <tr>
+          <td>Execution</td>
+          <td><code>Start</code></td>
+          <td>선택된 모델로 source folder의 이미지 분류를 시작합니다.</td>
+        </tr>
+        <tr>
+          <td>Progress</td>
+          <td>ProgressBar, Log</td>
+          <td>처리 진행률과 분류 로그를 표시합니다.</td>
+        </tr>
+        <tr>
+          <td>Classification Results</td>
+          <td>Category, Filename, Path ListView</td>
+          <td>분류 결과별 저장 이미지 목록을 표시합니다.</td>
+        </tr>
+        <tr>
+          <td>Image Preview</td>
+          <td>PictureBox, preview info</td>
+          <td>결과 리스트에서 선택한 이미지를 미리보고 category, filename, size 정보를 표시합니다.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>3. 모델 경로와 로드 흐름</h2>
+    <ul>
+      <li><code>ClassifyModel_A</code>와 <code>ClassifyModel_B</code>는 각각 별도의 path, Browse, Load Model 버튼을 가집니다.</li>
+      <li>Browse로 경로를 선택하면 즉시 config에 저장됩니다.</li>
+      <li>Path TextBox를 직접 수정한 경우, 입력창에서 포커스가 빠질 때 자동 저장됩니다.</li>
+      <li>각 <code>Load Model</code> 버튼은 해당 모델만 명시적으로 로드합니다.</li>
+      <li><code>Start</code> 실행 시 선택된 모델이 로드되지 않았다면 자동으로 모델을 로드한 뒤 분류를 진행합니다.</li>
+      <li>이미 같은 경로의 모델이 로드되어 있으면 다시 로드하지 않습니다.</li>
+      <li>모델 로드 중에는 프로그램 창 중앙에 안내 popup이 표시되고, 완료되면 자동으로 닫힙니다.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>4. 실행 흐름</h2>
+    <ol class="flow">
+      <li>Source folder가 선택되어 있고 실제 존재하는지 확인합니다.</li>
+      <li>사용할 classification 모델을 RadioButton에서 확인합니다.</li>
+      <li>선택된 모델 path가 비어 있지 않고 실제 존재하는지 검증합니다.</li>
+      <li>선택된 모델이 로드되지 않았다면 popup을 띄우고 모델을 로드합니다.</li>
+      <li>Source folder 아래의 이미지 파일을 재귀적으로 수집합니다.</li>
+      <li>각 이미지를 선택된 모델로 inference합니다.</li>
+      <li>분류 결과 label을 이미지 위에 표시한 annotated image를 생성합니다.</li>
+      <li>Output folder 아래 <code>{SelectedModel}/{ClassificationResult}</code> 폴더에 저장합니다.</li>
+      <li>분류 결과 dictionary를 화면 결과 ListView에 표시합니다.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>5. 분류 처리 규칙</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>항목</th>
+          <th>규칙</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>대상 이미지 확장자</td>
+          <td><code>.jpg</code>, <code>.jpeg</code>, <code>.png</code>, <code>.bmp</code></td>
+        </tr>
+        <tr>
+          <td>Output root</td>
+          <td><code>SourceFolderName_classified</code></td>
+        </tr>
+        <tr>
+          <td>결과 폴더 구조</td>
+          <td><code>{OutputRoot}/{SelectedModel}/{ClassificationResult}/{RelativePath}</code></td>
+        </tr>
+        <tr>
+          <td>결과 key</td>
+          <td><code>{SelectedModel}_{ClassificationResult}</code></td>
+        </tr>
+        <tr>
+          <td>Inference 오류</td>
+          <td>모델 실행 오류가 발생하면 결과 class를 <code>ERROR</code>로 처리합니다.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>6. Annotated Image 표시</h2>
+    <ul>
+      <li>저장되는 결과 이미지는 원본 이미지 위에 classification label을 표시한 이미지입니다.</li>
+      <li>Label text는 <code>{ModelName}: {ClassificationResult}</code> 형식입니다.</li>
+      <li>Classification result가 <code>OK</code>이면 초록색, <code>NG</code>이면 빨간색, 그 외 값은 파란색 텍스트로 표시됩니다.</li>
+      <li>라벨 가독성을 위해 흰색 배경 사각형과 색상 테두리를 함께 그립니다.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>7. 결과 표시와 Preview</h2>
+    <ul>
+      <li>분류 완료 후 ListView에 category, filename, full path가 표시됩니다.</li>
+      <li>Category는 <code>{SelectedModel}_{ClassificationResult}</code> 형태입니다.</li>
+      <li>결과 항목을 선택하면 저장된 annotated image를 Preview에 표시합니다.</li>
+      <li>Preview info에는 category, filename, image size, file size가 표시됩니다.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>8. 저장되는 설정</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>설정</th>
+          <th>내용</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>LastClassifySourceFolder</code></td>
+          <td>마지막으로 선택한 classification source folder</td>
+        </tr>
+        <tr>
+          <td><code>DiceModels.ClassifyModel_A.Path</code></td>
+          <td>Classification model A 경로</td>
+        </tr>
+        <tr>
+          <td><code>DiceModels.ClassifyModel_A.Use</code></td>
+          <td>Classification model A 사용 여부</td>
+        </tr>
+        <tr>
+          <td><code>DiceModels.ClassifyModel_B.Path</code></td>
+          <td>Classification model B 경로</td>
+        </tr>
+        <tr>
+          <td><code>DiceModels.ClassifyModel_B.Use</code></td>
+          <td>Classification model B 사용 여부</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>9. 주의사항</h2>
+    <ul>
+      <li>분류는 한 번에 선택된 모델 하나로만 수행됩니다.</li>
+      <li>기존 output folder를 자동 삭제하지 않으므로 이전 결과 파일이 남아 있을 수 있습니다.</li>
+      <li>Output folder 구조는 모델명과 분류 결과명에 의존합니다.</li>
+      <li>Path TextBox의 자동 저장은 실제 존재하는 파일 또는 폴더 경로일 때만 수행됩니다.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>10. 코드 기준</h2>
+    <p class="source-list">
+      Main source: <code>TestUtilApp/Form/ClassifyControl.cs</code><br>
+      Designer source: <code>TestUtilApp/Form/ClassifyControl.Designer.cs</code><br>
+      Processing service: <code>TestUtilApp/Services/ImageProcessorService.cs</code><br>
+      Model manager: <code>TestUtilApp/Dice/DiceManager.cs</code>
+    </p>
+  </section>
+</main>
+</body>
+</html>
