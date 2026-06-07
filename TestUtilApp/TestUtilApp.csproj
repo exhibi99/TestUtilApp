@@ -164,6 +164,39 @@
     <Compile Include="Form\VisionTestForm.Designer.cs">
       <DependentUpon>VisionTestForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form\VisionTestForm\OpenCV\Algorithms\IOpenCvAlgorithm.cs" />
+    <Compile Include="Form\VisionTestForm\OpenCV\Algorithms\ThresholdAlgorithm.cs" />
+    <Compile Include="Form\VisionTestForm\OpenCV\AlgorithmSettingsPanel.cs" />
+    <Compile Include="Form\VisionTestForm\OpenCV\ThresholdSettingsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Form\VisionTestForm\OpenCV\ThresholdSettingsPanel.Designer.cs">
+      <DependentUpon>ThresholdSettingsPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form\VisionTestForm\OpenCV\AcquireDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\VisionTestForm\OpenCV\AcquireDialog.Designer.cs">
+      <DependentUpon>AcquireDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form\VisionTestForm\OpenCV\ThresholdDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\VisionTestForm\OpenCV\ThresholdDialog.Designer.cs">
+      <DependentUpon>ThresholdDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form\VisionTestForm\AlgorithmListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Form\VisionTestForm\AlgorithmListControl.Designer.cs">
+      <DependentUpon>AlgorithmListControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form\VisionTestForm\OpenCvControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Form\VisionTestForm\OpenCvControl.Designer.cs">
+      <DependentUpon>OpenCvControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form\DiceTestForm\ModelLoadingDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -226,6 +259,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form\DiceTestForm\LabelGeneratorControl.resx">
       <DependentUpon>LabelGeneratorControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\VisionTestForm\OpenCV\AcquireDialog.resx">
+      <DependentUpon>AcquireDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\VisionTestForm\OpenCV\ThresholdDialog.resx">
+      <DependentUpon>ThresholdDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\VisionTestForm\OpenCvControl.resx">
+      <DependentUpon>OpenCvControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

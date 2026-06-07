@@ -10,6 +10,8 @@ namespace TestUtilApp.Services
         public static readonly Color Window = Color.FromArgb(12, 14, 18);
         public static readonly Color Surface = Color.FromArgb(22, 25, 31);
         public static readonly Color SurfaceAlt = Color.FromArgb(30, 34, 42);
+        public static readonly Color NavySurface = Color.FromArgb(15, 28, 55);
+        public static readonly Color NavyButton = Color.FromArgb(25, 42, 75);
         public static readonly Color SurfaceHover = Color.FromArgb(42, 47, 57);
         public static readonly Color Input = Color.FromArgb(15, 17, 22);
         public static readonly Color Border = Color.FromArgb(64, 71, 84);
@@ -81,7 +83,7 @@ namespace TestUtilApp.Services
             }
             else if (control is Panel)
             {
-                control.BackColor = Surface;
+                control.BackColor = control.Name == "topPanel" ? NavySurface : Surface;
             }
             else if (control is GroupBox)
             {
@@ -198,7 +200,8 @@ namespace TestUtilApp.Services
             button.UseVisualStyleBackColor = false;
             button.FlatStyle = FlatStyle.Flat;
             button.ForeColor = TextPrimary;
-            button.BackColor = isPrimary ? Accent : SurfaceAlt;
+            bool isNavyPanel = button.Parent?.Name == "topPanel";
+            button.BackColor = isPrimary ? Accent : (isNavyPanel ? NavyButton : SurfaceAlt);
             button.FlatAppearance.BorderColor = isPrimary ? Accent : Border;
             button.FlatAppearance.MouseOverBackColor = isPrimary ? AccentHover : SurfaceHover;
             button.FlatAppearance.MouseDownBackColor = isPrimary ? Accent : Color.FromArgb(49, 55, 66);
