@@ -35,6 +35,9 @@ namespace TestUtilApp.UI
             // ── Settings panel ───────────────────────────────────────
             this.pnlSettings    = new System.Windows.Forms.Panel();
             this.lblNoSelection = new System.Windows.Forms.Label();
+            this.pnlInputFrom   = new System.Windows.Forms.Panel();
+            this.lblInputFrom   = new System.Windows.Forms.Label();
+            this.cboInputFrom   = new System.Windows.Forms.ComboBox();
             // ── Preview ──────────────────────────────────────────────
             this.pnlPreview         = new System.Windows.Forms.Panel();
             this.lblPreviewTitle    = new System.Windows.Forms.Label();
@@ -48,6 +51,7 @@ namespace TestUtilApp.UI
 
             this.pnlHeader.SuspendLayout();
             this.pnlSettings.SuspendLayout();
+            this.pnlInputFrom.SuspendLayout();
             this.pnlPreview.SuspendLayout();
             this.pnlRun.SuspendLayout();
             this.contextMenu.SuspendLayout();
@@ -129,6 +133,27 @@ namespace TestUtilApp.UI
             this.lblNoSelection.Name      = "lblNoSelection";
             this.lblNoSelection.Text      = "Select an algorithm to edit";
             this.lblNoSelection.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
+            // ── pnlInputFrom  (DockBottom, 30px) – 독립 패널, pnlSettings 위에 위치
+            this.pnlInputFrom.Controls.Add(this.lblInputFrom);
+            this.pnlInputFrom.Controls.Add(this.cboInputFrom);
+            this.pnlInputFrom.Dock    = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlInputFrom.Name    = "pnlInputFrom";
+            this.pnlInputFrom.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
+            this.pnlInputFrom.Size    = new System.Drawing.Size(280, 30);
+            this.pnlInputFrom.Visible = false;
+
+            this.lblInputFrom.AutoSize  = true;
+            this.lblInputFrom.Location  = new System.Drawing.Point(4, 7);
+            this.lblInputFrom.Name      = "lblInputFrom";
+            this.lblInputFrom.Text      = "Input from:";
+
+            this.cboInputFrom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboInputFrom.Location      = new System.Drawing.Point(78, 4);
+            this.cboInputFrom.Name          = "cboInputFrom";
+            this.cboInputFrom.Size          = new System.Drawing.Size(194, 22);
+            this.cboInputFrom.TabIndex      = 0;
+            this.cboInputFrom.SelectedIndexChanged += new System.EventHandler(this.cboInputFrom_SelectedIndexChanged);
 
             // ════════════════════════════════════════════════════════
             // pnlPreview  (DockBottom, 160px)  – intermediate result
@@ -215,23 +240,25 @@ namespace TestUtilApp.UI
 
             // ════════════════════════════════════════════════════════
             // AlgorithmListControl root
-            // Controls.Add order: Fill first, then Bottom (inner→outer), then Top last
-            //   Processing (back→front): pnlHeader(Top), pnlRun(Bottom-edge),
-            //   pnlPreview(Bottom+1), pnlSettings(Bottom+2), listView(Fill)
+            // DockBottom 처리 순서 = Controls 역순 (높은 index → 먼저 처리 → 하단에 배치)
+            // 시각적 순서 (아래→위): pnlRun, pnlPreview, pnlInputFrom, pnlSettings, listView
             // ════════════════════════════════════════════════════════
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode       = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.listView);       // Fill  → Controls[0]
-            this.Controls.Add(this.pnlSettings);    // Bottom → Controls[1] (above preview)
-            this.Controls.Add(this.pnlPreview);     // Bottom → Controls[2] (above run)
-            this.Controls.Add(this.pnlRun);         // Bottom → Controls[3] (at edge)
-            this.Controls.Add(this.pnlHeader);      // Top    → Controls[4]
+            this.Controls.Add(this.listView);       // Fill     → [0]
+            this.Controls.Add(this.pnlSettings);    // Bottom   → [1]
+            this.Controls.Add(this.pnlInputFrom);   // Bottom   → [2] (pnlSettings 바로 위)
+            this.Controls.Add(this.pnlPreview);     // Bottom   → [3]
+            this.Controls.Add(this.pnlRun);         // Bottom   → [4] (최하단)
+            this.Controls.Add(this.pnlHeader);      // Top      → [5]
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Name = "AlgorithmListControl";
             this.Size = new System.Drawing.Size(280, 667);
 
             this.pnlHeader.ResumeLayout(false);
             this.pnlSettings.ResumeLayout(false);
+            this.pnlInputFrom.ResumeLayout(false);
+            this.pnlInputFrom.PerformLayout();
             this.pnlPreview.ResumeLayout(false);
             this.pnlRun.ResumeLayout(false);
             this.contextMenu.ResumeLayout(false);
@@ -255,8 +282,11 @@ namespace TestUtilApp.UI
         private System.Windows.Forms.ToolStripMenuItem     menuClearAll;
 
         // ── Settings ──────────────────────────────────────────────
-        private System.Windows.Forms.Panel  pnlSettings;
-        private System.Windows.Forms.Label  lblNoSelection;
+        private System.Windows.Forms.Panel    pnlSettings;
+        private System.Windows.Forms.Label    lblNoSelection;
+        private System.Windows.Forms.Panel    pnlInputFrom;
+        private System.Windows.Forms.Label    lblInputFrom;
+        private System.Windows.Forms.ComboBox cboInputFrom;
 
         // ── Preview ───────────────────────────────────────────────
         private System.Windows.Forms.Panel      pnlPreview;

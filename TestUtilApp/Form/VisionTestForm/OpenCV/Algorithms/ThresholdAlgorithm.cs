@@ -12,6 +12,8 @@ namespace TestUtilApp.UI
 
         public string Name    => "Threshold";
         public string Summary => $"{GetTypeName()}  {ThresholdValue} / {MaxValue}";
+        public int  InputFromStep { get; set; } = -1;
+        public bool IsSourceNode  => false;
 
         public Mat Execute(Mat input)
         {

@@ -26,7 +26,8 @@ namespace TestUtilApp.UI
             // ── Left button panel ────────────────────────────────
             this.btnAcquire        = new System.Windows.Forms.Button();
             this.lblSectionProcess = new System.Windows.Forms.Label();
-            this.btnThreshold      = new System.Windows.Forms.Button();
+            this.btnThreshold      = new TestUtilApp.UI.DarkButton();
+            this.btnCrop           = new TestUtilApp.UI.DarkButton();
             // ── Algorithm list ───────────────────────────────────
             this.algorithmListControl = new TestUtilApp.UI.AlgorithmListControl();
             // ── Image viewer ─────────────────────────────────────
@@ -50,9 +51,11 @@ namespace TestUtilApp.UI
             // ════════════════════════════════════════════════════
             // pnlButtons  (DockLeft, 150px) – Acquire + algo buttons
             // ════════════════════════════════════════════════════
-            this.pnlButtons.Controls.Add(this.btnAcquire);
-            this.pnlButtons.Controls.Add(this.lblSectionProcess);
+            // DockTop: 마지막에 Add된 컨트롤이 가장 위에 배치됨
+            this.pnlButtons.Controls.Add(this.btnCrop);
             this.pnlButtons.Controls.Add(this.btnThreshold);
+            this.pnlButtons.Controls.Add(this.lblSectionProcess);
+            this.pnlButtons.Controls.Add(this.btnAcquire);
             this.pnlButtons.Dock    = System.Windows.Forms.DockStyle.Left;
             this.pnlButtons.Name    = "pnlButtons";
             this.pnlButtons.Padding = new System.Windows.Forms.Padding(6);
@@ -67,7 +70,7 @@ namespace TestUtilApp.UI
             this.btnAcquire.Name      = "btnAcquire";
             this.btnAcquire.Size      = new System.Drawing.Size(138, 36);
             this.btnAcquire.TabIndex  = 0;
-            this.btnAcquire.Text      = "Acquire";
+            this.btnAcquire.Text      = "Open Image";
             this.btnAcquire.UseVisualStyleBackColor = false;
             this.btnAcquire.Click += new System.EventHandler(this.btnAcquire_Click);
 
@@ -83,16 +86,34 @@ namespace TestUtilApp.UI
             this.lblSectionProcess.Padding   = new System.Windows.Forms.Padding(2, 0, 0, 0);
 
             // btnThreshold
+            this.btnThreshold.BackColor = System.Drawing.Color.FromArgb(40, 40, 42);
             this.btnThreshold.Dock      = System.Windows.Forms.DockStyle.Top;
             this.btnThreshold.Enabled   = false;
             this.btnThreshold.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnThreshold.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(70, 70, 72);
             this.btnThreshold.Font      = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnThreshold.ForeColor = System.Drawing.Color.FromArgb(180, 180, 180);
             this.btnThreshold.Name      = "btnThreshold";
             this.btnThreshold.Size      = new System.Drawing.Size(138, 36);
             this.btnThreshold.TabIndex  = 1;
             this.btnThreshold.Text      = "Threshold";
             this.btnThreshold.UseVisualStyleBackColor = false;
             this.btnThreshold.Click += new System.EventHandler(this.btnThreshold_Click);
+
+            // btnCrop
+            this.btnCrop.BackColor = System.Drawing.Color.FromArgb(40, 40, 42);
+            this.btnCrop.Dock      = System.Windows.Forms.DockStyle.Top;
+            this.btnCrop.Enabled   = false;
+            this.btnCrop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCrop.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(70, 70, 72);
+            this.btnCrop.Font      = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnCrop.ForeColor = System.Drawing.Color.FromArgb(180, 180, 180);
+            this.btnCrop.Name      = "btnCrop";
+            this.btnCrop.Size      = new System.Drawing.Size(138, 36);
+            this.btnCrop.TabIndex  = 2;
+            this.btnCrop.Text      = "Crop";
+            this.btnCrop.UseVisualStyleBackColor = false;
+            this.btnCrop.Click += new System.EventHandler(this.btnCrop_Click);
 
             // ════════════════════════════════════════════════════
             // algorithmListControl  (DockRight, 280px)
@@ -167,6 +188,10 @@ namespace TestUtilApp.UI
             this.pictureBoxMain.SizeMode  = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxMain.TabIndex  = 0;
             this.pictureBoxMain.TabStop   = false;
+            this.pictureBoxMain.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBoxMain_MouseDown);
+            this.pictureBoxMain.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBoxMain_MouseMove);
+            this.pictureBoxMain.MouseUp   += new System.Windows.Forms.MouseEventHandler(this.pictureBoxMain_MouseUp);
+            this.pictureBoxMain.Paint     += new System.Windows.Forms.PaintEventHandler(this.pictureBoxMain_Paint);
 
             // ════════════════════════════════════════════════════
             // OpenCvControl root
@@ -199,7 +224,8 @@ namespace TestUtilApp.UI
         private System.Windows.Forms.Panel  pnlButtons;
         private System.Windows.Forms.Button btnAcquire;
         private System.Windows.Forms.Label  lblSectionProcess;
-        private System.Windows.Forms.Button btnThreshold;
+        private TestUtilApp.UI.DarkButton btnThreshold;
+        private TestUtilApp.UI.DarkButton btnCrop;
 
         // ── Algorithm list ───────────────────────────────────────
         private TestUtilApp.UI.AlgorithmListControl algorithmListControl;

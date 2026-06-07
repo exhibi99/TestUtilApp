@@ -10,15 +10,33 @@ namespace TestUtilApp.UI
         private readonly List<IOpenCvAlgorithm> _algorithms = new List<IOpenCvAlgorithm>();
         private readonly List<Bitmap>            _previewBitmaps = new List<Bitmap>();
         private AlgorithmSettingsPanel           _currentSettingsPanel;
+        private bool                             _updatingInputFrom;
 
         public event EventHandler AlgorithmListChanged;
         public event EventHandler RunRequested;
         public event EventHandler SettingsApplied;
+        public event EventHandler SelectedAlgorithmChanged;
 
         public IReadOnlyList<IOpenCvAlgorithm> Algorithms => _algorithms.AsReadOnly();
 
         public int SelectedIndex =>
             listView.SelectedIndices.Count > 0 ? listView.SelectedIndices[0] : -1;
+
+        public IOpenCvAlgorithm SelectedAlgorithm =>
+            SelectedIndex >= 0 && SelectedIndex < _algorithms.Count
+                ? _algorithms[SelectedIndex] : null;
+
+        /// <summary>Returns the preview bitmap at index (reference only — do not dispose).</summary>
+        public Bitmap GetPreviewBitmapAt(int index) =>
+            (index >= 0 && index < _previewBitmaps.Count) ? _previewBitmaps[index] : null;
+
+        /// <summary>Reloads the current settings panel from the algorithm's current values.</summary>
+        public void RefreshCurrentSettingsPanel()
+        {
+            int idx = SelectedIndex;
+            if (idx >= 0 && idx < _algorithms.Count && _currentSettingsPanel != null)
+                _currentSettingsPanel.LoadFrom(_algorithms[idx]);
+        }
 
         public AlgorithmListControl()
         {
@@ -47,6 +65,7 @@ namespace TestUtilApp.UI
             UpdatePreview();
             UpdateButtons();
             RaiseListChanged();
+            SelectedAlgorithmChanged?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -72,6 +91,8 @@ namespace TestUtilApp.UI
             var item = _algorithms[idx];
             _algorithms.RemoveAt(idx);
             _algorithms.Insert(idx - 1, item);
+            // Reset input routing — step indices shift after a reorder
+            ResetInputFromSteps();
             RefreshList();
             listView.Items[idx - 1].Selected = true;
             RaiseListChanged();
@@ -85,9 +106,16 @@ namespace TestUtilApp.UI
             var item = _algorithms[idx];
             _algorithms.RemoveAt(idx);
             _algorithms.Insert(idx + 1, item);
+            ResetInputFromSteps();
             RefreshList();
             listView.Items[idx + 1].Selected = true;
             RaiseListChanged();
+        }
+
+        private void ResetInputFromSteps()
+        {
+            foreach (var a in _algorithms)
+                a.InputFromStep = -1;
         }
 
         private void RemoveSelected()
@@ -101,7 +129,10 @@ namespace TestUtilApp.UI
             if (_algorithms.Count > 0)
                 listView.Items[Math.Min(idx, _algorithms.Count - 1)].Selected = true;
             else
+            {
                 SwapSettingsPanel(-1);
+                SelectedAlgorithmChanged?.Invoke(this, EventArgs.Empty);
+            }
 
             RaiseListChanged();
         }
@@ -118,6 +149,8 @@ namespace TestUtilApp.UI
                 _currentSettingsPanel.Dispose();
                 _currentSettingsPanel = null;
             }
+
+            UpdateInputFromCombo(idx);
 
             if (idx < 0 || idx >= _algorithms.Count)
             {
@@ -139,6 +172,43 @@ namespace TestUtilApp.UI
 
             lblNoSelection.Visible = false;
             _currentSettingsPanel  = panel;
+        }
+
+        // ── Input-from combo ──────────────────────────────────────
+
+        private void UpdateInputFromCombo(int idx)
+        {
+            _updatingInputFrom = true;
+            try
+            {
+                cboInputFrom.Items.Clear();
+
+                bool hide = idx < 0 || idx >= _algorithms.Count || _algorithms[idx].IsSourceNode || idx == 0;
+                pnlInputFrom.Visible = !hide;
+                if (hide) return;
+
+                cboInputFrom.Items.Add("Auto (이전 단계)");
+                for (int i = 0; i < idx; i++)
+                    cboInputFrom.Items.Add($"Step {i + 1}  {_algorithms[i].Name}");
+
+                int cur = _algorithms[idx].InputFromStep;
+                cboInputFrom.SelectedIndex = (cur >= 0 && cur < idx) ? cur + 1 : 0;
+            }
+            finally
+            {
+                _updatingInputFrom = false;
+            }
+        }
+
+        private void cboInputFrom_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_updatingInputFrom) return;
+            int algoIdx = SelectedIndex;
+            if (algoIdx <= 0 || algoIdx >= _algorithms.Count) return;
+
+            int sel = cboInputFrom.SelectedIndex;
+            _algorithms[algoIdx].InputFromStep = sel <= 0 ? -1 : sel - 1;
+            SettingsApplied?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnSettingsPanelApplied(object sender, EventArgs e)
@@ -178,7 +248,7 @@ namespace TestUtilApp.UI
             listView.Items.Clear();
             for (int i = 0; i < _algorithms.Count; i++)
             {
-                var item = new ListViewItem(_algorithms[i].Name);
+                var item = new ListViewItem($"{i + 1}.  {_algorithms[i].Name}");
                 item.SubItems.Add(_algorithms[i].Summary);
                 listView.Items.Add(item);
             }
@@ -211,6 +281,7 @@ namespace TestUtilApp.UI
             UpdateButtons();
             SwapSettingsPanel(SelectedIndex);
             UpdatePreview();
+            SelectedAlgorithmChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void btnMoveUp_Click(object sender, EventArgs e)   => MoveSelectedUp();
