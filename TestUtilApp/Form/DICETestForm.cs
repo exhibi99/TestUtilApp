@@ -109,7 +109,7 @@ namespace TestUtilApp.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Screen transition error: {ex.Message}", "Error",
+                MessageBox.Show($"Screen transition error: {ex.Message}", "Error !",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
