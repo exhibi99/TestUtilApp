@@ -93,11 +93,14 @@ namespace TestUtilApp.UI
         private void btnCrop_Click(object sender, EventArgs e)
         {
             var algo = new CropAlgorithm();
-            // 현재 이미지 크기를 기본값으로 설정
             if (_currentMat != null && !_currentMat.Empty())
             {
-                algo.Width  = _currentMat.Width;
-                algo.Height = _currentMat.Height;
+                int w = _currentMat.Width  / 2;
+                int h = _currentMat.Height / 2;
+                algo.X      = (_currentMat.Width  - w) / 2;
+                algo.Y      = (_currentMat.Height - h) / 2;
+                algo.Width  = w;
+                algo.Height = h;
             }
             algorithmListControl.AddAlgorithm(algo);
         }
@@ -332,6 +335,18 @@ namespace TestUtilApp.UI
             {
                 _dragPbCurrent = e.Location;
                 pictureBoxMain.Invalidate();
+
+                var cropAlgo = algorithmListControl.SelectedAlgorithm as CropAlgorithm;
+                if (cropAlgo != null)
+                {
+                    var imgA = ScreenToImagePoint(_dragPbStart);
+                    var imgB = ScreenToImagePoint(_dragPbCurrent);
+                    cropAlgo.X      = Math.Min(imgA.X, imgB.X);
+                    cropAlgo.Y      = Math.Min(imgA.Y, imgB.Y);
+                    cropAlgo.Width  = Math.Max(1, Math.Abs(imgA.X - imgB.X));
+                    cropAlgo.Height = Math.Max(1, Math.Abs(imgA.Y - imgB.Y));
+                    algorithmListControl.RefreshCurrentSettingsPanel();
+                }
             }
             UpdatePixelInfo(e.Location);
         }
@@ -371,24 +386,67 @@ namespace TestUtilApp.UI
             if (!_cropMode) return;
 
             Rectangle rect;
+            int imgX, imgY, imgW, imgH;
+
             if (_cropDragging)
             {
                 rect = NormalizeRect(_dragPbStart, _dragPbCurrent);
+                var imgA = ScreenToImagePoint(_dragPbStart);
+                var imgB = ScreenToImagePoint(_dragPbCurrent);
+                imgX = Math.Min(imgA.X, imgB.X);
+                imgY = Math.Min(imgA.Y, imgB.Y);
+                imgW = Math.Max(1, Math.Abs(imgA.X - imgB.X));
+                imgH = Math.Max(1, Math.Abs(imgA.Y - imgB.Y));
             }
             else
             {
                 var cropAlgo = algorithmListControl.SelectedAlgorithm as CropAlgorithm;
                 if (cropAlgo == null) return;
                 rect = ImageRectToScreen(cropAlgo.X, cropAlgo.Y, cropAlgo.Width, cropAlgo.Height);
+                imgX = cropAlgo.X;
+                imgY = cropAlgo.Y;
+                imgW = cropAlgo.Width;
+                imgH = cropAlgo.Height;
             }
 
             if (rect.Width <= 0 || rect.Height <= 0) return;
 
-            using (var fill = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(50, 0, 200, 255)))
+            // 선택 영역 바깥 반투명 회색 마스크 (상/하/좌/우 4분할)
+            int pbW = pictureBoxMain.ClientSize.Width;
+            int pbH = pictureBoxMain.ClientSize.Height;
+            using (var mask = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(140, 30, 30, 30)))
+            {
+                e.Graphics.FillRectangle(mask, 0, 0, pbW, rect.Top);
+                e.Graphics.FillRectangle(mask, 0, rect.Bottom, pbW, pbH - rect.Bottom);
+                e.Graphics.FillRectangle(mask, 0, rect.Top, rect.Left, rect.Height);
+                e.Graphics.FillRectangle(mask, rect.Right, rect.Top, pbW - rect.Right, rect.Height);
+            }
+
+            using (var fill = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(30, 255, 140, 0)))
                 e.Graphics.FillRectangle(fill, rect);
-            using (var pen = new System.Drawing.Pen(System.Drawing.Color.Cyan, 1.5f)
+            using (var pen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(220, 255, 140, 0), 2.5f)
                 { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash })
                 e.Graphics.DrawRectangle(pen, rect);
+
+            // 우측 상단에 좌표 정보 표시
+            string info = $"x:{imgX}  y:{imgY}  w:{imgW}  h:{imgH}";
+            using (var font = new System.Drawing.Font("Consolas", 8.5f, System.Drawing.FontStyle.Bold))
+            {
+                var g       = e.Graphics;
+                var textSize = g.MeasureString(info, font);
+                int padding  = 4;
+                float tx = rect.Right - textSize.Width - padding;
+                float ty = rect.Top   - textSize.Height - padding;
+                // 화면 밖으로 나가면 사각형 안쪽으로
+                if (ty < 0) ty = rect.Top + padding;
+                if (tx < 0) tx = rect.Left + padding;
+
+                var bgRect = new RectangleF(tx - padding, ty - 1, textSize.Width + padding * 2, textSize.Height + 2);
+                using (var bg = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(175, 30, 20, 0)))
+                    g.FillRectangle(bg, bgRect);
+                using (var brush = new System.Drawing.SolidBrush(System.Drawing.Color.Cyan))
+                    g.DrawString(info, font, brush, tx, ty);
+            }
         }
 
         // ── Coordinate conversion ─────────────────────────────────
