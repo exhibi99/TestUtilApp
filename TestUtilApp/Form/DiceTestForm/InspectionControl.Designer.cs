@@ -23,6 +23,8 @@ namespace TestUtilApp.UI
             this.btnSaveConditions = new System.Windows.Forms.Button();
             this.btnRemoveCondition = new System.Windows.Forms.Button();
             this.btnAddCondition = new System.Windows.Forms.Button();
+            this.lblFileFilterPreset = new System.Windows.Forms.Label();
+            this.btnGoToFileFilter = new System.Windows.Forms.Button();
             this.dataGridViewConditions = new System.Windows.Forms.DataGridView();
             this.btnStartInspection = new System.Windows.Forms.Button();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
@@ -69,7 +71,7 @@ namespace TestUtilApp.UI
             this.topPanel.Location = new System.Drawing.Point(10, 0);
             this.topPanel.Name = "topPanel";
             this.topPanel.Padding = new System.Windows.Forms.Padding(10);
-            this.topPanel.Size = new System.Drawing.Size(635, 340);
+            this.topPanel.Size = new System.Drawing.Size(635, 368);
             this.topPanel.TabIndex = 0;
             // 
             // lblTitle
@@ -190,40 +192,62 @@ namespace TestUtilApp.UI
             this.groupBoxConditions.Controls.Add(this.btnSaveConditions);
             this.groupBoxConditions.Controls.Add(this.btnRemoveCondition);
             this.groupBoxConditions.Controls.Add(this.btnAddCondition);
+            this.groupBoxConditions.Controls.Add(this.lblFileFilterPreset);
+            this.groupBoxConditions.Controls.Add(this.btnGoToFileFilter);
             this.groupBoxConditions.Controls.Add(this.dataGridViewConditions);
             this.groupBoxConditions.Location = new System.Drawing.Point(10, 174);
             this.groupBoxConditions.Name = "groupBoxConditions";
-            this.groupBoxConditions.Size = new System.Drawing.Size(615, 120);
+            this.groupBoxConditions.Size = new System.Drawing.Size(615, 148);
             this.groupBoxConditions.TabIndex = 4;
             this.groupBoxConditions.TabStop = false;
             this.groupBoxConditions.Text = "Inspection Conditions";
+            //
+            // lblFileFilterPreset
+            //
+            this.lblFileFilterPreset.AutoSize = false;
+            this.lblFileFilterPreset.Location = new System.Drawing.Point(12, 25);
+            this.lblFileFilterPreset.Name = "lblFileFilterPreset";
+            this.lblFileFilterPreset.Size = new System.Drawing.Size(485, 22);
+            this.lblFileFilterPreset.TabIndex = 10;
+            this.lblFileFilterPreset.Text = "File Filter Preset: (none)";
+            //
+            // btnGoToFileFilter
+            //
+            this.btnGoToFileFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnGoToFileFilter.Location = new System.Drawing.Point(506, 22);
+            this.btnGoToFileFilter.Name = "btnGoToFileFilter";
+            this.btnGoToFileFilter.Size = new System.Drawing.Size(95, 24);
+            this.btnGoToFileFilter.TabIndex = 11;
+            this.btnGoToFileFilter.Text = "▶ File Filter";
+            this.btnGoToFileFilter.UseVisualStyleBackColor = false;
+            this.btnGoToFileFilter.Click += new System.EventHandler(this.btnGoToFileFilter_Click);
             // 
             // btnSaveConditions
             // 
             this.btnSaveConditions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSaveConditions.Location = new System.Drawing.Point(506, 85);
+            this.btnSaveConditions.Location = new System.Drawing.Point(506, 112);
             this.btnSaveConditions.Name = "btnSaveConditions";
             this.btnSaveConditions.Size = new System.Drawing.Size(95, 26);
             this.btnSaveConditions.TabIndex = 3;
             this.btnSaveConditions.Text = "Save";
             this.btnSaveConditions.UseVisualStyleBackColor = false;
             this.btnSaveConditions.Click += new System.EventHandler(this.btnSaveConditions_Click);
-            // 
+            //
             // btnRemoveCondition
-            // 
+            //
             this.btnRemoveCondition.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRemoveCondition.Location = new System.Drawing.Point(506, 55);
+            this.btnRemoveCondition.Location = new System.Drawing.Point(506, 82);
             this.btnRemoveCondition.Name = "btnRemoveCondition";
             this.btnRemoveCondition.Size = new System.Drawing.Size(95, 26);
             this.btnRemoveCondition.TabIndex = 2;
             this.btnRemoveCondition.Text = "Remove";
             this.btnRemoveCondition.UseVisualStyleBackColor = false;
             this.btnRemoveCondition.Click += new System.EventHandler(this.btnRemoveCondition_Click);
-            // 
+            //
             // btnAddCondition
-            // 
+            //
             this.btnAddCondition.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAddCondition.Location = new System.Drawing.Point(506, 25);
+            this.btnAddCondition.Location = new System.Drawing.Point(506, 52);
             this.btnAddCondition.Name = "btnAddCondition";
             this.btnAddCondition.Size = new System.Drawing.Size(95, 26);
             this.btnAddCondition.TabIndex = 1;
@@ -238,7 +262,7 @@ namespace TestUtilApp.UI
             this.dataGridViewConditions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewConditions.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewConditions.Location = new System.Drawing.Point(12, 25);
+            this.dataGridViewConditions.Location = new System.Drawing.Point(12, 52);
             this.dataGridViewConditions.MultiSelect = false;
             this.dataGridViewConditions.Name = "dataGridViewConditions";
             this.dataGridViewConditions.RowHeadersWidth = 24;
@@ -255,7 +279,7 @@ namespace TestUtilApp.UI
             this.btnStartInspection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStartInspection.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnStartInspection.ForeColor = System.Drawing.Color.White;
-            this.btnStartInspection.Location = new System.Drawing.Point(10, 300);
+            this.btnStartInspection.Location = new System.Drawing.Point(10, 328);
             this.btnStartInspection.Name = "btnStartInspection";
             this.btnStartInspection.Size = new System.Drawing.Size(615, 35);
             this.btnStartInspection.TabIndex = 2;
@@ -478,6 +502,8 @@ namespace TestUtilApp.UI
         private System.Windows.Forms.Button btnAddCondition;
         private System.Windows.Forms.Button btnRemoveCondition;
         private System.Windows.Forms.Button btnSaveConditions;
+        private System.Windows.Forms.Label lblFileFilterPreset;
+        private System.Windows.Forms.Button btnGoToFileFilter;
         private System.Windows.Forms.Button btnStartInspection;
         private System.Windows.Forms.SplitContainer splitContainer;
         private System.Windows.Forms.Panel leftPanel;

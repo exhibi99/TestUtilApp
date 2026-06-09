@@ -43,11 +43,12 @@ namespace TestUtilApp.UI
             this.lblPreviewTitle    = new System.Windows.Forms.Label();
             this.pictureBoxPreview  = new System.Windows.Forms.PictureBox();
             // ── Run / move / remove bar ──────────────────────────────
-            this.pnlRun         = new System.Windows.Forms.Panel();
-            this.btnMoveUp      = new System.Windows.Forms.Button();
-            this.btnMoveDown    = new System.Windows.Forms.Button();
-            this.btnRemove      = new System.Windows.Forms.Button();
-            this.btnRun         = new System.Windows.Forms.Button();
+            this.pnlRun            = new System.Windows.Forms.Panel();
+            this.btnMoveUp         = new System.Windows.Forms.Button();
+            this.btnMoveDown       = new System.Windows.Forms.Button();
+            this.btnRemove         = new System.Windows.Forms.Button();
+            this.btnPipelineView   = new System.Windows.Forms.Button();
+            this.btnRun            = new System.Windows.Forms.Button();
 
             this.pnlHeader.SuspendLayout();
             this.pnlSettings.SuspendLayout();
@@ -188,6 +189,7 @@ namespace TestUtilApp.UI
             this.pnlRun.Controls.Add(this.btnMoveUp);
             this.pnlRun.Controls.Add(this.btnMoveDown);
             this.pnlRun.Controls.Add(this.btnRemove);
+            this.pnlRun.Controls.Add(this.btnPipelineView);
             this.pnlRun.Controls.Add(this.btnRun);
             this.pnlRun.Dock     = System.Windows.Forms.DockStyle.Bottom;
             this.pnlRun.Name     = "pnlRun";
@@ -225,15 +227,24 @@ namespace TestUtilApp.UI
             this.btnRemove.UseVisualStyleBackColor = false;
             this.btnRemove.Click    += new System.EventHandler(this.btnRemove_Click);
 
+            this.btnPipelineView.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPipelineView.Location  = new System.Drawing.Point(100, 5);
+            this.btnPipelineView.Name      = "btnPipelineView";
+            this.btnPipelineView.Size      = new System.Drawing.Size(72, 28);
+            this.btnPipelineView.TabIndex  = 3;
+            this.btnPipelineView.Text      = "Pipeline";
+            this.btnPipelineView.UseVisualStyleBackColor = false;
+            this.btnPipelineView.Click    += new System.EventHandler(this.btnPipelineView_Click);
+
             this.btnRun.BackColor = System.Drawing.Color.FromArgb(0, 120, 215);
             this.btnRun.Enabled   = false;
             this.btnRun.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnRun.Font      = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnRun.ForeColor = System.Drawing.Color.White;
-            this.btnRun.Location  = new System.Drawing.Point(104, 5);
+            this.btnRun.Location  = new System.Drawing.Point(176, 5);
             this.btnRun.Name      = "btnRun";
-            this.btnRun.Size      = new System.Drawing.Size(168, 28);
-            this.btnRun.TabIndex  = 3;
+            this.btnRun.Size      = new System.Drawing.Size(96, 28);
+            this.btnRun.TabIndex  = 4;
             this.btnRun.Text      = "\u25b6  Run";
             this.btnRun.UseVisualStyleBackColor = false;
             this.btnRun.Click    += new System.EventHandler(this.btnRun_Click);
@@ -298,6 +309,7 @@ namespace TestUtilApp.UI
         private System.Windows.Forms.Button btnMoveUp;
         private System.Windows.Forms.Button btnMoveDown;
         private System.Windows.Forms.Button btnRemove;
+        private System.Windows.Forms.Button btnPipelineView;
         private System.Windows.Forms.Button btnRun;
     }
 }

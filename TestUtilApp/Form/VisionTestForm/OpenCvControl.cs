@@ -106,9 +106,11 @@ namespace TestUtilApp.UI
 
         private void RunPipeline()
         {
-            if (_currentMat == null || _currentMat.Empty()) return;
-
             var algorithms = algorithmListControl.Algorithms;
+
+            bool hasSource = (_currentMat != null && !_currentMat.Empty()) ||
+                             (algorithms.Count > 0 && algorithms[0] is AcquireAlgorithm aq && aq.HasSource);
+            if (!hasSource) return;
 
             if (algorithms.Count == 0)
             {
@@ -132,9 +134,20 @@ namespace TestUtilApp.UI
                     Mat input = null;
                     if (i > 0)
                     {
-                        int from = algorithms[i].InputFromStep;
+                        int from   = algorithms[i].InputFromStep;
                         int srcIdx = (from >= 0 && from < i) ? from : i - 1;
+                        // 비활성 노드는 결과가 null이므로 활성 노드 결과가 나올 때까지 거슬러 올라감
+                        while (srcIdx > 0 && results[srcIdx] == null)
+                            srcIdx--;
                         input = results[srcIdx];
+                    }
+
+                    if (!algorithms[i].IsEnabled)
+                    {
+                        // 바이패스: 이전 결과를 그대로 통과 (해당 스텝은 실행 안 함)
+                        results[i] = null;
+                        bitmaps.Add(null);
+                        continue;
                     }
 
                     results[i] = algorithms[i].Execute(input);
@@ -315,9 +328,18 @@ namespace TestUtilApp.UI
 
         private void pictureBoxMain_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!_cropDragging) return;
-            _dragPbCurrent = e.Location;
-            pictureBoxMain.Invalidate();
+            if (_cropDragging)
+            {
+                _dragPbCurrent = e.Location;
+                pictureBoxMain.Invalidate();
+            }
+            UpdatePixelInfo(e.Location);
+        }
+
+        private void pictureBoxMain_MouseLeave(object sender, EventArgs e)
+        {
+            tslPixel.Text      = "";
+            tsSep3.Visible     = false;
         }
 
         private void pictureBoxMain_MouseUp(object sender, MouseEventArgs e)
@@ -419,6 +441,63 @@ namespace TestUtilApp.UI
         private static Rectangle NormalizeRect(System.Drawing.Point a, System.Drawing.Point b) =>
             new Rectangle(Math.Min(a.X, b.X), Math.Min(a.Y, b.Y),
                           Math.Abs(a.X - b.X), Math.Abs(a.Y - b.Y));
+
+        private Rectangle GetImageDisplayRect()
+        {
+            var img = pictureBoxMain.Image;
+            if (img == null) return Rectangle.Empty;
+
+            if (pictureBoxMain.SizeMode == PictureBoxSizeMode.Zoom)
+            {
+                float scale = Math.Min((float)pictureBoxMain.Width  / img.Width,
+                                       (float)pictureBoxMain.Height / img.Height);
+                int dispW = (int)(img.Width  * scale);
+                int dispH = (int)(img.Height * scale);
+                int offX  = (pictureBoxMain.Width  - dispW) / 2;
+                int offY  = (pictureBoxMain.Height - dispH) / 2;
+                return new Rectangle(offX, offY, dispW, dispH);
+            }
+            return new Rectangle(0, 0,
+                (int)(img.Width  * _zoomFactor),
+                (int)(img.Height * _zoomFactor));
+        }
+
+        private void UpdatePixelInfo(System.Drawing.Point pbPt)
+        {
+            var bmp = pictureBoxMain.Image as Bitmap;
+            if (bmp == null)
+            {
+                tslPixel.Text  = "";
+                tsSep3.Visible = false;
+                return;
+            }
+
+            // Only show info when cursor is over the actual image, not the letterbox
+            if (!GetImageDisplayRect().Contains(pbPt))
+            {
+                tslPixel.Text  = "";
+                tsSep3.Visible = false;
+                return;
+            }
+
+            var imgPt = ScreenToImagePoint(pbPt);
+            if (imgPt.X < 0 || imgPt.Y < 0 || imgPt.X >= bmp.Width || imgPt.Y >= bmp.Height)
+            {
+                tslPixel.Text  = "";
+                tsSep3.Visible = false;
+                return;
+            }
+
+            var c = bmp.GetPixel(imgPt.X, imgPt.Y);
+
+            string colorStr = (c.R == c.G && c.G == c.B)
+                ? $"Gray: {c.R}"
+                : $"R: {c.R,3}  G: {c.G,3}  B: {c.B,3}";
+
+            tslPixel.ForeColor = System.Drawing.Color.FromArgb(100, 210, 255);
+            tslPixel.Text      = $"X: {imgPt.X,5}  Y: {imgPt.Y,5}    {colorStr}";
+            tsSep3.Visible     = true;
+        }
 
         // ── Helpers ───────────────────────────────────────────────
 

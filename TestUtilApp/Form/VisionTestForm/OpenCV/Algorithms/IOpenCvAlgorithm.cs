@@ -17,6 +17,13 @@ namespace TestUtilApp.UI
         /// <summary>True for source nodes (e.g. Acquire) that produce output without consuming input.</summary>
         bool IsSourceNode { get; }
 
+        /// <summary>
+        /// When false the node is bypassed: its Execute() is not called and the previous
+        /// step's output is passed through unchanged. The node remains in the pipeline and
+        /// can be re-enabled at any time.
+        /// </summary>
+        bool IsEnabled { get; set; }
+
         Mat Execute(Mat input);
         bool ShowConfigDialog(IWin32Window owner);
 

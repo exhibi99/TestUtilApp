@@ -39,6 +39,8 @@ namespace TestUtilApp.UI
             this.tsbSave        = new System.Windows.Forms.ToolStripButton();
             this.tsSep2         = new System.Windows.Forms.ToolStripSeparator();
             this.tslInfo        = new System.Windows.Forms.ToolStripLabel();
+            this.tsSep3         = new System.Windows.Forms.ToolStripSeparator();
+            this.tslPixel       = new System.Windows.Forms.ToolStripLabel();
             this.pictureBoxMain = new System.Windows.Forms.PictureBox();
 
             this.pnlButtons.SuspendLayout();
@@ -137,7 +139,8 @@ namespace TestUtilApp.UI
             this.toolStripImage.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStripImage.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
                 this.tsbFit, this.tsbZoomIn, this.tsbZoomOut,
-                this.tsSep1, this.tsbSave, this.tsSep2, this.tslInfo });
+                this.tsSep1, this.tsbSave, this.tsSep2, this.tslInfo,
+                this.tsSep3, this.tslPixel });
             this.toolStripImage.Name     = "toolStripImage";
             this.toolStripImage.Size     = new System.Drawing.Size(830, 27);
             this.toolStripImage.TabIndex = 0;
@@ -174,6 +177,14 @@ namespace TestUtilApp.UI
             this.tslInfo.Name = "tslInfo";
             this.tslInfo.Text = "No image loaded";
 
+            this.tsSep3.Name    = "tsSep3";
+            this.tsSep3.Visible = false;
+
+            this.tslPixel.Name      = "tslPixel";
+            this.tslPixel.Text      = "";
+            this.tslPixel.ForeColor = System.Drawing.Color.FromArgb(100, 210, 255);
+            this.tslPixel.Font      = new System.Drawing.Font("Consolas", 8.5f);
+
             // pnlScrollable  (DockFill, AutoScroll)
             this.pnlScrollable.AutoScroll = true;
             this.pnlScrollable.Controls.Add(this.pictureBoxMain);
@@ -188,10 +199,11 @@ namespace TestUtilApp.UI
             this.pictureBoxMain.SizeMode  = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxMain.TabIndex  = 0;
             this.pictureBoxMain.TabStop   = false;
-            this.pictureBoxMain.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBoxMain_MouseDown);
-            this.pictureBoxMain.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBoxMain_MouseMove);
-            this.pictureBoxMain.MouseUp   += new System.Windows.Forms.MouseEventHandler(this.pictureBoxMain_MouseUp);
-            this.pictureBoxMain.Paint     += new System.Windows.Forms.PaintEventHandler(this.pictureBoxMain_Paint);
+            this.pictureBoxMain.MouseDown  += new System.Windows.Forms.MouseEventHandler(this.pictureBoxMain_MouseDown);
+            this.pictureBoxMain.MouseMove  += new System.Windows.Forms.MouseEventHandler(this.pictureBoxMain_MouseMove);
+            this.pictureBoxMain.MouseUp    += new System.Windows.Forms.MouseEventHandler(this.pictureBoxMain_MouseUp);
+            this.pictureBoxMain.MouseLeave += new System.EventHandler(this.pictureBoxMain_MouseLeave);
+            this.pictureBoxMain.Paint      += new System.Windows.Forms.PaintEventHandler(this.pictureBoxMain_Paint);
 
             // ════════════════════════════════════════════════════
             // OpenCvControl root
@@ -240,6 +252,8 @@ namespace TestUtilApp.UI
         private System.Windows.Forms.ToolStripButton    tsbSave;
         private System.Windows.Forms.ToolStripSeparator tsSep2;
         private System.Windows.Forms.ToolStripLabel     tslInfo;
+        private System.Windows.Forms.ToolStripSeparator tsSep3;
+        private System.Windows.Forms.ToolStripLabel     tslPixel;
         private System.Windows.Forms.Panel              pnlScrollable;
         private System.Windows.Forms.PictureBox         pictureBoxMain;
     }

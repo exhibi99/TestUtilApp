@@ -74,6 +74,7 @@ namespace TestUtilApp.UI
                 _filterControl = new FilterControl(_config, _configService);
                 _configControl = new ConfigControl(_config, _configService);
                 _inspectionControl = new InspectionControl(_config, _configService);
+                _inspectionControl.NavigateToFileFilter += ShowFilterControl;
             }
             catch (Exception ex)
             {

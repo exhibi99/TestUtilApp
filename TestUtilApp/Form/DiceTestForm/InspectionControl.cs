@@ -24,10 +24,13 @@ namespace TestUtilApp.UI
         private bool _isLoadingConditions;
 
         private const string ConditionColumnUse = "Use";
+        private const string ConditionColumnKeywordEnable = "KeywordEnable";
         private const string ConditionColumnFileNameKeyword = "FileNameKeyword";
         private const string ConditionColumnDetectClasses = "DetectClasses";
         private const string ConditionColumnClassifyModel = "ClassifyModel";
         private const string ConditionColumnMinConfidence = "MinConfidence";
+
+        public event Action NavigateToFileFilter;
 
         public InspectionControl(AppConfig config, ConfigService configService)
         {
@@ -47,6 +50,7 @@ namespace TestUtilApp.UI
         {
             AppendLog("Inspection screen has been activated.");
             LoadInspectionConditionsToGrid();
+            UpdateFileFilterPresetLabel();
 
             if (!string.IsNullOrEmpty(_config.LastClassifySourceFolder))
             {
@@ -101,12 +105,24 @@ namespace TestUtilApp.UI
             dataGridViewConditions.Columns.Clear();
             dataGridViewConditions.AutoGenerateColumns = false;
             dataGridViewConditions.EditMode = DataGridViewEditMode.EditOnEnter;
+            dataGridViewConditions.CellFormatting += dataGridViewConditions_CellFormatting;
+            dataGridViewConditions.CellValueChanged += dataGridViewConditions_CellValueChanged;
+            dataGridViewConditions.CellBeginEdit += dataGridViewConditions_CellBeginEdit;
+            dataGridViewConditions.CurrentCellDirtyStateChanged += dataGridViewConditions_CurrentCellDirtyStateChanged;
 
             dataGridViewConditions.Columns.Add(new DataGridViewCheckBoxColumn
             {
                 Name = ConditionColumnUse,
                 HeaderText = "Use",
                 Width = 45
+            });
+
+            dataGridViewConditions.Columns.Add(new DataGridViewCheckBoxColumn
+            {
+                Name = ConditionColumnKeywordEnable,
+                HeaderText = "Keyword",
+                Width = 65,
+                ToolTipText = "Uncheck to match all files"
             });
 
             dataGridViewConditions.Columns.Add(new DataGridViewTextBoxColumn
@@ -140,6 +156,87 @@ namespace TestUtilApp.UI
                 Width = 75,
                 DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter }
             });
+        }
+
+        private void UpdateFileFilterPresetLabel()
+        {
+            FileFilterProfile activeProfile = FileFilterMatcher.GetActiveProfile(_config.FileFilter);
+            string presetName = FileFilterMatcher.GetProfileDisplayName(activeProfile);
+            lblFileFilterPreset.Text = $"File Filter Preset: {presetName}";
+        }
+
+        private void btnGoToFileFilter_Click(object sender, EventArgs e)
+        {
+            NavigateToFileFilter?.Invoke();
+        }
+
+        private void dataGridViewConditions_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (dataGridViewConditions.CurrentCell == null)
+            {
+                return;
+            }
+
+            int colIndex = dataGridViewConditions.CurrentCell.ColumnIndex;
+            if (colIndex == dataGridViewConditions.Columns[ConditionColumnKeywordEnable].Index
+                || colIndex == dataGridViewConditions.Columns[ConditionColumnUse].Index)
+            {
+                dataGridViewConditions.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        }
+
+        private void dataGridViewConditions_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0)
+            {
+                return;
+            }
+
+            if (e.ColumnIndex == dataGridViewConditions.Columns[ConditionColumnKeywordEnable].Index)
+            {
+                dataGridViewConditions.InvalidateRow(e.RowIndex);
+            }
+        }
+
+        private void dataGridViewConditions_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            if (e.RowIndex < 0)
+            {
+                return;
+            }
+
+            if (e.ColumnIndex != dataGridViewConditions.Columns[ConditionColumnFileNameKeyword].Index)
+            {
+                return;
+            }
+
+            bool keywordEnable = Convert.ToBoolean(
+                dataGridViewConditions.Rows[e.RowIndex].Cells[ConditionColumnKeywordEnable].Value ?? false);
+
+            if (!keywordEnable)
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private void dataGridViewConditions_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.ColumnIndex != dataGridViewConditions.Columns[ConditionColumnFileNameKeyword].Index)
+            {
+                return;
+            }
+
+            bool keywordEnable = Convert.ToBoolean(
+                dataGridViewConditions.Rows[e.RowIndex].Cells[ConditionColumnKeywordEnable].Value ?? false);
+
+            if (!keywordEnable)
+            {
+                e.Value = "(All Files)";
+                e.CellStyle.ForeColor = System.Drawing.Color.FromArgb(140, 180, 180, 180);
+                e.CellStyle.Font = new System.Drawing.Font(dataGridViewConditions.Font, System.Drawing.FontStyle.Italic);
+                e.CellStyle.BackColor = System.Drawing.Color.FromArgb(30, 30, 30);
+                e.FormattingApplied = true;
+            }
         }
 
         private void btnBrowseSource_Click(object sender, EventArgs e)
@@ -286,8 +383,10 @@ namespace TestUtilApp.UI
                     string confDisplay = condition.MinConfidence > 0f
                         ? condition.MinConfidence.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)
                         : "";
+                    bool keywordEnable = !string.IsNullOrWhiteSpace(condition.FileNameKeyword);
                     dataGridViewConditions.Rows.Add(
                         condition.Use,
+                        keywordEnable,
                         condition.FileNameKeyword ?? "",
                         FormatKeywords(condition.DetectClassKeywords),
                         NormalizeClassifyModel(condition.ClassifyModel),
@@ -329,7 +428,10 @@ namespace TestUtilApp.UI
                     }
 
                     bool use = Convert.ToBoolean(row.Cells[ConditionColumnUse].Value ?? false);
-                    string fileNameKeyword = Convert.ToString(row.Cells[ConditionColumnFileNameKeyword].Value)?.Trim() ?? "";
+                    bool keywordEnable = Convert.ToBoolean(row.Cells[ConditionColumnKeywordEnable].Value ?? false);
+                    string fileNameKeyword = keywordEnable
+                        ? Convert.ToString(row.Cells[ConditionColumnFileNameKeyword].Value)?.Trim() ?? ""
+                        : "";
                     string detectClassesText = Convert.ToString(row.Cells[ConditionColumnDetectClasses].Value) ?? "";
                     string classifyModel = NormalizeClassifyModel(Convert.ToString(row.Cells[ConditionColumnClassifyModel].Value));
 
@@ -421,7 +523,7 @@ namespace TestUtilApp.UI
 
         private void btnAddCondition_Click(object sender, EventArgs e)
         {
-            dataGridViewConditions.Rows.Add(true, "", "", "A", "0.75");
+            dataGridViewConditions.Rows.Add(true, false, "", "A", "0.75");
         }
 
         private void btnRemoveCondition_Click(object sender, EventArgs e)
@@ -484,6 +586,11 @@ namespace TestUtilApp.UI
                 }
             }
 
+            if (!ShowInspectionConditionsGuide())
+            {
+                return;
+            }
+
             _isProcessing = true;
             btnStartInspection.Enabled = false;
             btnClearResults.Enabled = false;
@@ -511,6 +618,69 @@ namespace TestUtilApp.UI
                 btnStartInspection.Enabled = true;
                 btnClearResults.Enabled = true;
             }
+        }
+
+        private bool ShowInspectionConditionsGuide()
+        {
+            EnsureInspectionConditions();
+
+            var sb = new System.Text.StringBuilder();
+
+            // File Filter Preset
+            FileFilterProfile activeProfile = FileFilterMatcher.GetActiveProfile(_config.FileFilter);
+            string presetName = FileFilterMatcher.GetProfileDisplayName(activeProfile);
+            sb.AppendLine("[File Filter Preset]");
+            sb.AppendLine($"  {presetName}");
+            sb.AppendLine();
+
+            // Inspection Conditions
+            var activeConditions = _config.InspectionConditions?
+                .Where(c => c.Use)
+                .ToList() ?? new List<InspectionConditionRule>();
+
+            sb.AppendLine($"[Inspection Conditions]  ({activeConditions.Count} active rule(s))");
+            if (activeConditions.Count == 0)
+            {
+                sb.AppendLine("  (no active conditions)");
+            }
+            else
+            {
+                foreach (var cond in activeConditions)
+                {
+                    string keyword = string.IsNullOrWhiteSpace(cond.FileNameKeyword) ? "*" : cond.FileNameKeyword;
+                    string detectClasses = cond.DetectClassKeywords?.Count > 0
+                        ? string.Join(", ", cond.DetectClassKeywords)
+                        : "All";
+                    string confStr = cond.MinConfidence > 0f
+                        ? cond.MinConfidence.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)
+                        : "default";
+                    sb.AppendLine($"  • Filename: {keyword}  |  Detect: {detectClasses}  |  Model: {NormalizeClassifyModel(cond.ClassifyModel)}  |  MinConf: {confStr}");
+                }
+            }
+            sb.AppendLine();
+
+            // Spec Filter
+            sb.AppendLine("[Spec Filter]");
+            if (chkUseSpecFilter.Checked)
+            {
+                string specFile = string.IsNullOrEmpty(_specJsonPath) ? "(not set)" : Path.GetFileName(_specJsonPath);
+                sb.AppendLine($"  Enabled  —  {specFile}  ({_inspectionSpecs?.Count ?? 0} spec(s) loaded)");
+            }
+            else
+            {
+                sb.AppendLine("  Disabled");
+            }
+            sb.AppendLine();
+            sb.Append("Start inspection with the above conditions?");
+
+            var result = MessageBox.Show(
+                sb.ToString(),
+                "Inspection Conditions Confirmation",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Information,
+                MessageBoxDefaultButton.Button1);
+
+            return result == DialogResult.Yes;
         }
 
         private bool EnsureInspectionModelsLoaded()

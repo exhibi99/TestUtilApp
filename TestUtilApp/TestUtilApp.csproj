@@ -204,6 +204,12 @@
     <Compile Include="Form\VisionTestForm\AlgorithmListControl.Designer.cs">
       <DependentUpon>AlgorithmListControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form\VisionTestForm\PipelineCanvasControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Form\VisionTestForm\PipelineViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Form\VisionTestForm\OpenCvControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

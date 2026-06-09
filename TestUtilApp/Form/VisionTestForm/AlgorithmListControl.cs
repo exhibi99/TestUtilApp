@@ -11,6 +11,7 @@ namespace TestUtilApp.UI
         private readonly List<Bitmap>            _previewBitmaps = new List<Bitmap>();
         private AlgorithmSettingsPanel           _currentSettingsPanel;
         private bool                             _updatingInputFrom;
+        private PipelineViewForm                 _pipelineView;
 
         public event EventHandler AlgorithmListChanged;
         public event EventHandler RunRequested;
@@ -248,8 +249,13 @@ namespace TestUtilApp.UI
             listView.Items.Clear();
             for (int i = 0; i < _algorithms.Count; i++)
             {
-                var item = new ListViewItem($"{i + 1}.  {_algorithms[i].Name}");
-                item.SubItems.Add(_algorithms[i].Summary);
+                var  algo    = _algorithms[i];
+                bool enabled = algo.IsEnabled;
+                var  item    = new ListViewItem($"{i + 1}.  {algo.Name}{(enabled ? "" : "  [OFF]")}");
+                item.SubItems.Add(algo.Summary);
+                item.ForeColor = enabled
+                    ? listView.ForeColor
+                    : System.Drawing.Color.FromArgb(100, 100, 110);
                 listView.Items.Add(item);
             }
             listView.EndUpdate();
@@ -272,6 +278,7 @@ namespace TestUtilApp.UI
         private void RaiseListChanged()
         {
             AlgorithmListChanged?.Invoke(this, EventArgs.Empty);
+            _pipelineView?.RefreshView();
         }
 
         // ── Event handlers ────────────────────────────────────────
@@ -295,5 +302,83 @@ namespace TestUtilApp.UI
 
         private void menuRemove_Click(object sender, EventArgs e)   => RemoveSelected();
         private void menuClearAll_Click(object sender, EventArgs e) => Clear();
+
+        // ── Pipeline View popup ───────────────────────────────────
+
+        private void btnPipelineView_Click(object sender, EventArgs e)
+        {
+            if (_pipelineView != null && !_pipelineView.IsDisposed)
+            {
+                _pipelineView.BringToFront();
+                return;
+            }
+
+            _pipelineView = new PipelineViewForm(_algorithms);
+
+            // Position the popup to the left of this control
+            var screenPt = PointToScreen(Point.Empty);
+            _pipelineView.Location = new Point(
+                Math.Max(0, screenPt.X - _pipelineView.Width - 6),
+                screenPt.Y);
+
+            _pipelineView.ConnectionsChanged += (s2, e2) =>
+            {
+                RefreshList();
+                _pipelineView.RefreshView();
+                SettingsApplied?.Invoke(this, EventArgs.Empty);
+            };
+
+            _pipelineView.SettingsApplied += (s2, e2) =>
+            {
+                RefreshList();
+                RefreshCurrentSettingsPanel();
+                SettingsApplied?.Invoke(this, EventArgs.Empty);
+            };
+
+            _pipelineView.SelectionChanged += (s2, e2) =>
+            {
+                int idx = _pipelineView.SelectedIndex;
+                if (idx >= 0 && idx < listView.Items.Count)
+                {
+                    listView.Items[idx].Selected = true;
+                    listView.EnsureVisible(idx);
+                }
+                SwapSettingsPanel(idx);
+                UpdateButtons();
+                UpdatePreview();
+                SelectedAlgorithmChanged?.Invoke(this, EventArgs.Empty);
+            };
+
+            _pipelineView.MoveRequested += (idx, dir) =>
+            {
+                int newIdx = idx + dir;
+                if (newIdx < 0 || newIdx >= _algorithms.Count) return;
+                var item = _algorithms[idx];
+                _algorithms.RemoveAt(idx);
+                _algorithms.Insert(newIdx, item);
+                ResetInputFromSteps();
+                RefreshList();
+                listView.Items[newIdx].Selected = true;
+                _pipelineView.RefreshView(newIdx);
+                RaiseListChanged();
+            };
+
+            _pipelineView.AlgorithmAddRequested += algo =>
+            {
+                AddAlgorithm(algo);
+                _pipelineView?.RefreshView(_algorithms.Count - 1);
+                SettingsApplied?.Invoke(this, EventArgs.Empty);
+            };
+            _pipelineView.RemoveRequested       += (s2, e2) => RemoveSelected();
+            _pipelineView.ClearAllRequested     += (s2, e2) => Clear();
+            _pipelineView.FormClosed            += (s2, e2) => _pipelineView = null;
+
+            var owner = TopLevelControl as Form ?? FindForm();
+            _pipelineView.Show(owner);
+
+            // Sync current selection into the popup
+            if (SelectedIndex >= 0)
+                _pipelineView.SetSelection(SelectedIndex);
+        }
     }
 }

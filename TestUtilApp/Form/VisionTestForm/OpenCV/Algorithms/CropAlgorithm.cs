@@ -15,6 +15,7 @@ namespace TestUtilApp.UI
         public string Summary => $"({X}, {Y})  {Width} × {Height}";
         public int    InputFromStep { get; set; } = -1;
         public bool   IsSourceNode  => false;
+        public bool   IsEnabled     { get; set; } = true;
 
         public Mat Execute(Mat input)
         {
