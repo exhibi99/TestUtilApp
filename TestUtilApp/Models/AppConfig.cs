@@ -79,6 +79,12 @@ namespace TestUtilApp.Models
         [JsonProperty]
         public string LastLabelGenSourceFolder { get; set; }
 
+        [Category("1. Deep Learning")]
+        [DisplayName("DICE Version")]
+        [Description("DICE engine version to use: v1 or v2")]
+        [JsonProperty]
+        public string DiceVersion { get; set; } = "v2";
+
         [Category("6. Last Paths")]
         [DisplayName("Segmentation Source Folder")]
         [Description("Last used segmentation source folder path")]

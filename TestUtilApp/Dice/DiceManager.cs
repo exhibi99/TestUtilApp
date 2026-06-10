@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
+using TestUtilApp.Services;
 
 namespace TestUtilApp.Dice
 {
@@ -14,6 +15,7 @@ namespace TestUtilApp.Dice
 		public static string Version { get; private set; }
 		public static bool IsInit { get; private set; }
 		public static bool IsLoaded { get; private set; }
+		private static string _diceVersion = "v2";
 
         public static DiceDet DetectModel { get; private set; } = new DiceDet(nameof(DetectModel));
         public static DiceCls ClassifyModel_A { get; private set; } = new DiceCls(nameof(ClassifyModel_A));
@@ -37,6 +39,14 @@ namespace TestUtilApp.Dice
         private static string loadedSegmentModelPath = "";
 
         public static object lockObject { get; private set; }
+
+        public static void SetDiceVersion(string version)
+        {
+            _diceVersion = version ?? "v2";
+            // Reset initialization state when version changes
+            IsInit = false;
+            Version = null;
+        }
 
         public static void SetDetectModel(bool use, string path)
         {
@@ -99,7 +109,22 @@ namespace TestUtilApp.Dice
 
                 try
                 {
-                    bool result = DICE_Interface.init(envPath, enginePath);
+                    bool result = false;
+                    bool isV1 = string.Equals(_diceVersion, "v1", StringComparison.OrdinalIgnoreCase);
+
+                    if (isV1)
+                    {
+                        // v1: init with envPath and enginePath
+                        Console.WriteLine($"DICE v1 initialization with envPath: {envPath}, enginePath: {enginePath}");
+                        result = DICE_Interface.init(envPath, enginePath);
+                    }
+                    else
+                    {
+                        // v2: init without arguments (or with different setup)
+                        Console.WriteLine($"DICE v2 initialization");
+                        result = DICE_Interface.init(envPath, enginePath);
+                    }
+
                     if (!result)
                     {
                         Console.WriteLine("DICE_Interface.init() is failed.");

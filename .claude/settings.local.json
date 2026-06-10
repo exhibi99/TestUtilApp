@@ -15,7 +15,9 @@
       "PowerShell(cd \"C:\\\\GitHub\\\\TestUtilApp\"; & \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\18\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" TestUtilApp.sln /p:Configuration=Debug /t:Build /v:minimal 2>&1 | Where-Object { $_ -match \"error|warning MS|->|빌드\" } | Select-Object -Last 5)",
       "PowerShell(& \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" C:\\\\GitHub\\\\TestUtilApp\\\\TestUtilApp.sln /p:Configuration=Debug /nologo /v:minimal 2>&1)",
       "PowerShell(& \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\18\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" C:\\\\GitHub\\\\TestUtilApp\\\\TestUtilApp.sln /p:Configuration=Debug /nologo /v:minimal 2>&1 | Where-Object { $_ -match \"error|warning|Build succeeded|FAILED\" } | Select-Object -Last 15)",
-      "Bash(Select-String -Pattern \"error CS|Build succeeded|Error\\\\\\(s\\\\\\)\")"
+      "Bash(Select-String -Pattern \"error CS|Build succeeded|Error\\\\\\(s\\\\\\)\")",
+      "Bash(findstr /E \"error|warning|Build|succeeded\")",
+      "PowerShell($dll = \"C:\\\\GitHub\\\\TestUtilApp\\\\TestUtilApp\\\\bin\\\\Debug\\\\DICE_Library.dll\"; [System.Reflection.Assembly]::LoadFrom\\($dll\\).GetType\\(\"DICE_Library.DICE_Interface\"\\).GetMethods\\(\\) | Where-Object {$_.Name -eq \"init\"} | ForEach-Object {Write-Host \"Method: $\\($_.Name\\), Params: $\\($_.GetParameters\\(\\).Count\\)\"})"
     ]
   }
 }

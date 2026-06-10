@@ -145,6 +145,11 @@ namespace TestUtilApp.Services
                     EnsureFileFilterDefaults(config.FileFilter);
                 }
 
+                if (string.IsNullOrWhiteSpace(config.DiceVersion))
+                {
+                    config.DiceVersion = "v2";
+                }
+
                 EnsureInspectionConditionDefaults(config);
 
                 return config;

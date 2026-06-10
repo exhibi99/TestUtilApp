@@ -1,5 +1,8 @@
 using System;
+using System.Drawing;
 using System.Windows.Forms;
+using TestUtilApp.Dice;
+using TestUtilApp.Models;
 using TestUtilApp.Services;
 using TestUtilApp.UI;
 
@@ -9,19 +12,130 @@ namespace TestUtilApp
     {
         private DICETestForm _diceTestForm;
         private VisionTestForm _visionTestForm;
+        private AppConfig _config;
+        private ConfigService _configService;
 
         public MainForm()
         {
             InitializeComponent();
             UiTheme.Apply(this);
+
+            _configService = new ConfigService();
+            _config = _configService.LoadConfig();
+
             InitializeTabs();
 
             tabControlMain.SelectedTab = tabDiceTest;
             ActivateSelectedTab();
+
+            ShowGpuInfo();
+            RefreshDiceVersionButton();
+            InstallDiceDlls(silent: true);
+        }
+
+        private void ShowGpuInfo()
+        {
+            CudaInfo info = CudaDetector.Detect();
+            lblGpuInfo.Text = info.DisplayText;
+            lblGpuInfo.ForeColor = info.HasGpu ? UiTheme.Success : UiTheme.TextMuted;
+        }
+
+        private void RefreshDiceVersionButton()
+        {
+            bool isV2 = !string.Equals(_config.DiceVersion, "v1", StringComparison.OrdinalIgnoreCase);
+            btnDiceVersion.Text = isV2 ? "DICE  v2" : "DICE  v1";
+            btnDiceVersion.BackColor = isV2 ? UiTheme.Accent : UiTheme.TealAccent;
+            btnDiceVersion.ForeColor = Color.White;
+            btnDiceVersion.FlatAppearance.BorderColor = btnDiceVersion.BackColor;
+        }
+
+        private void btnDiceVersion_Click(object sender, EventArgs e)
+        {
+            bool isV2 = !string.Equals(_config.DiceVersion, "v1", StringComparison.OrdinalIgnoreCase);
+            _config.DiceVersion = isV2 ? "v1" : "v2";
+            _configService.SaveConfig(_config);
+            RefreshDiceVersionButton();
+
+            // Update DiceManager with new version
+            DiceManager.SetDiceVersion(_config.DiceVersion);
+
+            // 버전 변경 시 기존 파일 삭제 후 새로운 버전 파일 복사
+            DiceDllInstaller.DeleteOldDlls();
+            InstallDiceDlls(silent: false, versionChanged: true);
+        }
+
+        private void InstallDiceDlls(bool silent, bool versionChanged = false)
+        {
+            CudaInfo cudaInfo = CudaDetector.Detect();
+            string sourceFolder = DiceDllInstaller.ResolveSourceFolder(_config.DiceVersion, cudaInfo.CudaVersion);
+
+            var result = DiceDllInstaller.Install(_config.DiceVersion, cudaInfo.CudaVersion);
+
+            switch (result)
+            {
+                case DiceDllInstaller.InstallResult.Success:
+                    if (!silent)
+                    {
+                        DialogResult dr = MessageBox.Show(
+                            $"DICE DLL has been updated.\n\nSource: {sourceFolder}\n\nPlease click OK to restart the app.",
+                            "DICE DLL Updated",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        if (dr == DialogResult.OK)
+                        {
+                            Application.Restart();
+                            Environment.Exit(0);
+                        }
+                    }
+                    break;
+
+                case DiceDllInstaller.InstallResult.AlreadyCurrent:
+                    if (!silent)
+                    {
+                        MessageBox.Show(
+                            $"DICE DLL is already up to date.\n\nSource: {sourceFolder}",
+                            "DICE DLL",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    break;
+
+                case DiceDllInstaller.InstallResult.FileLocked:
+                    if (versionChanged)
+                    {
+                        DialogResult dr = MessageBox.Show(
+                            $"Some DLL files are currently in use and could not be replaced.\n\nSource: {sourceFolder}\n\nPlease click OK to restart the app.",
+                            "Restart Required",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                        if (dr == DialogResult.OK)
+                        {
+                            Application.Restart();
+                            Environment.Exit(0);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show(
+                            $"Some DLL files are currently in use and could not be replaced.\n\nSource: {sourceFolder}\n\nPlease restart the app to apply the changes.",
+                            "Restart Required",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    break;
+
+                case DiceDllInstaller.InstallResult.SourceNotFound:
+                    MessageBox.Show(
+                        $"DICE DLL source folder not found:\n{sourceFolder}",
+                        "Source Not Found",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    break;
+            }
         }
 
         private void InitializeTabs()
         {
+            // Set DICE version for DiceManager before creating forms
+            DiceManager.SetDiceVersion(_config.DiceVersion);
+
             _diceTestForm = new DICETestForm();
             _visionTestForm = new VisionTestForm();
 
