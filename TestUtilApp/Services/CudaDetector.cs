@@ -15,8 +15,8 @@ namespace TestUtilApp.Services
             {
                 if (!HasGpu) return "GPU: N/A";
                 if (!string.IsNullOrEmpty(CudaVersion))
-                    return $"GPU  |  CUDA {CudaVersion}  |  Driver {DriverVersion}";
-                return $"GPU  |  Driver {DriverVersion}";
+                    return $"GPU  |  CUDA {CudaVersion}";
+                return "GPU";
             }
         }
     }

@@ -49,7 +49,8 @@
   <ItemGroup>
     <Reference Include="CustomMarshalers" />
     <Reference Include="DICE_Library">
-      <HintPath>..\DICE\DICE_Library.dll</HintPath>
+      <HintPath>bin\Debug\DICE_Library.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Extreme.Numerics, Version=8.1.7.0, Culture=neutral, PublicKeyToken=9e513770f58567b2, processorArchitecture=MSIL">
       <HintPath>..\packages\Extreme.Numerics.8.1.7\lib\net462\Extreme.Numerics.dll</HintPath>
@@ -75,7 +76,8 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="Python.Runtime">
-      <HintPath>..\DICE\Python.Runtime.dll</HintPath>
+      <HintPath>bin\Debug\Python.Runtime.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -353,6 +355,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
+    <PreBuildEvent>
+      if exist "$(SolutionDir)DICE\01_DICEv1\DICE_Library.dll" copy /Y "$(SolutionDir)DICE\01_DICEv1\DICE_Library.dll" "$(ProjectDir)bin\Debug\DICE_Library.dll"
+      if exist "$(SolutionDir)DICE\01_DICEv1\Python.Runtime.dll" copy /Y "$(SolutionDir)DICE\01_DICEv1\Python.Runtime.dll" "$(ProjectDir)bin\Debug\Python.Runtime.dll"
+    </PreBuildEvent>
     <PostBuildEvent>
       if exist "$(SolutionDir)DICE" xcopy "$(SolutionDir)DICE" "$(TargetDir)DICE" /E /I /Y /Q
     </PostBuildEvent>

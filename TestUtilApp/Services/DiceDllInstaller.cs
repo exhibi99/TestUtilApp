@@ -166,5 +166,19 @@ namespace TestUtilApp.Services
                 return false;
             }
         }
+
+        public static string GetPythonVersion(string diceVersion, string cudaVersion)
+        {
+            bool isV1 = string.Equals(diceVersion, "v1", StringComparison.OrdinalIgnoreCase);
+
+            if (isV1)
+                return "Python 3.7";
+
+            // v2: CUDA 버전으로 분기
+            if (TryParseCudaVersion(cudaVersion, out Version cuda) && cuda >= Cuda128)
+                return "Python 3.9";
+
+            return "Python 3.8";
+        }
     }
 }

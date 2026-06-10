@@ -36,7 +36,8 @@ namespace TestUtilApp
         private void ShowGpuInfo()
         {
             CudaInfo info = CudaDetector.Detect();
-            lblGpuInfo.Text = info.DisplayText;
+            string pythonVersion = DiceDllInstaller.GetPythonVersion(_config.DiceVersion, info.CudaVersion);
+            lblGpuInfo.Text = $"{info.DisplayText}  |  {pythonVersion}";
             lblGpuInfo.ForeColor = info.HasGpu ? UiTheme.Success : UiTheme.TextMuted;
         }
 
@@ -47,6 +48,9 @@ namespace TestUtilApp
             btnDiceVersion.BackColor = isV2 ? UiTheme.Accent : UiTheme.TealAccent;
             btnDiceVersion.ForeColor = Color.White;
             btnDiceVersion.FlatAppearance.BorderColor = btnDiceVersion.BackColor;
+
+            // Update GPU info with new Python version
+            ShowGpuInfo();
         }
 
         private void btnDiceVersion_Click(object sender, EventArgs e)

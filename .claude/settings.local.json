@@ -17,7 +17,14 @@
       "PowerShell(& \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\18\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" C:\\\\GitHub\\\\TestUtilApp\\\\TestUtilApp.sln /p:Configuration=Debug /nologo /v:minimal 2>&1 | Where-Object { $_ -match \"error|warning|Build succeeded|FAILED\" } | Select-Object -Last 15)",
       "Bash(Select-String -Pattern \"error CS|Build succeeded|Error\\\\\\(s\\\\\\)\")",
       "Bash(findstr /E \"error|warning|Build|succeeded\")",
-      "PowerShell($dll = \"C:\\\\GitHub\\\\TestUtilApp\\\\TestUtilApp\\\\bin\\\\Debug\\\\DICE_Library.dll\"; [System.Reflection.Assembly]::LoadFrom\\($dll\\).GetType\\(\"DICE_Library.DICE_Interface\"\\).GetMethods\\(\\) | Where-Object {$_.Name -eq \"init\"} | ForEach-Object {Write-Host \"Method: $\\($_.Name\\), Params: $\\($_.GetParameters\\(\\).Count\\)\"})"
+      "PowerShell($dll = \"C:\\\\GitHub\\\\TestUtilApp\\\\TestUtilApp\\\\bin\\\\Debug\\\\DICE_Library.dll\"; [System.Reflection.Assembly]::LoadFrom\\($dll\\).GetType\\(\"DICE_Library.DICE_Interface\"\\).GetMethods\\(\\) | Where-Object {$_.Name -eq \"init\"} | ForEach-Object {Write-Host \"Method: $\\($_.Name\\), Params: $\\($_.GetParameters\\(\\).Count\\)\"})",
+      "Bash(xargs -I {} basename {})",
+      "Bash(pkill -9 TestUtilApp)",
+      "Bash(taskkill /IM TestUtilApp.exe /F)",
+      "Bash(cp C:/GitHub/TestUtilApp/DICE/01_DICEv1/DICE_Library.dll C:/GitHub/TestUtilApp/DICE/; cp C:/GitHub/TestUtilApp/DICE/01_DICEv1/Python.Runtime.dll C:/GitHub/TestUtilApp/DICE/; cp C:/GitHub/TestUtilApp/DICE/01_DICEv1/python*.dll C:/GitHub/TestUtilApp/DICE/; ls -1 C:/GitHub/TestUtilApp/DICE/*.dll)",
+      "Bash(mkdir -p C:/GitHub/TestUtilApp/TestUtilApp/bin/Debug)",
+      "Bash(cp C:/GitHub/TestUtilApp/DICE/01_DICEv1/DICE_Library.dll C:/GitHub/TestUtilApp/TestUtilApp/bin/Debug/)",
+      "Bash(cp C:/GitHub/TestUtilApp/DICE/01_DICEv1/Python.Runtime.dll C:/GitHub/TestUtilApp/TestUtilApp/bin/Debug/)"
     ]
   }
 }
