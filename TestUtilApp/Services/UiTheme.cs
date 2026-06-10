@@ -184,7 +184,6 @@ namespace TestUtilApp.Services
         {
             return originalBackColor.ToArgb() == Accent.ToArgb()
                 || button.Name.StartsWith("btnStart", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(button.Text, "Label Generate", StringComparison.OrdinalIgnoreCase)
                 || string.Equals(button.Text, "Start Filtering", StringComparison.OrdinalIgnoreCase)
                 || button.Text.StartsWith("Start ", StringComparison.OrdinalIgnoreCase)
                 || string.Equals(button.Text, "Save", StringComparison.OrdinalIgnoreCase);

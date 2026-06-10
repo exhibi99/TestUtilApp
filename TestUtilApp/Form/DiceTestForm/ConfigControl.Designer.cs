@@ -47,7 +47,7 @@ namespace TestUtilApp.UI
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.lblTitle.Location = new System.Drawing.Point(13, 28);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(270, 25);
+            this.lblTitle.Size = new System.Drawing.Size(212, 20);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Application Settings (Config)";
             // 
@@ -140,12 +140,12 @@ namespace TestUtilApp.UI
             // 
             this.txtLog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtLog.Font = new System.Drawing.Font("Consolas", 11F);
-            this.txtLog.Location = new System.Drawing.Point(10, 37);
+            this.txtLog.Location = new System.Drawing.Point(10, 32);
             this.txtLog.Multiline = true;
             this.txtLog.Name = "txtLog";
             this.txtLog.ReadOnly = true;
             this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtLog.Size = new System.Drawing.Size(1140, 125);
+            this.txtLog.Size = new System.Drawing.Size(1140, 130);
             this.txtLog.TabIndex = 0;
             // 
             // statusPanel
@@ -164,13 +164,13 @@ namespace TestUtilApp.UI
             this.lblStatus.Dock = System.Windows.Forms.DockStyle.Left;
             this.lblStatus.Location = new System.Drawing.Point(5, 5);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(65, 28);
+            this.lblStatus.Size = new System.Drawing.Size(53, 21);
             this.lblStatus.TabIndex = 0;
             this.lblStatus.Text = "Ready";
             // 
             // ConfigControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 28F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(14)))), ((int)(((byte)(18)))));
             this.Controls.Add(this.contentPanel);

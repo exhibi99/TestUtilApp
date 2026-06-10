@@ -43,6 +43,17 @@ namespace TestUtilApp.UI
             {
                 txtModelPath.Text = _config.DiceModels.SegmentModel.Path;
             }
+
+            RefreshModelStatusLabel();
+        }
+
+        private void RefreshModelStatusLabel()
+        {
+            string modelPath = txtModelPath.Text;
+            bool loaded = DiceManager.IsSegmentModelLoaded(modelPath);
+
+            lblModelStatus.Text = loaded ? "✓ Loaded" : "✗ Not Loaded";
+            lblModelStatus.ForeColor = loaded ? UiTheme.Success : UiTheme.Error;
         }
 
         private void InitializeListView()
@@ -101,6 +112,7 @@ namespace TestUtilApp.UI
             finally
             {
                 btnLoadModel.Enabled = true;
+                RefreshModelStatusLabel();
             }
         }
 

@@ -29,6 +29,7 @@ namespace TestUtilApp.UI
             this.groupBoxModel = new System.Windows.Forms.GroupBox();
             this.lblModelPath = new System.Windows.Forms.Label();
             this.txtModelPath = new System.Windows.Forms.TextBox();
+            this.lblModelStatus = new System.Windows.Forms.Label();
             this.btnLoadModel = new System.Windows.Forms.Button();
             this.btnBrowseModel = new System.Windows.Forms.Button();
             this.btnStartSegmentation = new System.Windows.Forms.Button();
@@ -93,7 +94,7 @@ namespace TestUtilApp.UI
             this.topPanel.Location = new System.Drawing.Point(10, 0);
             this.topPanel.Name = "topPanel";
             this.topPanel.Padding = new System.Windows.Forms.Padding(10);
-            this.topPanel.Size = new System.Drawing.Size(635, 210);
+            this.topPanel.Size = new System.Drawing.Size(635, 232);
             this.topPanel.TabIndex = 0;
             //
             // lblTitle
@@ -156,11 +157,12 @@ namespace TestUtilApp.UI
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxModel.Controls.Add(this.lblModelPath);
             this.groupBoxModel.Controls.Add(this.txtModelPath);
+            this.groupBoxModel.Controls.Add(this.lblModelStatus);
             this.groupBoxModel.Controls.Add(this.btnLoadModel);
             this.groupBoxModel.Controls.Add(this.btnBrowseModel);
             this.groupBoxModel.Location = new System.Drawing.Point(10, 108);
             this.groupBoxModel.Name = "groupBoxModel";
-            this.groupBoxModel.Size = new System.Drawing.Size(615, 58);
+            this.groupBoxModel.Size = new System.Drawing.Size(615, 80);
             this.groupBoxModel.TabIndex = 2;
             this.groupBoxModel.TabStop = false;
             this.groupBoxModel.Text = "Segmentation Model";
@@ -183,6 +185,17 @@ namespace TestUtilApp.UI
             this.txtModelPath.ReadOnly = true;
             this.txtModelPath.Size = new System.Drawing.Size(337, 27);
             this.txtModelPath.TabIndex = 1;
+            //
+            // lblModelStatus
+            //
+            this.lblModelStatus.AutoSize = true;
+            this.lblModelStatus.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.lblModelStatus.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(99)))), ((int)(((byte)(99)))));
+            this.lblModelStatus.Location = new System.Drawing.Point(15, 54);
+            this.lblModelStatus.Name = "lblModelStatus";
+            this.lblModelStatus.Size = new System.Drawing.Size(90, 20);
+            this.lblModelStatus.TabIndex = 4;
+            this.lblModelStatus.Text = "✗ Not Loaded";
             //
             // btnLoadModel
             //
@@ -214,7 +227,7 @@ namespace TestUtilApp.UI
             this.btnStartSegmentation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStartSegmentation.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnStartSegmentation.ForeColor = System.Drawing.Color.White;
-            this.btnStartSegmentation.Location = new System.Drawing.Point(10, 170);
+            this.btnStartSegmentation.Location = new System.Drawing.Point(10, 192);
             this.btnStartSegmentation.Name = "btnStartSegmentation";
             this.btnStartSegmentation.Size = new System.Drawing.Size(615, 35);
             this.btnStartSegmentation.TabIndex = 3;
@@ -401,6 +414,7 @@ namespace TestUtilApp.UI
         private System.Windows.Forms.GroupBox groupBoxModel;
         private System.Windows.Forms.Label lblModelPath;
         private System.Windows.Forms.TextBox txtModelPath;
+        private System.Windows.Forms.Label lblModelStatus;
         private System.Windows.Forms.Button btnLoadModel;
         private System.Windows.Forms.Button btnBrowseModel;
         private System.Windows.Forms.Button btnStartSegmentation;
