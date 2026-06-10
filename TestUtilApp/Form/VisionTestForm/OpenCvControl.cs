@@ -17,10 +17,17 @@ namespace TestUtilApp.UI
         private AcquireAlgorithm _acquireAlgo;
 
         // ── Crop drag state ───────────────────────────────────────
+        private enum CropInteractionMode { None, Drawing, Moving, Resizing }
+        private enum CropHoverZone       { None, Body, Corner }
+
         private bool                 _cropMode;
-        private bool                 _cropDragging;
-        private System.Drawing.Point _dragPbStart;
-        private System.Drawing.Point _dragPbCurrent;
+        private CropInteractionMode  _dragMode  = CropInteractionMode.None;
+        private CropHoverZone        _hoverZone = CropHoverZone.None;
+        private System.Drawing.Point _dragPbStart;    // screen pt: Drawing 시작점
+        private System.Drawing.Point _dragPbCurrent;  // screen pt: Drawing 현재점
+        private System.Drawing.Point _dragImgOffset;  // image-space offset for Moving
+
+        private const int ResizeCornerSize = 16;
 
         private Mat DisplayMat => _resultMat ?? _currentMat;
 
@@ -72,6 +79,7 @@ namespace TestUtilApp.UI
 
                 btnThreshold.Enabled = true;
                 btnCrop.Enabled      = true;
+                btnContour.Enabled   = true;
                 tsbSave.Enabled      = true;
                 FitToWindow();
                 UpdateStatusInfo();
@@ -90,18 +98,40 @@ namespace TestUtilApp.UI
             algorithmListControl.AddAlgorithm(new ThresholdAlgorithm());
         }
 
+        private void btnContour_Click(object sender, EventArgs e)
+        {
+            algorithmListControl.AddAlgorithm(new ContourAlgorithm());
+        }
+
         private void btnCrop_Click(object sender, EventArgs e)
         {
             var algo = new CropAlgorithm();
-            if (_currentMat != null && !_currentMat.Empty())
+
+            // 추가될 위치(마지막 스텝) 직전 스텝의 출력 크기를 기준으로 기본 rect 계산
+            int refW = 0, refH = 0;
+            int lastIdx = algorithmListControl.Algorithms.Count - 1;
+            var prevBmp = algorithmListControl.GetPreviewBitmapAt(lastIdx);
+            if (prevBmp != null)
             {
-                int w = _currentMat.Width  / 2;
-                int h = _currentMat.Height / 2;
-                algo.X      = (_currentMat.Width  - w) / 2;
-                algo.Y      = (_currentMat.Height - h) / 2;
+                refW = prevBmp.Width;
+                refH = prevBmp.Height;
+            }
+            else if (DisplayMat != null && !DisplayMat.Empty())
+            {
+                refW = DisplayMat.Width;
+                refH = DisplayMat.Height;
+            }
+
+            if (refW > 0 && refH > 0)
+            {
+                int w = refW / 2;
+                int h = refH / 2;
+                algo.X      = (refW - w) / 2;
+                algo.Y      = (refH - h) / 2;
                 algo.Width  = w;
                 algo.Height = h;
             }
+
             algorithmListControl.AddAlgorithm(algo);
         }
 
@@ -254,20 +284,21 @@ namespace TestUtilApp.UI
 
         private void OnSelectedAlgorithmChanged(object sender, EventArgs e)
         {
-            // Crop이 아니면 드래그 상태만 초기화
             if (!(algorithmListControl.SelectedAlgorithm is CropAlgorithm))
             {
-                _cropMode     = false;
-                _cropDragging = false;
+                _cropMode  = false;
+                _dragMode  = CropInteractionMode.None;
+                _hoverZone = CropHoverZone.None;
                 pictureBoxMain.Cursor = Cursors.Default;
             }
-
             RefreshMainDisplay();
         }
 
         private void EnterCropMode(CropAlgorithm cropAlgo)
         {
-            _cropMode = true;
+            _cropMode  = true;
+            _dragMode  = CropInteractionMode.None;
+            _hoverZone = CropHoverZone.None;
             pictureBoxMain.Cursor = Cursors.Cross;
 
             // 이 Crop 스텝의 입력 = 이전 스텝의 출력
@@ -321,21 +352,66 @@ namespace TestUtilApp.UI
 
         // ── PictureBox mouse events ───────────────────────────────
 
+        private Rectangle GetCurrentCropScreenRect()
+        {
+            var cropAlgo = algorithmListControl.SelectedAlgorithm as CropAlgorithm;
+            return cropAlgo != null
+                ? ImageRectToScreen(cropAlgo.X, cropAlgo.Y, cropAlgo.Width, cropAlgo.Height)
+                : Rectangle.Empty;
+        }
+
+        private CropHoverZone GetHoverZone(System.Drawing.Point pt)
+        {
+            Rectangle rect = GetCurrentCropScreenRect();
+            if (rect.IsEmpty || !_cropMode) return CropHoverZone.None;
+            var corner = new Rectangle(rect.Right - ResizeCornerSize, rect.Bottom - ResizeCornerSize,
+                                       ResizeCornerSize, ResizeCornerSize);
+            if (corner.Contains(pt)) return CropHoverZone.Corner;
+            if (rect.Contains(pt))   return CropHoverZone.Body;
+            return CropHoverZone.None;
+        }
+
+        private void UpdateCursorForZone(CropHoverZone zone)
+        {
+            if (!_cropMode) return;
+            pictureBoxMain.Cursor = zone == CropHoverZone.Corner ? Cursors.SizeNWSE
+                                  : zone == CropHoverZone.Body   ? Cursors.SizeAll
+                                  : Cursors.Cross;
+        }
+
         private void pictureBoxMain_MouseDown(object sender, MouseEventArgs e)
         {
             if (!_cropMode || e.Button != MouseButtons.Left) return;
-            _cropDragging  = true;
-            _dragPbStart   = e.Location;
-            _dragPbCurrent = e.Location;
+
+            var zone = GetHoverZone(e.Location);
+            if (zone == CropHoverZone.Corner)
+            {
+                _dragMode = CropInteractionMode.Resizing;
+            }
+            else if (zone == CropHoverZone.Body)
+            {
+                _dragMode = CropInteractionMode.Moving;
+                var cropAlgo = algorithmListControl.SelectedAlgorithm as CropAlgorithm;
+                if (cropAlgo != null)
+                {
+                    var imgMouse = ScreenToImagePoint(e.Location);
+                    _dragImgOffset = new System.Drawing.Point(imgMouse.X - cropAlgo.X,
+                                                              imgMouse.Y - cropAlgo.Y);
+                }
+            }
+            else
+            {
+                _dragMode      = CropInteractionMode.Drawing;
+                _dragPbStart   = e.Location;
+                _dragPbCurrent = e.Location;
+            }
         }
 
         private void pictureBoxMain_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_cropDragging)
+            if (_dragMode == CropInteractionMode.Drawing)
             {
                 _dragPbCurrent = e.Location;
-                pictureBoxMain.Invalidate();
-
                 var cropAlgo = algorithmListControl.SelectedAlgorithm as CropAlgorithm;
                 if (cropAlgo != null)
                 {
@@ -347,32 +423,77 @@ namespace TestUtilApp.UI
                     cropAlgo.Height = Math.Max(1, Math.Abs(imgA.Y - imgB.Y));
                     algorithmListControl.RefreshCurrentSettingsPanel();
                 }
+                pictureBoxMain.Invalidate();
             }
+            else if (_dragMode == CropInteractionMode.Moving)
+            {
+                var cropAlgo = algorithmListControl.SelectedAlgorithm as CropAlgorithm;
+                if (cropAlgo != null)
+                {
+                    var imgMouse = ScreenToImagePoint(e.Location);
+                    var bmp = pictureBoxMain.Image;
+                    cropAlgo.X = bmp != null
+                        ? Math.Max(0, Math.Min(bmp.Width  - cropAlgo.Width,  imgMouse.X - _dragImgOffset.X))
+                        : imgMouse.X - _dragImgOffset.X;
+                    cropAlgo.Y = bmp != null
+                        ? Math.Max(0, Math.Min(bmp.Height - cropAlgo.Height, imgMouse.Y - _dragImgOffset.Y))
+                        : imgMouse.Y - _dragImgOffset.Y;
+                    algorithmListControl.RefreshCurrentSettingsPanel();
+                    pictureBoxMain.Invalidate();
+                }
+            }
+            else if (_dragMode == CropInteractionMode.Resizing)
+            {
+                var cropAlgo = algorithmListControl.SelectedAlgorithm as CropAlgorithm;
+                if (cropAlgo != null)
+                {
+                    var imgMouse = ScreenToImagePoint(e.Location);
+                    var bmp = pictureBoxMain.Image;
+                    cropAlgo.Width  = bmp != null
+                        ? Math.Max(1, Math.Min(bmp.Width  - cropAlgo.X, imgMouse.X - cropAlgo.X))
+                        : Math.Max(1, imgMouse.X - cropAlgo.X);
+                    cropAlgo.Height = bmp != null
+                        ? Math.Max(1, Math.Min(bmp.Height - cropAlgo.Y, imgMouse.Y - cropAlgo.Y))
+                        : Math.Max(1, imgMouse.Y - cropAlgo.Y);
+                    algorithmListControl.RefreshCurrentSettingsPanel();
+                    pictureBoxMain.Invalidate();
+                }
+            }
+            else if (_cropMode)
+            {
+                var newZone = GetHoverZone(e.Location);
+                if (newZone != _hoverZone)
+                {
+                    _hoverZone = newZone;
+                    UpdateCursorForZone(_hoverZone);
+                    pictureBoxMain.Invalidate();
+                }
+            }
+
             UpdatePixelInfo(e.Location);
         }
 
         private void pictureBoxMain_MouseLeave(object sender, EventArgs e)
         {
-            tslPixel.Text      = "";
-            tsSep3.Visible     = false;
+            tslPixel.Text  = "";
+            tsSep3.Visible = false;
+            if (_hoverZone != CropHoverZone.None)
+            {
+                _hoverZone = CropHoverZone.None;
+                UpdateCursorForZone(CropHoverZone.None);
+                pictureBoxMain.Invalidate();
+            }
         }
 
         private void pictureBoxMain_MouseUp(object sender, MouseEventArgs e)
         {
-            if (!_cropDragging || e.Button != MouseButtons.Left) return;
-            _cropDragging  = false;
-            _dragPbCurrent = e.Location;
+            if (_dragMode == CropInteractionMode.None || e.Button != MouseButtons.Left) return;
 
-            var cropAlgo = algorithmListControl.SelectedAlgorithm as CropAlgorithm;
-            if (cropAlgo == null) return;
+            _dragMode = CropInteractionMode.None;
 
-            System.Drawing.Point imgA = ScreenToImagePoint(_dragPbStart);
-            System.Drawing.Point imgB = ScreenToImagePoint(_dragPbCurrent);
-
-            cropAlgo.X      = Math.Min(imgA.X, imgB.X);
-            cropAlgo.Y      = Math.Min(imgA.Y, imgB.Y);
-            cropAlgo.Width  = Math.Max(1, Math.Abs(imgA.X - imgB.X));
-            cropAlgo.Height = Math.Max(1, Math.Abs(imgA.Y - imgB.Y));
+            var zone = GetHoverZone(e.Location);
+            _hoverZone = zone;
+            UpdateCursorForZone(zone);
 
             algorithmListControl.RefreshCurrentSettingsPanel();
             pictureBoxMain.Invalidate();
@@ -388,7 +509,7 @@ namespace TestUtilApp.UI
             Rectangle rect;
             int imgX, imgY, imgW, imgH;
 
-            if (_cropDragging)
+            if (_dragMode == CropInteractionMode.Drawing)
             {
                 rect = NormalizeRect(_dragPbStart, _dragPbCurrent);
                 var imgA = ScreenToImagePoint(_dragPbStart);
@@ -411,42 +532,58 @@ namespace TestUtilApp.UI
 
             if (rect.Width <= 0 || rect.Height <= 0) return;
 
-            // 선택 영역 바깥 반투명 회색 마스크 (상/하/좌/우 4분할)
+            var g   = e.Graphics;
             int pbW = pictureBoxMain.ClientSize.Width;
             int pbH = pictureBoxMain.ClientSize.Height;
+
+            // 바깥 영역 반투명 회색 마스크
             using (var mask = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(140, 30, 30, 30)))
             {
-                e.Graphics.FillRectangle(mask, 0, 0, pbW, rect.Top);
-                e.Graphics.FillRectangle(mask, 0, rect.Bottom, pbW, pbH - rect.Bottom);
-                e.Graphics.FillRectangle(mask, 0, rect.Top, rect.Left, rect.Height);
-                e.Graphics.FillRectangle(mask, rect.Right, rect.Top, pbW - rect.Right, rect.Height);
+                g.FillRectangle(mask, 0, 0, pbW, rect.Top);
+                g.FillRectangle(mask, 0, rect.Bottom, pbW, pbH - rect.Bottom);
+                g.FillRectangle(mask, 0, rect.Top, rect.Left, rect.Height);
+                g.FillRectangle(mask, rect.Right, rect.Top, pbW - rect.Right, rect.Height);
             }
 
             using (var fill = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(30, 255, 140, 0)))
-                e.Graphics.FillRectangle(fill, rect);
-            using (var pen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(220, 255, 140, 0), 2.5f)
+                g.FillRectangle(fill, rect);
+            using (var pen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(220, 255, 140, 0), 4.5f)
                 { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash })
-                e.Graphics.DrawRectangle(pen, rect);
+                g.DrawRectangle(pen, rect);
 
-            // 우측 상단에 좌표 정보 표시
+            // 좌표 정보 (우측 상단)
             string info = $"x:{imgX}  y:{imgY}  w:{imgW}  h:{imgH}";
             using (var font = new System.Drawing.Font("Consolas", 8.5f, System.Drawing.FontStyle.Bold))
             {
-                var g       = e.Graphics;
-                var textSize = g.MeasureString(info, font);
-                int padding  = 4;
-                float tx = rect.Right - textSize.Width - padding;
-                float ty = rect.Top   - textSize.Height - padding;
-                // 화면 밖으로 나가면 사각형 안쪽으로
+                var sz      = g.MeasureString(info, font);
+                int padding = 4;
+                float tx = rect.Right - sz.Width - padding;
+                float ty = rect.Top - sz.Height - padding;
                 if (ty < 0) ty = rect.Top + padding;
                 if (tx < 0) tx = rect.Left + padding;
-
-                var bgRect = new RectangleF(tx - padding, ty - 1, textSize.Width + padding * 2, textSize.Height + 2);
                 using (var bg = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(175, 30, 20, 0)))
-                    g.FillRectangle(bg, bgRect);
+                    g.FillRectangle(bg, tx - padding, ty - 1, sz.Width + padding * 2, sz.Height + 2);
                 using (var brush = new System.Drawing.SolidBrush(System.Drawing.Color.Cyan))
                     g.DrawString(info, font, brush, tx, ty);
             }
+
+            // 리사이즈 핸들 (우측 하단)
+            bool cornerActive = _hoverZone == CropHoverZone.Corner || _dragMode == CropInteractionMode.Resizing;
+            var handleRect = new Rectangle(rect.Right - ResizeCornerSize, rect.Bottom - ResizeCornerSize,
+                                           ResizeCornerSize, ResizeCornerSize);
+            using (var hb = new System.Drawing.SolidBrush(cornerActive
+                ? System.Drawing.Color.FromArgb(230, 255, 200, 60)
+                : System.Drawing.Color.FromArgb(150, 255, 160, 40)))
+                g.FillRectangle(hb, handleRect);
+            using (var hp = new System.Drawing.Pen(System.Drawing.Color.FromArgb(200, 60, 50, 0), 1.5f))
+            {
+                int rx = handleRect.Right - 4, ry = handleRect.Bottom - 4;
+                g.DrawLine(hp, rx - 8, ry, rx, ry);
+                g.DrawLine(hp, rx, ry - 8, rx, ry);
+                g.DrawLine(hp, rx - 4, ry - 2, rx, ry - 8);
+                g.DrawLine(hp, rx - 2, ry - 4, rx - 8, ry);
+            }
+
         }
 
         // ── Coordinate conversion ─────────────────────────────────

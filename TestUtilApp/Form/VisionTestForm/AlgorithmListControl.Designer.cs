@@ -4,18 +4,6 @@ namespace TestUtilApp.UI
     {
         private System.ComponentModel.IContainer components = null;
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                DisposePreviewBitmaps();
-                _currentSettingsPanel?.Dispose();
-                _currentSettingsPanel = null;
-                components?.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
         #region Component Designer generated code
 
         private void InitializeComponent()
@@ -24,6 +12,7 @@ namespace TestUtilApp.UI
             // ── Header ───────────────────────────────────────────────
             this.pnlHeader      = new System.Windows.Forms.Panel();
             this.lblPipeline    = new System.Windows.Forms.Label();
+            this.btnPipelineView = new System.Windows.Forms.Button();
             // ── List ─────────────────────────────────────────────────
             this.listView       = new System.Windows.Forms.ListView();
             this.colName        = new System.Windows.Forms.ColumnHeader();
@@ -40,42 +29,61 @@ namespace TestUtilApp.UI
             this.cboInputFrom   = new System.Windows.Forms.ComboBox();
             // ── Preview ──────────────────────────────────────────────
             this.pnlPreview         = new System.Windows.Forms.Panel();
+            this.pnlPreviewHeader   = new System.Windows.Forms.Panel();
             this.lblPreviewTitle    = new System.Windows.Forms.Label();
+            this.btnSavePreview     = new System.Windows.Forms.Button();
             this.pictureBoxPreview  = new System.Windows.Forms.PictureBox();
             // ── Run / move / remove bar ──────────────────────────────
             this.pnlRun            = new System.Windows.Forms.Panel();
             this.btnMoveUp         = new System.Windows.Forms.Button();
             this.btnMoveDown       = new System.Windows.Forms.Button();
             this.btnRemove         = new System.Windows.Forms.Button();
-            this.btnPipelineView   = new System.Windows.Forms.Button();
             this.btnRun            = new System.Windows.Forms.Button();
 
             this.pnlHeader.SuspendLayout();
             this.pnlSettings.SuspendLayout();
             this.pnlInputFrom.SuspendLayout();
             this.pnlPreview.SuspendLayout();
+            this.pnlPreviewHeader.SuspendLayout();
             this.pnlRun.SuspendLayout();
             this.contextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).BeginInit();
             this.SuspendLayout();
 
             // ════════════════════════════════════════════════════════
-            // pnlHeader  (DockTop, 22px)
+            // pnlHeader  (DockTop, 32px)
             // ════════════════════════════════════════════════════════
             this.pnlHeader.Controls.Add(this.lblPipeline);
-            this.pnlHeader.Dock    = System.Windows.Forms.DockStyle.Top;
-            this.pnlHeader.Name    = "pnlHeader";
-            this.pnlHeader.Size    = new System.Drawing.Size(280, 22);
-            this.pnlHeader.TabIndex = 0;
+            this.pnlHeader.Controls.Add(this.btnPipelineView);
+            this.pnlHeader.Dock      = System.Windows.Forms.DockStyle.Top;
+            this.pnlHeader.Name      = "pnlHeader";
+            this.pnlHeader.Size      = new System.Drawing.Size(340, 32);
+            this.pnlHeader.TabIndex  = 0;
 
             this.lblPipeline.AutoSize  = false;
             this.lblPipeline.Dock      = System.Windows.Forms.DockStyle.Fill;
             this.lblPipeline.Font      = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
             this.lblPipeline.ForeColor = System.Drawing.Color.Gray;
             this.lblPipeline.Name      = "lblPipeline";
-            this.lblPipeline.Padding   = new System.Windows.Forms.Padding(4, 0, 0, 0);
-            this.lblPipeline.Text      = "Pipeline";
+            this.lblPipeline.Padding   = new System.Windows.Forms.Padding(6, 0, 0, 0);
+            this.lblPipeline.Text      = "알고리즘 파이프라인";
             this.lblPipeline.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+
+            // 블록 편집 버튼 — 눈에 띄는 액센트 색상으로 강조
+            this.btnPipelineView.BackColor = System.Drawing.Color.FromArgb(0, 140, 120);  // teal
+            this.btnPipelineView.Dock      = System.Windows.Forms.DockStyle.Right;
+            this.btnPipelineView.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPipelineView.FlatAppearance.BorderSize  = 0;
+            this.btnPipelineView.FlatAppearance.MouseOverBackColor  = System.Drawing.Color.FromArgb(0, 170, 148);
+            this.btnPipelineView.FlatAppearance.MouseDownBackColor  = System.Drawing.Color.FromArgb(0, 110, 95);
+            this.btnPipelineView.Font      = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
+            this.btnPipelineView.ForeColor = System.Drawing.Color.White;
+            this.btnPipelineView.Name      = "btnPipelineView";
+            this.btnPipelineView.Size      = new System.Drawing.Size(100, 32);
+            this.btnPipelineView.TabIndex  = 10;
+            this.btnPipelineView.Text      = "⚙ 블록 편집";
+            this.btnPipelineView.UseVisualStyleBackColor = false;
+            this.btnPipelineView.Click    += new System.EventHandler(this.btnPipelineView_Click);
 
             // ════════════════════════════════════════════════════════
             // listView  (DockFill)
@@ -101,7 +109,7 @@ namespace TestUtilApp.UI
             this.colName.Width = 85;
 
             this.colSummary.Text  = "Params";
-            this.colSummary.Width = 175;
+            this.colSummary.Width = 235;
 
             // contextMenu
             this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -125,7 +133,7 @@ namespace TestUtilApp.UI
             this.pnlSettings.Dock     = System.Windows.Forms.DockStyle.Bottom;
             this.pnlSettings.Name     = "pnlSettings";
             this.pnlSettings.Padding  = new System.Windows.Forms.Padding(4);
-            this.pnlSettings.Size     = new System.Drawing.Size(280, 110);
+            this.pnlSettings.Size     = new System.Drawing.Size(340, 110);
             this.pnlSettings.TabIndex = 3;
 
             this.lblNoSelection.AutoSize  = false;
@@ -141,7 +149,7 @@ namespace TestUtilApp.UI
             this.pnlInputFrom.Dock    = System.Windows.Forms.DockStyle.Bottom;
             this.pnlInputFrom.Name    = "pnlInputFrom";
             this.pnlInputFrom.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
-            this.pnlInputFrom.Size    = new System.Drawing.Size(280, 30);
+            this.pnlInputFrom.Size    = new System.Drawing.Size(340, 30);
             this.pnlInputFrom.Visible = false;
 
             this.lblInputFrom.AutoSize  = true;
@@ -160,21 +168,40 @@ namespace TestUtilApp.UI
             // pnlPreview  (DockBottom, 160px)  – intermediate result
             // ════════════════════════════════════════════════════════
             this.pnlPreview.Controls.Add(this.pictureBoxPreview);
-            this.pnlPreview.Controls.Add(this.lblPreviewTitle);
+            this.pnlPreview.Controls.Add(this.pnlPreviewHeader);
             this.pnlPreview.Dock     = System.Windows.Forms.DockStyle.Bottom;
             this.pnlPreview.Name     = "pnlPreview";
-            this.pnlPreview.Size     = new System.Drawing.Size(280, 160);
+            this.pnlPreview.Size     = new System.Drawing.Size(340, 160);
             this.pnlPreview.TabIndex = 2;
 
+            // pnlPreviewHeader (DockTop, 24px) — title + save button
+            this.pnlPreviewHeader.Controls.Add(this.lblPreviewTitle);
+            this.pnlPreviewHeader.Controls.Add(this.btnSavePreview);
+            this.pnlPreviewHeader.Dock    = System.Windows.Forms.DockStyle.Top;
+            this.pnlPreviewHeader.Name    = "pnlPreviewHeader";
+            this.pnlPreviewHeader.Size    = new System.Drawing.Size(340, 24);
+
             this.lblPreviewTitle.AutoSize  = false;
-            this.lblPreviewTitle.Dock      = System.Windows.Forms.DockStyle.Top;
+            this.lblPreviewTitle.Dock      = System.Windows.Forms.DockStyle.Fill;
             this.lblPreviewTitle.Font      = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
             this.lblPreviewTitle.ForeColor = System.Drawing.Color.Gray;
             this.lblPreviewTitle.Name      = "lblPreviewTitle";
             this.lblPreviewTitle.Padding   = new System.Windows.Forms.Padding(4, 0, 0, 0);
-            this.lblPreviewTitle.Size      = new System.Drawing.Size(280, 20);
             this.lblPreviewTitle.Text      = "Result Preview";
             this.lblPreviewTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+
+            this.btnSavePreview.Dock      = System.Windows.Forms.DockStyle.Right;
+            this.btnSavePreview.Enabled   = false;
+            this.btnSavePreview.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSavePreview.FlatAppearance.BorderSize = 0;
+            this.btnSavePreview.Font      = new System.Drawing.Font("Segoe UI", 8F);
+            this.btnSavePreview.ForeColor = System.Drawing.Color.Gray;
+            this.btnSavePreview.Name      = "btnSavePreview";
+            this.btnSavePreview.Size      = new System.Drawing.Size(52, 24);
+            this.btnSavePreview.TabIndex  = 1;
+            this.btnSavePreview.Text      = "💾 Save";
+            this.btnSavePreview.UseVisualStyleBackColor = false;
+            this.btnSavePreview.Click    += new System.EventHandler(this.btnSavePreview_Click);
 
             this.pictureBoxPreview.BackColor = System.Drawing.Color.FromArgb(8, 10, 14);
             this.pictureBoxPreview.Dock      = System.Windows.Forms.DockStyle.Fill;
@@ -189,12 +216,11 @@ namespace TestUtilApp.UI
             this.pnlRun.Controls.Add(this.btnMoveUp);
             this.pnlRun.Controls.Add(this.btnMoveDown);
             this.pnlRun.Controls.Add(this.btnRemove);
-            this.pnlRun.Controls.Add(this.btnPipelineView);
             this.pnlRun.Controls.Add(this.btnRun);
             this.pnlRun.Dock     = System.Windows.Forms.DockStyle.Bottom;
             this.pnlRun.Name     = "pnlRun";
             this.pnlRun.Padding  = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.pnlRun.Size     = new System.Drawing.Size(280, 38);
+            this.pnlRun.Size     = new System.Drawing.Size(340, 38);
             this.pnlRun.TabIndex = 1;
 
             this.btnMoveUp.Enabled   = false;
@@ -227,24 +253,15 @@ namespace TestUtilApp.UI
             this.btnRemove.UseVisualStyleBackColor = false;
             this.btnRemove.Click    += new System.EventHandler(this.btnRemove_Click);
 
-            this.btnPipelineView.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPipelineView.Location  = new System.Drawing.Point(100, 5);
-            this.btnPipelineView.Name      = "btnPipelineView";
-            this.btnPipelineView.Size      = new System.Drawing.Size(72, 28);
-            this.btnPipelineView.TabIndex  = 3;
-            this.btnPipelineView.Text      = "Pipeline";
-            this.btnPipelineView.UseVisualStyleBackColor = false;
-            this.btnPipelineView.Click    += new System.EventHandler(this.btnPipelineView_Click);
-
             this.btnRun.BackColor = System.Drawing.Color.FromArgb(0, 120, 215);
             this.btnRun.Enabled   = false;
             this.btnRun.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnRun.Font      = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnRun.ForeColor = System.Drawing.Color.White;
-            this.btnRun.Location  = new System.Drawing.Point(176, 5);
+            this.btnRun.Location  = new System.Drawing.Point(100, 5);
             this.btnRun.Name      = "btnRun";
-            this.btnRun.Size      = new System.Drawing.Size(96, 28);
-            this.btnRun.TabIndex  = 4;
+            this.btnRun.Size      = new System.Drawing.Size(232, 28);
+            this.btnRun.TabIndex  = 3;
             this.btnRun.Text      = "\u25b6  Run";
             this.btnRun.UseVisualStyleBackColor = false;
             this.btnRun.Click    += new System.EventHandler(this.btnRun_Click);
@@ -264,13 +281,14 @@ namespace TestUtilApp.UI
             this.Controls.Add(this.pnlHeader);      // Top      → [5]
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Name = "AlgorithmListControl";
-            this.Size = new System.Drawing.Size(280, 667);
+            this.Size = new System.Drawing.Size(340, 667);
 
             this.pnlHeader.ResumeLayout(false);
             this.pnlSettings.ResumeLayout(false);
             this.pnlInputFrom.ResumeLayout(false);
             this.pnlInputFrom.PerformLayout();
             this.pnlPreview.ResumeLayout(false);
+            this.pnlPreviewHeader.ResumeLayout(false);
             this.pnlRun.ResumeLayout(false);
             this.contextMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreview)).EndInit();
@@ -282,6 +300,7 @@ namespace TestUtilApp.UI
         // ── Header ────────────────────────────────────────────────
         private System.Windows.Forms.Panel  pnlHeader;
         private System.Windows.Forms.Label  lblPipeline;
+        private System.Windows.Forms.Button btnPipelineView;
 
         // ── List ──────────────────────────────────────────────────
         private System.Windows.Forms.ListView              listView;
@@ -301,7 +320,9 @@ namespace TestUtilApp.UI
 
         // ── Preview ───────────────────────────────────────────────
         private System.Windows.Forms.Panel      pnlPreview;
+        private System.Windows.Forms.Panel      pnlPreviewHeader;
         private System.Windows.Forms.Label      lblPreviewTitle;
+        private System.Windows.Forms.Button     btnSavePreview;
         private System.Windows.Forms.PictureBox pictureBoxPreview;
 
         // ── Run bar ───────────────────────────────────────────────
@@ -309,7 +330,6 @@ namespace TestUtilApp.UI
         private System.Windows.Forms.Button btnMoveUp;
         private System.Windows.Forms.Button btnMoveDown;
         private System.Windows.Forms.Button btnRemove;
-        private System.Windows.Forms.Button btnPipelineView;
         private System.Windows.Forms.Button btnRun;
     }
 }

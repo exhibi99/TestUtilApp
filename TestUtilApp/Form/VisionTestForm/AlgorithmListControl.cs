@@ -44,6 +44,18 @@ namespace TestUtilApp.UI
             InitializeComponent();
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                DisposePreviewBitmaps();
+                _currentSettingsPanel?.Dispose();
+                _currentSettingsPanel = null;
+                components?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
         // ── Public API ────────────────────────────────────────────
 
         public void AddAlgorithm(IOpenCvAlgorithm algorithm)
@@ -230,9 +242,49 @@ namespace TestUtilApp.UI
         private void UpdatePreview()
         {
             int idx = SelectedIndex;
-            pictureBoxPreview.Image = (idx >= 0 && idx < _previewBitmaps.Count)
-                ? _previewBitmaps[idx]
-                : null;
+            var bmp = (idx >= 0 && idx < _previewBitmaps.Count) ? _previewBitmaps[idx] : null;
+            pictureBoxPreview.Image  = bmp;
+            btnSavePreview.Enabled   = bmp != null;
+            btnSavePreview.ForeColor = bmp != null
+                ? System.Drawing.Color.FromArgb(100, 200, 255)
+                : System.Drawing.Color.Gray;
+        }
+
+        private void btnSavePreview_Click(object sender, EventArgs e)
+        {
+            var bmp = pictureBoxPreview.Image as Bitmap;
+            if (bmp == null) return;
+
+            string defaultName = SelectedAlgorithm != null
+                ? $"step{SelectedIndex + 1}_{SelectedAlgorithm.Name}"
+                : "preview";
+
+            using (var dlg = new SaveFileDialog())
+            {
+                dlg.Title      = "Save Preview Image";
+                dlg.Filter     = "PNG Files|*.png|JPEG Files|*.jpg|BMP Files|*.bmp";
+                dlg.DefaultExt = "png";
+                dlg.FileName   = defaultName;
+
+                if (dlg.ShowDialog() != DialogResult.OK) return;
+
+                try
+                {
+                    var format = System.Drawing.Imaging.ImageFormat.Png;
+                    string ext = System.IO.Path.GetExtension(dlg.FileName).ToLowerInvariant();
+                    if (ext == ".jpg" || ext == ".jpeg")
+                        format = System.Drawing.Imaging.ImageFormat.Jpeg;
+                    else if (ext == ".bmp")
+                        format = System.Drawing.Imaging.ImageFormat.Bmp;
+
+                    bmp.Save(dlg.FileName, format);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Save error: {ex.Message}", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         private void DisposePreviewBitmaps()

@@ -19,6 +19,7 @@ namespace TestUtilApp.UI
             ("Acquire",   "Open Image", "이미지 열기"),
             ("Threshold", "Threshold",  "이진화"),
             ("Crop",      "Crop",       "자르기"),
+            ("Contour",   "Contour",    "윤곽선 검출"),
         };
 
         private static IOpenCvAlgorithm CreateAlgorithm(string typeName)
@@ -27,6 +28,7 @@ namespace TestUtilApp.UI
             {
                 case "Threshold": return new ThresholdAlgorithm();
                 case "Crop":      return new CropAlgorithm();
+                case "Contour":   return new ContourAlgorithm();
                 default:          return null;
             }
         }

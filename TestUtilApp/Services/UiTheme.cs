@@ -20,6 +20,9 @@ namespace TestUtilApp.Services
         public static readonly Color TextMuted = Color.FromArgb(160, 169, 181);
         public static readonly Color Accent = Color.FromArgb(0, 120, 215);
         public static readonly Color AccentHover = Color.FromArgb(22, 139, 236);
+        public static readonly Color TealAccent = Color.FromArgb(0, 140, 120);
+        public static readonly Color TealAccentHover = Color.FromArgb(0, 170, 148);
+        public static readonly Color TealAccentDown = Color.FromArgb(0, 110, 95);
         public static readonly Color Success = Color.FromArgb(88, 199, 121);
         public static readonly Color Warning = Color.FromArgb(245, 186, 65);
         public static readonly Color Error = Color.FromArgb(245, 99, 99);
@@ -54,22 +57,14 @@ namespace TestUtilApp.Services
 
         public static void ApplyNavigationButtonDefault(Button button)
         {
-            if (button == null)
-            {
-                return;
-            }
-
-            ApplyButton(button, false);
+            if (button == null) return;
+            ApplyButton(button, SurfaceAlt);   // non-primary → dark bg
         }
 
         public static void ApplyNavigationButtonActive(Button button)
         {
-            if (button == null)
-            {
-                return;
-            }
-
-            ApplyButton(button, true);
+            if (button == null) return;
+            ApplyButton(button, Accent);       // primary → blue bg
         }
 
         private static void ApplyControl(Control control)
@@ -105,7 +100,7 @@ namespace TestUtilApp.Services
             }
             else if (control is Button button)
             {
-                ApplyButton(button, IsPrimaryButton(button, originalBackColor));
+                ApplyButton(button, originalBackColor);
             }
             else if (control is TextBoxBase textBox)
             {
@@ -195,16 +190,39 @@ namespace TestUtilApp.Services
                 || string.Equals(button.Text, "Save", StringComparison.OrdinalIgnoreCase);
         }
 
-        private static void ApplyButton(Button button, bool isPrimary)
+        private static void ApplyButton(Button button, Color originalBackColor)
         {
             button.UseVisualStyleBackColor = false;
             button.FlatStyle = FlatStyle.Flat;
-            button.ForeColor = TextPrimary;
-            bool isNavyPanel = button.Parent?.Name == "topPanel";
-            button.BackColor = isPrimary ? Accent : (isNavyPanel ? NavyButton : SurfaceAlt);
-            button.FlatAppearance.BorderColor = isPrimary ? Accent : Border;
-            button.FlatAppearance.MouseOverBackColor = isPrimary ? AccentHover : SurfaceHover;
-            button.FlatAppearance.MouseDownBackColor = isPrimary ? Accent : Color.FromArgb(49, 55, 66);
+
+            bool isTeal    = originalBackColor.ToArgb() == TealAccent.ToArgb();
+            bool isPrimary = !isTeal && IsPrimaryButton(button, originalBackColor);
+            bool isNavy    = button.Parent?.Name == "topPanel";
+
+            if (isTeal)
+            {
+                button.ForeColor = Color.White;
+                button.BackColor = TealAccent;
+                button.FlatAppearance.BorderColor        = TealAccent;
+                button.FlatAppearance.MouseOverBackColor = TealAccentHover;
+                button.FlatAppearance.MouseDownBackColor = TealAccentDown;
+            }
+            else if (isPrimary)
+            {
+                button.ForeColor = Color.White;
+                button.BackColor = Accent;
+                button.FlatAppearance.BorderColor        = Accent;
+                button.FlatAppearance.MouseOverBackColor = AccentHover;
+                button.FlatAppearance.MouseDownBackColor = Accent;
+            }
+            else
+            {
+                button.ForeColor = TextPrimary;
+                button.BackColor = isNavy ? NavyButton : SurfaceAlt;
+                button.FlatAppearance.BorderColor        = Border;
+                button.FlatAppearance.MouseOverBackColor = SurfaceHover;
+                button.FlatAppearance.MouseDownBackColor = Color.FromArgb(49, 55, 66);
+            }
         }
 
         private static void ApplyTextBox(TextBoxBase textBox)

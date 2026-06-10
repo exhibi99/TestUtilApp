@@ -168,6 +168,7 @@
     <Compile Include="Form\VisionTestForm\OpenCV\Algorithms\AcquireAlgorithm.cs" />
     <Compile Include="Form\VisionTestForm\OpenCV\Algorithms\CropAlgorithm.cs" />
     <Compile Include="Form\VisionTestForm\OpenCV\Algorithms\ThresholdAlgorithm.cs" />
+    <Compile Include="Form\VisionTestForm\OpenCV\Algorithms\ContourAlgorithm.cs" />
     <Compile Include="Form\VisionTestForm\OpenCV\AlgorithmSettingsPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -182,6 +183,12 @@
     </Compile>
     <Compile Include="Form\VisionTestForm\OpenCV\CropSettingsPanel.Designer.cs">
       <DependentUpon>CropSettingsPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form\VisionTestForm\OpenCV\ContourSettingsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Form\VisionTestForm\OpenCV\ContourSettingsPanel.Designer.cs">
+      <DependentUpon>ContourSettingsPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="Form\VisionTestForm\OpenCV\AcquireDialog.cs">
       <SubType>Form</SubType>
@@ -284,6 +291,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form\VisionTestForm\OpenCV\ThresholdDialog.resx">
       <DependentUpon>ThresholdDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\VisionTestForm\AlgorithmListControl.resx">
+      <DependentUpon>AlgorithmListControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\VisionTestForm\OpenCV\ContourSettingsPanel.resx">
+      <DependentUpon>ContourSettingsPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\VisionTestForm\OpenCV\CropSettingsPanel.resx">
+      <DependentUpon>CropSettingsPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\VisionTestForm\OpenCV\ThresholdSettingsPanel.resx">
+      <DependentUpon>ThresholdSettingsPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form\VisionTestForm\OpenCvControl.resx">
       <DependentUpon>OpenCvControl.cs</DependentUpon>

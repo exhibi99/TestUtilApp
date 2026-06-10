@@ -14,7 +14,8 @@
       "Bash(powershell.exe -Command \"& ''C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe'' ''D:\\\\06_GitHub\\\\TestUtilApp\\\\TestUtilApp\\\\TestUtilApp.csproj'' /p:Configuration=Debug /p:Platform=AnyCPU /t:Build /v:minimal 2>&1\")",
       "PowerShell(cd \"C:\\\\GitHub\\\\TestUtilApp\"; & \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\18\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" TestUtilApp.sln /p:Configuration=Debug /t:Build /v:minimal 2>&1 | Where-Object { $_ -match \"error|warning MS|->|빌드\" } | Select-Object -Last 5)",
       "PowerShell(& \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" C:\\\\GitHub\\\\TestUtilApp\\\\TestUtilApp.sln /p:Configuration=Debug /nologo /v:minimal 2>&1)",
-      "PowerShell(& \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\18\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" C:\\\\GitHub\\\\TestUtilApp\\\\TestUtilApp.sln /p:Configuration=Debug /nologo /v:minimal 2>&1 | Where-Object { $_ -match \"error|warning|Build succeeded|FAILED\" } | Select-Object -Last 15)"
+      "PowerShell(& \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\18\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" C:\\\\GitHub\\\\TestUtilApp\\\\TestUtilApp.sln /p:Configuration=Debug /nologo /v:minimal 2>&1 | Where-Object { $_ -match \"error|warning|Build succeeded|FAILED\" } | Select-Object -Last 15)",
+      "Bash(Select-String -Pattern \"error CS|Build succeeded|Error\\\\\\(s\\\\\\)\")"
     ]
   }
 }

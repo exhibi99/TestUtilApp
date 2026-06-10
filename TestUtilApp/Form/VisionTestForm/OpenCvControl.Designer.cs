@@ -28,6 +28,7 @@ namespace TestUtilApp.UI
             this.lblSectionProcess = new System.Windows.Forms.Label();
             this.btnThreshold      = new TestUtilApp.UI.DarkButton();
             this.btnCrop           = new TestUtilApp.UI.DarkButton();
+            this.btnContour        = new TestUtilApp.UI.DarkButton();
             // ── Algorithm list ───────────────────────────────────
             this.algorithmListControl = new TestUtilApp.UI.AlgorithmListControl();
             // ── Image viewer ─────────────────────────────────────
@@ -54,6 +55,7 @@ namespace TestUtilApp.UI
             // pnlButtons  (DockLeft, 150px) – Acquire + algo buttons
             // ════════════════════════════════════════════════════
             // DockTop: 마지막에 Add된 컨트롤이 가장 위에 배치됨
+            this.pnlButtons.Controls.Add(this.btnContour);
             this.pnlButtons.Controls.Add(this.btnCrop);
             this.pnlButtons.Controls.Add(this.btnThreshold);
             this.pnlButtons.Controls.Add(this.lblSectionProcess);
@@ -117,12 +119,27 @@ namespace TestUtilApp.UI
             this.btnCrop.UseVisualStyleBackColor = false;
             this.btnCrop.Click += new System.EventHandler(this.btnCrop_Click);
 
+            // btnContour
+            this.btnContour.BackColor = System.Drawing.Color.FromArgb(40, 40, 42);
+            this.btnContour.Dock      = System.Windows.Forms.DockStyle.Top;
+            this.btnContour.Enabled   = false;
+            this.btnContour.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnContour.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(70, 70, 72);
+            this.btnContour.Font      = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnContour.ForeColor = System.Drawing.Color.FromArgb(180, 180, 180);
+            this.btnContour.Name      = "btnContour";
+            this.btnContour.Size      = new System.Drawing.Size(138, 36);
+            this.btnContour.TabIndex  = 3;
+            this.btnContour.Text      = "Contour";
+            this.btnContour.UseVisualStyleBackColor = false;
+            this.btnContour.Click += new System.EventHandler(this.btnContour_Click);
+
             // ════════════════════════════════════════════════════
-            // algorithmListControl  (DockRight, 280px)
+            // algorithmListControl  (DockRight, 340px)
             // ════════════════════════════════════════════════════
             this.algorithmListControl.Dock     = System.Windows.Forms.DockStyle.Right;
             this.algorithmListControl.Name     = "algorithmListControl";
-            this.algorithmListControl.Size     = new System.Drawing.Size(280, 667);
+            this.algorithmListControl.Size     = new System.Drawing.Size(340, 667);
             this.algorithmListControl.TabIndex = 1;
 
             // ════════════════════════════════════════════════════
@@ -238,6 +255,7 @@ namespace TestUtilApp.UI
         private System.Windows.Forms.Label  lblSectionProcess;
         private TestUtilApp.UI.DarkButton btnThreshold;
         private TestUtilApp.UI.DarkButton btnCrop;
+        private TestUtilApp.UI.DarkButton btnContour;
 
         // ── Algorithm list ───────────────────────────────────────
         private TestUtilApp.UI.AlgorithmListControl algorithmListControl;
