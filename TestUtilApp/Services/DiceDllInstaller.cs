@@ -23,8 +23,18 @@ namespace TestUtilApp.Services
 
         private static string FindSolutionDirectory()
         {
+            string exeDir = AppDomain.CurrentDomain.BaseDirectory;
+
+            // First, check if DICE folder exists in exe directory
+            string diceInExeDir = Path.Combine(exeDir, "DICE");
+            if (Directory.Exists(diceInExeDir))
+            {
+                return exeDir;
+            }
+
+            // Otherwise, try to find solution directory
             // bin\Debug (or bin\Release) → bin → project → solution
-            var dir = new System.IO.DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
+            var dir = new System.IO.DirectoryInfo(exeDir);
             while (dir != null)
             {
                 if (dir.Name.Equals("bin", StringComparison.OrdinalIgnoreCase) && dir.Parent != null)
@@ -34,7 +44,8 @@ namespace TestUtilApp.Services
                 }
                 dir = dir.Parent;
             }
-            return AppDomain.CurrentDomain.BaseDirectory;
+
+            return exeDir;
         }
 
         public static InstallResult Install(string diceVersion, string cudaVersion)

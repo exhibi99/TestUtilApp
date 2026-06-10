@@ -353,9 +353,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if not exist "$(TargetDir)DICE_Library.dll" copy /Y "$(SolutionDir)DICE\DICE_Library.dll" "$(TargetDir)DICE_Library.dll"
-if not exist "$(TargetDir)Python.Runtime.dll" copy /Y "$(SolutionDir)DICE\Python.Runtime.dll" "$(TargetDir)Python.Runtime.dll"
-if not exist "$(TargetDir)python3.dll" copy /Y "$(SolutionDir)DICE\python3.dll" "$(TargetDir)python3.dll"
-if not exist "$(TargetDir)python37.dll" copy /Y "$(SolutionDir)DICE\python37.dll" "$(TargetDir)python37.dll"</PostBuildEvent>
+    <PostBuildEvent>
+      if exist "$(SolutionDir)DICE" xcopy "$(SolutionDir)DICE" "$(TargetDir)DICE" /E /I /Y /Q
+    </PostBuildEvent>
   </PropertyGroup>
+
 </Project>

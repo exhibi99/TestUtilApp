@@ -116,13 +116,29 @@ namespace TestUtilApp.Dice
                     {
                         // v1: init with envPath and enginePath
                         Console.WriteLine($"DICE v1 initialization with envPath: {envPath}, enginePath: {enginePath}");
-                        result = DICE_Interface.init(envPath, enginePath);
+                        var method = typeof(DICE_Interface).GetMethod("init",
+                            System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static,
+                            null,
+                            new[] { typeof(string), typeof(string) },
+                            null);
+                        if (method != null)
+                        {
+                            result = (bool)method.Invoke(null, new object[] { envPath, enginePath });
+                        }
                     }
                     else
                     {
-                        // v2: init without arguments (or with different setup)
+                        // v2: init without arguments
                         Console.WriteLine($"DICE v2 initialization");
-                        result = DICE_Interface.init(envPath, enginePath);
+                        var method = typeof(DICE_Interface).GetMethod("init",
+                            System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static,
+                            null,
+                            Type.EmptyTypes,
+                            null);
+                        if (method != null)
+                        {
+                            result = (bool)method.Invoke(null, null);
+                        }
                     }
 
                     if (!result)
