@@ -79,6 +79,12 @@ namespace TestUtilApp.Models
         [JsonProperty]
         public string LastLabelGenSourceFolder { get; set; }
 
+        [Category("6. Last Paths")]
+        [DisplayName("Segmentation Source Folder")]
+        [Description("Last used segmentation source folder path")]
+        [JsonProperty]
+        public string LastSegmentSourceFolder { get; set; }
+
         [Category("7. Inspection")]
         [DisplayName("Inspection Spec JSON Path")]
         [Description("GMAP inspection spec JSON file path (GMAPInspSpec.json)")]
@@ -148,6 +154,12 @@ namespace TestUtilApp.Models
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [JsonProperty]
         public DiceModelSetting ClassifyModel_B { get; set; }
+
+        [DisplayName("Segmentation Model")]
+        [Description("DICE segmentation model settings")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [JsonProperty]
+        public DiceModelSetting SegmentModel { get; set; }
 
         public override string ToString()
         {

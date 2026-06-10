@@ -18,19 +18,23 @@ namespace TestUtilApp.Dice
         public static DiceDet DetectModel { get; private set; } = new DiceDet(nameof(DetectModel));
         public static DiceCls ClassifyModel_A { get; private set; } = new DiceCls(nameof(ClassifyModel_A));
         public static DiceCls ClassifyModel_B { get; private set; } = new DiceCls(nameof(ClassifyModel_B));
+        public static DiceSeg SegmentModel { get; private set; } = new DiceSeg(nameof(SegmentModel));
 
         private static bool useDetectModel = true;
         private static bool useClassifyModel_A = true;
         private static bool useClassifyModel_B = true;
+        private static bool useSegmentModel = true;
 
         private static string pathDetectModel = "";
         private static string pathClassifyModel_A = "";
         private static string pathClassifyModel_B = "";
+        private static string pathSegmentModel = "";
 
         private static readonly object syncRoot = new object();
         private static string loadedDetectModelPath = "";
         private static string loadedClassifyModelAPath = "";
         private static string loadedClassifyModelBPath = "";
+        private static string loadedSegmentModelPath = "";
 
         public static object lockObject { get; private set; }
 
@@ -135,6 +139,13 @@ namespace TestUtilApp.Dice
             return EnsureModelLoaded(nameof(ClassifyModel_B), path);
         }
 
+        public static bool EnsureSegmentModelLoaded(string path)
+        {
+            useSegmentModel = true;
+            pathSegmentModel = path;
+            return EnsureModelLoaded(nameof(SegmentModel), path);
+        }
+
         public static bool IsDetectModelLoaded(string path)
         {
             return IsModelLoaded(nameof(DetectModel), path);
@@ -148,6 +159,11 @@ namespace TestUtilApp.Dice
         public static bool IsClassifyModelBLoaded(string path)
         {
             return IsModelLoaded(nameof(ClassifyModel_B), path);
+        }
+
+        public static bool IsSegmentModelLoaded(string path)
+        {
+            return IsModelLoaded(nameof(SegmentModel), path);
         }
 
         private static bool EnsureModelLoaded(string model, string path)
@@ -211,6 +227,20 @@ namespace TestUtilApp.Dice
                         return result;
                     }
 
+                    if (model == nameof(SegmentModel) && useSegmentModel)
+                    {
+                        if (IsSegmentModelLoaded(normalizedPath))
+                        {
+                            return true;
+                        }
+
+                        bool result = SegmentModel.LoadModel(normalizedPath);
+                        loadedSegmentModelPath = result ? normalizedPath : "";
+                        RefreshLoadedState();
+                        if (!result) Console.WriteLine($@"{nameof(SegmentModel)}.LoadModel() is failed.");
+                        return result;
+                    }
+
                     return false;
                 }
                 catch (Exception e)
@@ -259,6 +289,9 @@ namespace TestUtilApp.Dice
                 case nameof(DiceManager.ClassifyModel_B):
                     return DiceManager.ClassifyModel_B.IsLoaded &&
                         (!checkPath || string.Equals(loadedClassifyModelBPath, normalizedPath, StringComparison.OrdinalIgnoreCase));
+                case nameof(DiceManager.SegmentModel):
+                    return DiceManager.SegmentModel.IsLoaded &&
+                        (!checkPath || string.Equals(loadedSegmentModelPath, normalizedPath, StringComparison.OrdinalIgnoreCase));
                 default:
 					return false;
 			}
@@ -285,7 +318,7 @@ namespace TestUtilApp.Dice
 
         private static void RefreshLoadedState()
         {
-            IsLoaded = DetectModel.IsLoaded || ClassifyModel_A.IsLoaded || ClassifyModel_B.IsLoaded;
+            IsLoaded = DetectModel.IsLoaded || ClassifyModel_A.IsLoaded || ClassifyModel_B.IsLoaded || SegmentModel.IsLoaded;
         }
 	}
 }

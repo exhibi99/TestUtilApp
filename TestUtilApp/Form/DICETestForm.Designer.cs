@@ -25,6 +25,7 @@ namespace TestUtilApp.UI
         {
             this.topPanel = new System.Windows.Forms.Panel();
             this.btnConfigEdit = new System.Windows.Forms.Button();
+            this.btnSegmentation = new System.Windows.Forms.Button();
             this.btnInspection = new System.Windows.Forms.Button();
             this.btnFilter = new System.Windows.Forms.Button();
             this.btnCrop = new System.Windows.Forms.Button();
@@ -43,6 +44,7 @@ namespace TestUtilApp.UI
             // 
             this.topPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(28)))), ((int)(((byte)(55)))));
             this.topPanel.Controls.Add(this.btnConfigEdit);
+            this.topPanel.Controls.Add(this.btnSegmentation);
             this.topPanel.Controls.Add(this.btnInspection);
             this.topPanel.Controls.Add(this.btnFilter);
             this.topPanel.Controls.Add(this.btnCrop);
@@ -71,7 +73,7 @@ namespace TestUtilApp.UI
             this.btnConfigEdit.Click += new System.EventHandler(this.btnConfigEdit_Click);
             // 
             // btnInspection
-            // 
+            //
             this.btnInspection.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(42)))), ((int)(((byte)(75)))));
             this.btnInspection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnInspection.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -83,6 +85,20 @@ namespace TestUtilApp.UI
             this.btnInspection.Text = "Inspect";
             this.btnInspection.UseVisualStyleBackColor = false;
             this.btnInspection.Click += new System.EventHandler(this.btnInspection_Click);
+            //
+            // btnSegmentation
+            //
+            this.btnSegmentation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(42)))), ((int)(((byte)(75)))));
+            this.btnSegmentation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSegmentation.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnSegmentation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.btnSegmentation.Location = new System.Drawing.Point(717, 12);
+            this.btnSegmentation.Name = "btnSegmentation";
+            this.btnSegmentation.Size = new System.Drawing.Size(150, 69);
+            this.btnSegmentation.TabIndex = 6;
+            this.btnSegmentation.Text = "Segmentation";
+            this.btnSegmentation.UseVisualStyleBackColor = false;
+            this.btnSegmentation.Click += new System.EventHandler(this.btnSegmentation_Click);
             // 
             // btnFilter
             // 
@@ -207,6 +223,7 @@ namespace TestUtilApp.UI
         private System.Windows.Forms.Button btnLabelGen;
         private System.Windows.Forms.Button btnFilter;
         private System.Windows.Forms.Button btnInspection;
+        private System.Windows.Forms.Button btnSegmentation;
         private System.Windows.Forms.Button btnConfigEdit;
         private System.Windows.Forms.Panel contentPanel;
         private System.Windows.Forms.Panel bottomPanel;

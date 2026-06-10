@@ -16,6 +16,7 @@ namespace TestUtilApp.UI
         private FilterControl _filterControl;
         private ConfigControl _configControl;
         private InspectionControl _inspectionControl;
+        private SegmentationControl _segmentationControl;
 
         private UserControl _currentControl;
         private Button _activeNavigationButton;
@@ -75,6 +76,7 @@ namespace TestUtilApp.UI
                 _configControl = new ConfigControl(_config, _configService);
                 _inspectionControl = new InspectionControl(_config, _configService);
                 _inspectionControl.NavigateToFileFilter += ShowFilterControl;
+                _segmentationControl = new SegmentationControl(_config, _configService);
             }
             catch (Exception ex)
             {
@@ -157,6 +159,11 @@ namespace TestUtilApp.UI
             ShowInspectionControl();
         }
 
+        private void btnSegmentation_Click(object sender, EventArgs e)
+        {
+            ShowSegmentationControl();
+        }
+
         private void ShowCropControl()
         {
             LoadControlToPanel(_cropControl);
@@ -199,6 +206,13 @@ namespace TestUtilApp.UI
             UpdateStatusLabel("Auto Inspection");
         }
 
+        private void ShowSegmentationControl()
+        {
+            LoadControlToPanel(_segmentationControl);
+            UpdateButtonStates(btnSegmentation);
+            UpdateStatusLabel("Segmentation");
+        }
+
         private void UpdateButtonStates(Button activeButton)
         {
             _activeNavigationButton = activeButton;
@@ -212,6 +226,7 @@ namespace TestUtilApp.UI
             UiTheme.ApplyNavigationButtonDefault(btnLabelGen);
             UiTheme.ApplyNavigationButtonDefault(btnFilter);
             UiTheme.ApplyNavigationButtonDefault(btnInspection);
+            UiTheme.ApplyNavigationButtonDefault(btnSegmentation);
             UiTheme.ApplyNavigationButtonDefault(btnConfigEdit);
 
             if (_activeNavigationButton != null)
@@ -236,7 +251,8 @@ namespace TestUtilApp.UI
                     _labelGenControl,
                     _filterControl,
                     _configControl,
-                    _inspectionControl
+                    _inspectionControl,
+                    _segmentationControl
                 };
 
                 foreach (UserControl control in controls)

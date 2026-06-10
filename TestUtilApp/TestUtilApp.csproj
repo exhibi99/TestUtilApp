@@ -152,6 +152,12 @@
     <Compile Include="Form\DiceTestForm\InspectionControl.Designer.cs">
       <DependentUpon>InspectionControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form\DiceTestForm\SegmentationControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Form\DiceTestForm\SegmentationControl.Designer.cs">
+      <DependentUpon>SegmentationControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form\DiceTestForm\LabelGeneratorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
