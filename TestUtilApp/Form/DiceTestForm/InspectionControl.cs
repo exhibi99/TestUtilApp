@@ -674,12 +674,12 @@ namespace TestUtilApp.UI
             sb.AppendLine();
             sb.Append("Start inspection with the above conditions?");
 
-            var result = MessageBox.Show(
-                sb.ToString(),
+            var result = ThemedDialog.Show(
+                this,
                 "Inspection Conditions Confirmation",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Information,
-                MessageBoxDefaultButton.Button1);
+                sb.ToString(),
+                ThemedDialog.DialogButtons.YesNo,
+                ThemedDialog.DialogIcon.Question);
 
             return result == DialogResult.Yes;
         }
