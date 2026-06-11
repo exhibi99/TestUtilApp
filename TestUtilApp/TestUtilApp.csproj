@@ -274,6 +274,7 @@
     <Compile Include="Services\FileExporter.cs" />
     <Compile Include="Services\CudaDetector.cs" />
     <Compile Include="Services\DiceDllInstaller.cs" />
+    <Compile Include="Services\Logger.cs" />
     <Compile Include="Services\UiTheme.cs" />
     <Compile Include="Editor\FolderBrowserEditor.cs" />
     <Compile Include="Services\ImageProcessorService.cs" />

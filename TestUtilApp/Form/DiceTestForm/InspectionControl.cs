@@ -648,14 +648,17 @@ namespace TestUtilApp.UI
             {
                 foreach (var cond in activeConditions)
                 {
-                    string keyword = string.IsNullOrWhiteSpace(cond.FileNameKeyword) ? "*" : cond.FileNameKeyword;
+                    string keyword = string.IsNullOrWhiteSpace(cond.FileNameKeyword) ? "(All Files)" : cond.FileNameKeyword;
                     string detectClasses = cond.DetectClassKeywords?.Count > 0
                         ? string.Join(", ", cond.DetectClassKeywords)
                         : "All";
                     string confStr = cond.MinConfidence > 0f
                         ? cond.MinConfidence.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)
                         : "default";
-                    sb.AppendLine($"  • Filename: {keyword}  |  Detect: {detectClasses}  |  Model: {NormalizeClassifyModel(cond.ClassifyModel)}  |  MinConf: {confStr}");
+                    sb.AppendLine($"  • Filename(Keyword Include): {keyword} ");
+                    sb.AppendLine($"  • Detect: {detectClasses}");
+                    sb.AppendLine($"  • Classify Model: {NormalizeClassifyModel(cond.ClassifyModel)}  |  MinConf: {confStr}");
+                    sb.AppendLine($"------------------------------------------------------");
                 }
             }
             sb.AppendLine();

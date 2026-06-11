@@ -53,8 +53,13 @@ namespace TestUtilApp.Services
             string destDir = AppDomain.CurrentDomain.BaseDirectory;
             string srcDir  = ResolveSourceFolder(diceVersion, cudaVersion);
 
+            Logger.Info($"InstallDiceDlls: version={diceVersion}, cuda={cudaVersion}, src={srcDir}");
+
             if (!Directory.Exists(srcDir))
+            {
+                Logger.Warn($"Source folder not found: {srcDir}");
                 return InstallResult.SourceNotFound;
+            }
 
             bool anyLocked = false;
             bool anyChanged = false;
@@ -64,108 +69,85 @@ namespace TestUtilApp.Services
                 string fileName = Path.GetFileName(srcFile);
                 string destFile = Path.Combine(destDir, fileName);
 
-                // 내용이 같으면 건너뜀
                 if (File.Exists(destFile) && FilesAreEqual(srcFile, destFile))
+                {
+                    Logger.Info($"  [SKIP] Already current: {fileName}");
                     continue;
+                }
 
                 try
                 {
                     File.Copy(srcFile, destFile, overwrite: true);
+                    Logger.Info($"  [COPY] {fileName}");
                     anyChanged = true;
                 }
-                catch (IOException)
+                catch (IOException ioEx)
                 {
-                    // DLL이 이미 프로세스에 로드되어 잠긴 경우
+                    Logger.Warn($"  [LOCKED] {fileName}: {ioEx.Message}");
                     anyLocked = true;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Logger.Error($"  [ERROR] {fileName}", ex);
                     return InstallResult.Error;
                 }
             }
 
-            if (anyLocked)  return InstallResult.FileLocked;
-            if (anyChanged) return InstallResult.Success;
-            return InstallResult.AlreadyCurrent;
+            var result = anyLocked ? InstallResult.FileLocked
+                       : anyChanged ? InstallResult.Success
+                       : InstallResult.AlreadyCurrent;
+
+            Logger.Info($"InstallDiceDlls result: {result}");
+            return result;
         }
 
         public static void DeleteOldDlls(int timeoutMs = 5000)
         {
             string destDir = AppDomain.CurrentDomain.BaseDirectory;
-            string logFile = Path.Combine(destDir, "DLL_Delete_Log.txt");
 
             try
             {
-                using (var log = new System.IO.StreamWriter(logFile, false))
+                Logger.Info($"DeleteOldDlls started (timeout: {timeoutMs}ms, dir: {destDir})");
+
+                string[] baseFileNames = { "Python.Runtime.dll", "DICE_Library.dll" };
+
+                var filesToDelete = new System.Collections.Generic.HashSet<string>(baseFileNames, StringComparer.OrdinalIgnoreCase);
+
+                var pythonVersionDlls = Directory.GetFiles(destDir, "python[0-9]*.dll", SearchOption.TopDirectoryOnly);
+                foreach (var pythonDll in pythonVersionDlls)
+                    filesToDelete.Add(Path.GetFileName(pythonDll));
+
+                Logger.Info($"Files to delete: {string.Join(", ", filesToDelete)}");
+
+                foreach (string fileName in filesToDelete)
                 {
-                    log.WriteLine($"=== DeleteOldDlls Started at {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} ===");
-                    log.WriteLine($"Timeout: {timeoutMs}ms");
-                    log.WriteLine($"Target directory: {destDir}");
-                    log.Flush();
-
-                    string[] baseFileNames = { "Python.Runtime.dll", "DICE_Library.dll" };
-
-                    // 삭제할 파일 목록 (중복 제거를 위해 HashSet 사용)
-                    var filesToDelete = new System.Collections.Generic.HashSet<string>(baseFileNames, StringComparer.OrdinalIgnoreCase);
-
-                    // Python 버전 DLL 찾기 (python3.dll, python37.dll, python38.dll, python39.dll)
-                    // Note: "python*.dll" would also match "Python.Runtime.dll", so we're more specific
-                    var pythonVersionDlls = Directory.GetFiles(destDir, "python[0-9]*.dll", SearchOption.TopDirectoryOnly);
-                    foreach (var pythonDll in pythonVersionDlls)
+                    string fullPath = Path.Combine(destDir, fileName);
+                    if (!File.Exists(fullPath))
                     {
-                        string fileName = Path.GetFileName(pythonDll);
-                        filesToDelete.Add(fileName);
+                        Logger.Info($"[SKIP] Not found: {fileName}");
+                        continue;
                     }
 
-                    log.WriteLine($"Files to delete: {filesToDelete.Count}");
-                    foreach (var f in filesToDelete)
-                        log.WriteLine($"  - {f}");
-                    log.Flush();
+                    Logger.Info($"[START] Deleting: {fileName}");
+                    bool deleted = RetryDelete(fullPath, timeoutMs);
 
-                    foreach (string fileName in filesToDelete)
-                    {
-                        string fullPath = Path.Combine(destDir, fileName);
-                        if (!File.Exists(fullPath))
-                        {
-                            log.WriteLine($"[SKIP] File not found: {fileName}");
-                            log.Flush();
-                            continue;
-                        }
-
-                        // Try to delete with retry logic
-                        log.WriteLine($"[START] Deleting: {fileName}");
-                        log.Flush();
-
-                        bool deleted = RetryDelete(fullPath, timeoutMs, log);
-
-                        if (!deleted)
-                        {
-                            log.WriteLine($"[FAILED] Failed to delete after {timeoutMs}ms: {fileName}");
-                        }
-                        else
-                        {
-                            log.WriteLine($"[SUCCESS] Deleted: {fileName}");
-                        }
-                        log.Flush();
-                    }
-
-                    log.WriteLine($"=== DeleteOldDlls Completed at {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} ===");
-                    log.Flush();
+                    if (deleted)
+                        Logger.Info($"[OK] Deleted: {fileName}");
+                    else
+                        Logger.Warn($"[FAILED] Could not delete after {timeoutMs}ms: {fileName}");
                 }
 
-                // 로그 파일 내용을 Console에도 출력
-                string logContent = File.ReadAllText(logFile);
-                Console.WriteLine(logContent);
+                Logger.Info("DeleteOldDlls completed");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in DeleteOldDlls: {ex.Message}");
+                Logger.Error("Error in DeleteOldDlls", ex);
             }
         }
 
-        private static bool RetryDelete(string filePath, int timeoutMs, System.IO.StreamWriter log)
+        private static bool RetryDelete(string filePath, int timeoutMs)
         {
-            int checkInterval = 100; // ms
+            int checkInterval = 100;
             int elapsed = 0;
             int attemptCount = 0;
 
@@ -176,33 +158,28 @@ namespace TestUtilApp.Services
                 {
                     if (!File.Exists(filePath))
                     {
-                        log.WriteLine($"  [Attempt {attemptCount}] File already deleted");
+                        Logger.Info($"  [#{attemptCount}] Already deleted");
                         return true;
                     }
 
                     File.Delete(filePath);
-                    log.WriteLine($"  [Attempt {attemptCount}] ✓ Successfully deleted");
-                    return true; // Successfully deleted
+                    Logger.Info($"  [#{attemptCount}] Deleted successfully");
+                    return true;
                 }
                 catch (IOException ioEx)
                 {
-                    // File still locked, retry
-                    log.WriteLine($"  [Attempt {attemptCount}] ✗ Locked - {ioEx.Message} (elapsed: {elapsed}ms/{timeoutMs}ms)");
-                    log.Flush();
+                    Logger.Info($"  [#{attemptCount}] Locked ({elapsed}ms): {ioEx.Message}");
                 }
                 catch (UnauthorizedAccessException uaEx)
                 {
-                    // File in use by another process, retry
-                    log.WriteLine($"  [Attempt {attemptCount}] ✗ Access Denied - {uaEx.Message} (elapsed: {elapsed}ms/{timeoutMs}ms)");
-                    log.Flush();
+                    Logger.Info($"  [#{attemptCount}] Access denied ({elapsed}ms): {uaEx.Message}");
                 }
                 catch (Exception ex)
                 {
-                    log.WriteLine($"  [Attempt {attemptCount}] ✗ Error - {ex.GetType().Name}: {ex.Message}");
-                    return false; // Other error, don't retry
+                    Logger.Error($"  [#{attemptCount}] Unexpected error", ex);
+                    return false;
                 }
 
-                // Wait before next retry attempt (for all retryable exceptions)
                 if (elapsed + checkInterval >= timeoutMs)
                     break;
 
@@ -210,8 +187,8 @@ namespace TestUtilApp.Services
                 elapsed += checkInterval;
             }
 
-            log.WriteLine($"  [TIMEOUT] Gave up after {attemptCount} attempts ({elapsed}ms)");
-            return false; // Timeout reached
+            Logger.Warn($"  [TIMEOUT] Gave up after {attemptCount} attempts ({elapsed}ms)");
+            return false;
         }
 
         private static string SelectFolderName(string diceVersion, string cudaVersion)

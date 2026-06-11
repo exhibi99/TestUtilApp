@@ -24,6 +24,9 @@ namespace TestUtilApp
             _configService = new ConfigService();
             _config = _configService.LoadConfig();
 
+            Logger.Info("=== Application started ===");
+            Logger.Info($"DiceVersion={_config.DiceVersion}");
+
             // Clean up old DLLs and install the correct version BEFORE initializing DiceManager
             // This prevents DLL lock issues when switching versions
             DiceDllInstaller.DeleteOldDlls();
@@ -63,6 +66,7 @@ namespace TestUtilApp
             bool isV2 = !string.Equals(_config.DiceVersion, "v1", StringComparison.OrdinalIgnoreCase);
             _config.DiceVersion = isV2 ? "v1" : "v2";
             _configService.SaveConfig(_config);
+            Logger.Info($"DICE version toggled: {(isV2 ? "v2" : "v1")} → {_config.DiceVersion}");
 
             // Update DiceManager with new version
             DiceManager.SetDiceVersion(_config.DiceVersion);
@@ -83,37 +87,41 @@ namespace TestUtilApp
         {
             try
             {
-                // Step 1: Unload all loaded models to release DLL locks
+                Logger.Info("RestartWithDllUnload: unloading models...");
                 DiceManager.DetectModel?.UnloadModel();
                 DiceManager.ClassifyModel_A?.UnloadModel();
                 DiceManager.ClassifyModel_B?.UnloadModel();
                 DiceManager.SegmentModel?.UnloadModel();
+                Logger.Info("Models unloaded. Running GC...");
 
-                // Step 2: Force garbage collection and finalization
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
                 GC.Collect();
 
-                // Step 3: Brief delay to allow DLL to be released from memory
                 System.Threading.Thread.Sleep(500);
 
-                // Step 4: Wait for DLL locks to be released (max 5 seconds)
+                Logger.Info("Waiting for DLL unlock (max 5s)...");
                 bool lockReleased = WaitForDllUnlock(5000);
+
                 if (!lockReleased)
                 {
+                    Logger.Warn("DLL unlock timeout — restarting anyway");
                     MessageBox.Show(
                         "Some DLL files are still in use.\n\nThe app will restart and try again.",
                         "DLL Unlock Timeout",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
                 }
+                else
+                {
+                    Logger.Info("DLLs unlocked. Restarting...");
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error during DLL unload: {ex.Message}");
+                Logger.Error("Error during DLL unload", ex);
             }
 
-            // Step 5: Restart application
             Application.Restart();
             Environment.Exit(0);
         }
@@ -172,13 +180,13 @@ namespace TestUtilApp
             }
             catch (IOException ex)
             {
-                Console.WriteLine($"DLL locked: {filePath} - {ex.Message}");
-                return true; // Locked
+                Logger.Info($"DLL locked: {Path.GetFileName(filePath)} — {ex.Message}");
+                return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error checking DLL lock: {ex.Message}");
-                return true; // Other errors = assume locked
+                Logger.Error($"Error checking DLL lock: {filePath}", ex);
+                return true;
             }
         }
 
