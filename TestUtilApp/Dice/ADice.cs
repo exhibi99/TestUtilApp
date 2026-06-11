@@ -90,6 +90,7 @@ namespace TestUtilApp.Dice
         public void UnloadModel()
         {
             IsLoaded = false;
+            Model = null;  // Release the Model object reference so DLL can be unloaded
         }
 
         protected virtual string _Inference(Mat[] imgs) //다중 이미지 inference

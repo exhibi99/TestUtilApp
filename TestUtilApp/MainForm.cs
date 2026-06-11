@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using TestUtilApp.Dice;
 using TestUtilApp.Models;
@@ -23,6 +24,11 @@ namespace TestUtilApp
             _configService = new ConfigService();
             _config = _configService.LoadConfig();
 
+            // Clean up old DLLs and install the correct version BEFORE initializing DiceManager
+            // This prevents DLL lock issues when switching versions
+            DiceDllInstaller.DeleteOldDlls();
+            InstallDiceDlls(silent: true);
+
             InitializeTabs();
 
             tabControlMain.SelectedTab = tabDiceTest;
@@ -30,10 +36,6 @@ namespace TestUtilApp
 
             ShowGpuInfo();
             RefreshDiceVersionButton();
-
-            // Clean up old DLLs and install the correct version at startup
-            DiceDllInstaller.DeleteOldDlls();
-            InstallDiceDlls(silent: true);
         }
 
         private void ShowGpuInfo()
@@ -73,8 +75,110 @@ namespace TestUtilApp
 
             if (dr == DialogResult.OK)
             {
-                Application.Restart();
-                Environment.Exit(0);
+                RestartWithDllUnload();
+            }
+        }
+
+        private void RestartWithDllUnload()
+        {
+            try
+            {
+                // Step 1: Unload all loaded models to release DLL locks
+                DiceManager.DetectModel?.UnloadModel();
+                DiceManager.ClassifyModel_A?.UnloadModel();
+                DiceManager.ClassifyModel_B?.UnloadModel();
+                DiceManager.SegmentModel?.UnloadModel();
+
+                // Step 2: Force garbage collection and finalization
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+
+                // Step 3: Brief delay to allow DLL to be released from memory
+                System.Threading.Thread.Sleep(500);
+
+                // Step 4: Wait for DLL locks to be released (max 5 seconds)
+                bool lockReleased = WaitForDllUnlock(5000);
+                if (!lockReleased)
+                {
+                    MessageBox.Show(
+                        "Some DLL files are still in use.\n\nThe app will restart and try again.",
+                        "DLL Unlock Timeout",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error during DLL unload: {ex.Message}");
+            }
+
+            // Step 5: Restart application
+            Application.Restart();
+            Environment.Exit(0);
+        }
+
+        private bool WaitForDllUnlock(int timeoutMs)
+        {
+            string exeDir = AppDomain.CurrentDomain.BaseDirectory;
+            string[] dllFiles = { "DICE_Library.dll", "Python.Runtime.dll" };
+            int checkInterval = 100; // ms
+            int elapsed = 0;
+
+            while (elapsed < timeoutMs)
+            {
+                bool allUnlocked = true;
+
+                foreach (string dllName in dllFiles)
+                {
+                    string dllPath = Path.Combine(exeDir, dllName);
+                    if (!File.Exists(dllPath))
+                        continue; // File doesn't exist, consider it unlocked
+
+                    // Try to rename file temporarily to check if it's locked
+                    // This is the most reliable way to detect file locks
+                    if (IsDllLocked(dllPath))
+                    {
+                        allUnlocked = false;
+                        break;
+                    }
+                }
+
+                if (allUnlocked)
+                    return true; // All DLLs unlocked
+
+                System.Threading.Thread.Sleep(checkInterval);
+                elapsed += checkInterval;
+            }
+
+            return false; // Timeout reached
+        }
+
+        private bool IsDllLocked(string filePath)
+        {
+            try
+            {
+                // Most reliable way: try to rename the file temporarily
+                // If we can move it, the file is not locked
+                string tempPath = filePath + ".tmp";
+
+                // Delete temp file if it exists from previous attempt
+                if (File.Exists(tempPath))
+                    File.Delete(tempPath);
+
+                File.Move(filePath, tempPath);
+                File.Move(tempPath, filePath);
+                return false; // Not locked - successfully renamed and restored
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine($"DLL locked: {filePath} - {ex.Message}");
+                return true; // Locked
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error checking DLL lock: {ex.Message}");
+                return true; // Other errors = assume locked
             }
         }
 
