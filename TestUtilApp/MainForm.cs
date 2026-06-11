@@ -30,6 +30,9 @@ namespace TestUtilApp
 
             ShowGpuInfo();
             RefreshDiceVersionButton();
+
+            // Clean up old DLLs and install the correct version at startup
+            DiceDllInstaller.DeleteOldDlls();
             InstallDiceDlls(silent: true);
         }
 
@@ -58,14 +61,21 @@ namespace TestUtilApp
             bool isV2 = !string.Equals(_config.DiceVersion, "v1", StringComparison.OrdinalIgnoreCase);
             _config.DiceVersion = isV2 ? "v1" : "v2";
             _configService.SaveConfig(_config);
-            RefreshDiceVersionButton();
 
             // Update DiceManager with new version
             DiceManager.SetDiceVersion(_config.DiceVersion);
 
-            // 버전 변경 시 기존 파일 삭제 후 새로운 버전 파일 복사
-            DiceDllInstaller.DeleteOldDlls();
-            InstallDiceDlls(silent: false, versionChanged: true);
+            // DLL switching requires app restart due to file locks in memory
+            DialogResult dr = MessageBox.Show(
+                "DICE version will be switched on next startup.\n\nPlease click OK to restart the app.",
+                "Restart Required",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            if (dr == DialogResult.OK)
+            {
+                Application.Restart();
+                Environment.Exit(0);
+            }
         }
 
         private void InstallDiceDlls(bool silent, bool versionChanged = false)

@@ -1,15 +1,16 @@
-﻿using System;
+﻿using OpenCvSharp;
+using OpenCvSharp.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using OpenCvSharp;
-using OpenCvSharp.Extensions;
 using TestUtilApp.Dice;
 using TestUtilApp.Models;
 using TestUtilApp.Services;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace TestUtilApp.UI
 {
@@ -949,7 +950,7 @@ namespace TestUtilApp.UI
                 classifyResult.IndexOf("OK", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
-        private void ClassifyCroppedRegion(Mat croppedRegion, string classifyModel, out string classifyResult, out float confidence)
+        private void ClassifyCroppedRegion(Mat croppedRegion, string classifyModel, float minConf, out string classifyResult, out float confidence)
         {
             classifyResult = "UNKNOWN";
             confidence = 0f;
@@ -966,6 +967,11 @@ namespace TestUtilApp.UI
 
             classifyResult = clsResult[0].class_name ?? "UNKNOWN";
             confidence = GetMaxConfidence(clsResult[0].conf);
+
+            if (confidence < minConf)
+            {
+                classifyResult = "NG";
+            }
         }
 
         private float GetMaxConfidence(IEnumerable<float> confidenceValues)
@@ -1034,6 +1040,8 @@ namespace TestUtilApp.UI
 
                     var matchingDetections = detectionResults[0].listRect
                         .Where(detection => IsDetectClassAllowed(condition, detection.class_name))
+                        .GroupBy(detection => detection.class_name)
+                        .Select(group => group.OrderByDescending(d => d.conf).First())
                         .ToList();
 
                     result.DetectedCount = matchingDetections.Count;
@@ -1064,7 +1072,7 @@ namespace TestUtilApp.UI
                         OpenCvSharp.Rect safeRect = GetSafeRect(bbox, originalImage.Width, originalImage.Height);
                         using (Mat croppedRegion = new Mat(originalImage, safeRect))
                         {
-                            ClassifyCroppedRegion(croppedRegion, classifyModel, out string classifyResult, out float confidence);
+                            ClassifyCroppedRegion(croppedRegion, classifyModel, minConf, out string classifyResult, out float confidence);
 
                             var detail = new ClassificationDetail
                             {
@@ -1088,7 +1096,10 @@ namespace TestUtilApp.UI
 
                     var classificationNg = result.Model_A_Results
                         .Concat(result.Model_B_Results)
-                        .FirstOrDefault(detail => IsClassificationNg(detail.Result) && detail.Confidence >= minConf);
+                        .FirstOrDefault((detail =>
+                         (IsClassificationNg(detail.Result)) ||
+                         (IsClassificationOk(detail.Result) && detail.Confidence < minConf)
+                         ));
 
                     if (missingDetectClasses.Count > 0)
                     {

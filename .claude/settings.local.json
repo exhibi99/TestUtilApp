@@ -24,7 +24,10 @@
       "Bash(cp C:/GitHub/TestUtilApp/DICE/01_DICEv1/DICE_Library.dll C:/GitHub/TestUtilApp/DICE/; cp C:/GitHub/TestUtilApp/DICE/01_DICEv1/Python.Runtime.dll C:/GitHub/TestUtilApp/DICE/; cp C:/GitHub/TestUtilApp/DICE/01_DICEv1/python*.dll C:/GitHub/TestUtilApp/DICE/; ls -1 C:/GitHub/TestUtilApp/DICE/*.dll)",
       "Bash(mkdir -p C:/GitHub/TestUtilApp/TestUtilApp/bin/Debug)",
       "Bash(cp C:/GitHub/TestUtilApp/DICE/01_DICEv1/DICE_Library.dll C:/GitHub/TestUtilApp/TestUtilApp/bin/Debug/)",
-      "Bash(cp C:/GitHub/TestUtilApp/DICE/01_DICEv1/Python.Runtime.dll C:/GitHub/TestUtilApp/TestUtilApp/bin/Debug/)"
+      "Bash(cp C:/GitHub/TestUtilApp/DICE/01_DICEv1/Python.Runtime.dll C:/GitHub/TestUtilApp/TestUtilApp/bin/Debug/)",
+      "Bash(Select-Object FullName, PSIsContainer)",
+      "Bash(Format-Table -AutoSize)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\GitHub\\\\TestUtilApp\\\\DICE\" -Force | Where-Object { -not $_.PSIsContainer })"
     ]
   }
 }

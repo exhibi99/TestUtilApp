@@ -6,16 +6,16 @@ using TestUtilApp.Services;
 
 namespace TestUtilApp.Dice
 {
-	class DiceManager
-	{
+    class DiceManager
+    {
         public static readonly string dicePath = "C:\\DICE_PACKAGE";
-		public static readonly string envPath = dicePath + "\\env\\DICE_ENV";
-		public static readonly string enginePath = dicePath + "\\code\\engine";
+        public static readonly string envPath = dicePath + "\\env\\DICE_ENV";
+        public static readonly string enginePath = dicePath + "\\code\\engine";
 
-		public static string Version { get; private set; }
-		public static bool IsInit { get; private set; }
-		public static bool IsLoaded { get; private set; }
-		private static string _diceVersion = "v2";
+        public static string Version { get; private set; }
+        public static bool IsInit { get; private set; }
+        public static bool IsLoaded { get; private set; }
+        private static string _diceVersion = "v2";
 
         public static DiceDet DetectModel { get; private set; } = new DiceDet(nameof(DetectModel));
         public static DiceCls ClassifyModel_A { get; private set; } = new DiceCls(nameof(ClassifyModel_A));
@@ -55,19 +55,19 @@ namespace TestUtilApp.Dice
         }
 
         public static void SetClassifyModel_A(bool use, string path)
-		{
+        {
             useClassifyModel_A = use;
             pathClassifyModel_A = path;
-		}
+        }
 
-		public static void SetClassifyModel_B(bool use, string path)
-		{
+        public static void SetClassifyModel_B(bool use, string path)
+        {
             useClassifyModel_B = use;
             pathClassifyModel_B = path;
         }
 
-		public static bool Initialize()
-		{
+        public static bool Initialize()
+        {
             bool result = EnsureInitialized();
             if (!result)
             {
@@ -91,7 +91,7 @@ namespace TestUtilApp.Dice
 
             RefreshLoadedState();
             return result;
-		}
+        }
 
         public static bool EnsureInitialized()
         {
@@ -233,7 +233,7 @@ namespace TestUtilApp.Dice
                             return true;
                         }
 
-                        bool result = DetectModel.LoadModel(normalizedPath);
+                        bool result = DetectModel.LoadModel(normalizedPath, _diceVersion);
                         loadedDetectModelPath = result ? normalizedPath : "";
                         RefreshLoadedState();
                         if (!result) Console.WriteLine($@"{nameof(DetectModel)}.LoadModel() is failed.");
@@ -247,7 +247,7 @@ namespace TestUtilApp.Dice
                             return true;
                         }
 
-                        bool result = ClassifyModel_A.LoadModel(normalizedPath);
+                        bool result = ClassifyModel_A.LoadModel(normalizedPath, _diceVersion);
                         loadedClassifyModelAPath = result ? normalizedPath : "";
                         RefreshLoadedState();
                         if (!result) Console.WriteLine($@"{nameof(ClassifyModel_A)}.LoadModel() is failed.");
@@ -261,7 +261,7 @@ namespace TestUtilApp.Dice
                             return true;
                         }
 
-                        bool result = ClassifyModel_B.LoadModel(normalizedPath);
+                        bool result = ClassifyModel_B.LoadModel(normalizedPath, _diceVersion);
                         loadedClassifyModelBPath = result ? normalizedPath : "";
                         RefreshLoadedState();
                         if (!result) Console.WriteLine($@"{nameof(ClassifyModel_B)}.LoadModel() is failed.");
@@ -275,7 +275,7 @@ namespace TestUtilApp.Dice
                             return true;
                         }
 
-                        bool result = SegmentModel.LoadModel(normalizedPath);
+                        bool result = SegmentModel.LoadModel(normalizedPath, _diceVersion);
                         loadedSegmentModelPath = result ? normalizedPath : "";
                         RefreshLoadedState();
                         if (!result) Console.WriteLine($@"{nameof(SegmentModel)}.LoadModel() is failed.");
@@ -294,25 +294,25 @@ namespace TestUtilApp.Dice
             }
         }
 
-		public static bool ReloadModel(string model, string path)
-		{
+        public static bool ReloadModel(string model, string path)
+        {
             return EnsureModelLoaded(model, path);
-		}
+        }
 
-		public static bool IsLoad(string model)
-		{
-			switch (model)
-			{
-				case nameof(DiceManager.DetectModel):
-					return DiceManager.DetectModel.IsLoaded;
+        public static bool IsLoad(string model)
+        {
+            switch (model)
+            {
+                case nameof(DiceManager.DetectModel):
+                    return DiceManager.DetectModel.IsLoaded;
                 case nameof(DiceManager.ClassifyModel_A):
                     return DiceManager.ClassifyModel_A.IsLoaded;
                 case nameof(DiceManager.ClassifyModel_B):
                     return DiceManager.ClassifyModel_B.IsLoaded;
                 default:
-					return false;
-			}
-		}
+                    return false;
+            }
+        }
 
         private static bool IsModelLoaded(string model, string path)
         {
@@ -321,7 +321,7 @@ namespace TestUtilApp.Dice
 
             switch (model)
             {
-				case nameof(DiceManager.DetectModel):
+                case nameof(DiceManager.DetectModel):
                     return DiceManager.DetectModel.IsLoaded &&
                         (!checkPath || string.Equals(loadedDetectModelPath, normalizedPath, StringComparison.OrdinalIgnoreCase));
                 case nameof(DiceManager.ClassifyModel_A):
@@ -334,8 +334,8 @@ namespace TestUtilApp.Dice
                     return DiceManager.SegmentModel.IsLoaded &&
                         (!checkPath || string.Equals(loadedSegmentModelPath, normalizedPath, StringComparison.OrdinalIgnoreCase));
                 default:
-					return false;
-			}
+                    return false;
+            }
         }
 
         private static string NormalizeModelPath(string path)
@@ -361,5 +361,5 @@ namespace TestUtilApp.Dice
         {
             IsLoaded = DetectModel.IsLoaded || ClassifyModel_A.IsLoaded || ClassifyModel_B.IsLoaded || SegmentModel.IsLoaded;
         }
-	}
+    }
 }

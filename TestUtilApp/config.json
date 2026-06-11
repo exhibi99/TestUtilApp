@@ -108,7 +108,7 @@
   "LastCropSourceFolder": "D:\\tmp11\\01_Training\\2nd\\01_Detect\\260604_1PVT",
   "LastClassifySourceFolder": "D:\\tmp11\\99_Test\\260604_1PVT_crop",
   "LastLabelGenSourceFolder": "D:\\tmp11\\99_Test\\260604_1PVT",
-  "DiceVersion": "v1",
+  "DiceVersion": "v2",
   "LastSegmentSourceFolder": null,
   "InspectionSpecJsonPath": "D:\\tmp3\\GMAPInspSpec.json",
   "InspectionConditions": [
