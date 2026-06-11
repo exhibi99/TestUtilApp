@@ -1358,6 +1358,8 @@ namespace TestUtilApp.UI
             }
 
             pictureBoxPreview.Image = BitmapConverter.ToBitmap(result.ResultImage);
+            lblPreviewFilename.Text = result.FileName;
+            lblPreviewFilename.ForeColor = result.IsSuccess ? UiTheme.Success : UiTheme.Error;
         }
 
         private void btnClearResults_Click(object sender, EventArgs e)

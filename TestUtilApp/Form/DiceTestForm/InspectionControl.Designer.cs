@@ -40,6 +40,7 @@ namespace TestUtilApp.UI
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.rightPanel = new System.Windows.Forms.Panel();
             this.groupBoxPreview = new System.Windows.Forms.GroupBox();
+            this.lblPreviewFilename = new System.Windows.Forms.Label();
             this.pictureBoxPreview = new System.Windows.Forms.PictureBox();
             this.topPanel.SuspendLayout();
             this.groupBoxSource.SuspendLayout();
@@ -425,10 +426,11 @@ namespace TestUtilApp.UI
             this.rightPanel.Padding = new System.Windows.Forms.Padding(5, 0, 10, 10);
             this.rightPanel.Size = new System.Drawing.Size(526, 700);
             this.rightPanel.TabIndex = 0;
-            // 
+            //
             // groupBoxPreview
-            // 
+            //
             this.groupBoxPreview.Controls.Add(this.pictureBoxPreview);
+            this.groupBoxPreview.Controls.Add(this.lblPreviewFilename);
             this.groupBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBoxPreview.Location = new System.Drawing.Point(5, 0);
             this.groupBoxPreview.Name = "groupBoxPreview";
@@ -437,14 +439,25 @@ namespace TestUtilApp.UI
             this.groupBoxPreview.TabIndex = 0;
             this.groupBoxPreview.TabStop = false;
             this.groupBoxPreview.Text = "Inspection Results Preview";
-            // 
+            //
+            // lblPreviewFilename
+            //
+            this.lblPreviewFilename.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lblPreviewFilename.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblPreviewFilename.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(169)))), ((int)(((byte)(181)))));
+            this.lblPreviewFilename.Name = "lblPreviewFilename";
+            this.lblPreviewFilename.Size = new System.Drawing.Size(491, 22);
+            this.lblPreviewFilename.TabIndex = 1;
+            this.lblPreviewFilename.Text = "";
+            this.lblPreviewFilename.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            //
             // pictureBoxPreview
-            // 
+            //
             this.pictureBoxPreview.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.pictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBoxPreview.Location = new System.Drawing.Point(10, 30);
             this.pictureBoxPreview.Name = "pictureBoxPreview";
-            this.pictureBoxPreview.Size = new System.Drawing.Size(491, 500);
+            this.pictureBoxPreview.Size = new System.Drawing.Size(491, 478);
             this.pictureBoxPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxPreview.TabIndex = 0;
             this.pictureBoxPreview.TabStop = false;
@@ -517,6 +530,7 @@ namespace TestUtilApp.UI
         private System.Windows.Forms.Panel rightPanel;
         private System.Windows.Forms.GroupBox groupBoxPreview;
         private System.Windows.Forms.PictureBox pictureBoxPreview;
+        private System.Windows.Forms.Label lblPreviewFilename;
         private System.Windows.Forms.GroupBox groupBoxLog;
         private System.Windows.Forms.TextBox txtLog;
     }

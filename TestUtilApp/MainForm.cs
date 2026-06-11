@@ -49,7 +49,7 @@ namespace TestUtilApp
         private void RefreshDiceVersionButton()
         {
             bool isV2 = !string.Equals(_config.DiceVersion, "v1", StringComparison.OrdinalIgnoreCase);
-            btnDiceVersion.Text = isV2 ? "DICE  v2" : "DICE  v1";
+            btnDiceVersion.Text = isV2 ? "DICE v2  ⇄" : "DICE v1  ⇄";
             btnDiceVersion.BackColor = isV2 ? UiTheme.Accent : UiTheme.TealAccent;
             btnDiceVersion.ForeColor = Color.White;
             btnDiceVersion.FlatAppearance.BorderColor = btnDiceVersion.BackColor;

@@ -27,7 +27,8 @@
       "Bash(cp C:/GitHub/TestUtilApp/DICE/01_DICEv1/Python.Runtime.dll C:/GitHub/TestUtilApp/TestUtilApp/bin/Debug/)",
       "Bash(Select-Object FullName, PSIsContainer)",
       "Bash(Format-Table -AutoSize)",
-      "PowerShell(Get-ChildItem -Path \"C:\\\\GitHub\\\\TestUtilApp\\\\DICE\" -Force | Where-Object { -not $_.PSIsContainer })"
+      "PowerShell(Get-ChildItem -Path \"C:\\\\GitHub\\\\TestUtilApp\\\\DICE\" -Force | Where-Object { -not $_.PSIsContainer })",
+      "Bash(Copy-Item \"C:\\\\tmp\\\\03_Icon\\\\icons8-refresh-40.png\" \"C:\\\\GitHub\\\\TestUtilApp\\\\TestUtilApp\\\\icons8-refresh-40.png\" -Force)"
     ]
   }
 }
