@@ -33,7 +33,7 @@
     "MinConfidence": 0.7
   },
   "FileFilter": {
-    "LastTargetFolder": "D:\\tmp6\\99_Test\\TestImage",
+    "LastTargetFolder": "C:\\CookAndroid\\android-studio",
     "LastOutputFolder": "D:\\tmp11\\99_Test\\00_Filter_filtered22",
     "ActiveProfileIndex": 2,
     "ConditionProfiles": [
@@ -131,6 +131,33 @@
       ],
       "ClassifyModel": "A",
       "MinConfidence": 0.75
+    },
+    {
+      "Use": true,
+      "FileNameKeyword": "",
+      "DetectClassKeywords": [
+        "A"
+      ],
+      "ClassifyModel": "A",
+      "MinConfidence": 0.0
+    },
+    {
+      "Use": true,
+      "FileNameKeyword": "",
+      "DetectClassKeywords": [
+        "A"
+      ],
+      "ClassifyModel": "A",
+      "MinConfidence": 0.0
+    },
+    {
+      "Use": true,
+      "FileNameKeyword": "",
+      "DetectClassKeywords": [
+        "A"
+      ],
+      "ClassifyModel": "A",
+      "MinConfidence": 0.0
     }
   ]
 }

@@ -242,33 +242,24 @@ namespace TestUtilApp.UI
 
         private void btnBrowseTarget_Click(object sender, EventArgs e)
         {
-            using (var dialog = new FolderBrowserDialog())
+            string selected = FolderPickerDialog.Show(this, "Select the target folder to filter.", txtTargetFolder.Text);
+            if (selected != null)
             {
-                dialog.Description = "Select the target folder to filter.";
-                if (!string.IsNullOrEmpty(txtTargetFolder.Text))
+                txtTargetFolder.Text = selected;
+
+                if (_config.FileFilter == null)
                 {
-                    dialog.SelectedPath = txtTargetFolder.Text;
+                    EnsureFileFilterConfig();
                 }
+                _config.FileFilter.LastTargetFolder = selected;
 
-                if (dialog.ShowDialog() == DialogResult.OK)
+                try
                 {
-                    txtTargetFolder.Text = dialog.SelectedPath;
-
-                    // Config Save
-                    if (_config.FileFilter == null)
-                    {
-                        EnsureFileFilterConfig();
-                    }
-                    _config.FileFilter.LastTargetFolder = dialog.SelectedPath;
-
-                    try
-                    {
-                        _configService.SaveConfig(_config);
-                    }
-                    catch (Exception ex)
-                    {
-                        AppendLog($"Settings Save failed: {ex.Message}");
-                    }
+                    _configService.SaveConfig(_config);
+                }
+                catch (Exception ex)
+                {
+                    AppendLog($"Settings Save failed: {ex.Message}");
                 }
             }
         }
@@ -393,39 +384,26 @@ namespace TestUtilApp.UI
 
         private void btnBrowseOutputFolder_Click(object sender, EventArgs e)
         {
-            using (var dialog = new FolderBrowserDialog())
+            string initialPath = !string.IsNullOrWhiteSpace(txtOutputFolder.Text)
+                ? txtOutputFolder.Text
+                : Directory.GetParent(txtTargetFolder.Text)?.FullName;
+
+            string selected = FolderPickerDialog.Show(this, "Select the output folder.", initialPath);
+            if (selected != null)
             {
-                dialog.Description = "Select the output folder.";
+                txtOutputFolder.Text = selected;
+                rbOutputCustom.Checked = true;
 
-                if (!string.IsNullOrWhiteSpace(txtOutputFolder.Text))
+                try
                 {
-                    dialog.SelectedPath = txtOutputFolder.Text;
+                    EnsureFileFilterConfig();
+                    _config.FileFilter.LastOutputFolder = selected;
+                    _config.FileFilter.UseCustomOutputFolder = true;
+                    _configService.SaveConfig(_config);
                 }
-                else if (!string.IsNullOrWhiteSpace(txtTargetFolder.Text))
+                catch (Exception ex)
                 {
-                    string parentFolder = Directory.GetParent(txtTargetFolder.Text)?.FullName;
-                    if (!string.IsNullOrEmpty(parentFolder))
-                    {
-                        dialog.SelectedPath = parentFolder;
-                    }
-                }
-
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    txtOutputFolder.Text = dialog.SelectedPath;
-                    rbOutputCustom.Checked = true;
-
-                    try
-                    {
-                        EnsureFileFilterConfig();
-                        _config.FileFilter.LastOutputFolder = dialog.SelectedPath;
-                        _config.FileFilter.UseCustomOutputFolder = true;
-                        _configService.SaveConfig(_config);
-                    }
-                    catch (Exception ex)
-                    {
-                        AppendLog($"Settings Save failed: {ex.Message}");
-                    }
+                    AppendLog($"Settings Save failed: {ex.Message}");
                 }
             }
         }

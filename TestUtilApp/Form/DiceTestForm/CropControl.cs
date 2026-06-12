@@ -9,6 +9,7 @@ using OpenCvSharp.Extensions;
 using TestUtilApp.Dice;
 using TestUtilApp.Models;
 using TestUtilApp.Services;
+using TestUtilApp.UI;
 
 namespace TestUtilApp.UI
 {
@@ -505,60 +506,43 @@ namespace TestUtilApp.UI
 
         private void btnBrowseSource_Click(object sender, EventArgs e)
         {
-            using (var dialog = new FolderBrowserDialog())
+            string selected = FolderPickerDialog.Show(this, "Select the source folder containing images to crop.", txtSourceFolder.Text);
+            if (selected != null)
             {
-                dialog.Description = "Select the source folder containing images to crop.";
-                if (!string.IsNullOrEmpty(txtSourceFolder.Text))
+                _cropSourceFolderPath = selected;
+                txtSourceFolder.Text = _cropSourceFolderPath;
+
+                var imageFiles = GetImageFiles(_cropSourceFolderPath);
+                _totalCropImages = imageFiles.Length;
+                lblImageCount.Text = $"Images Found: {_totalCropImages}";
+
+                string parentFolder = Directory.GetParent(_cropSourceFolderPath).FullName;
+                string folderName = Path.GetFileName(_cropSourceFolderPath);
+                _cropOutputFolderPath = Path.Combine(parentFolder, folderName + "_crop");
+
+                UpdateStartButtonState();
+
+                _config.LastCropSourceFolder = _cropSourceFolderPath;
+                try
                 {
-                    dialog.SelectedPath = txtSourceFolder.Text;
+                    _configService.SaveConfig(_config);
+                    AppendLog($"Source Folder Select: {_cropSourceFolderPath}");
                 }
-
-                if (dialog.ShowDialog() == DialogResult.OK)
+                catch (Exception ex)
                 {
-                    _cropSourceFolderPath = dialog.SelectedPath;
-                    txtSourceFolder.Text = _cropSourceFolderPath;
-
-                    var imageFiles = GetImageFiles(_cropSourceFolderPath);
-                    _totalCropImages = imageFiles.Length;
-                    lblImageCount.Text = $"Images Found: {_totalCropImages}";
-
-                    string parentFolder = Directory.GetParent(_cropSourceFolderPath).FullName;
-                    string folderName = Path.GetFileName(_cropSourceFolderPath);
-                    _cropOutputFolderPath = Path.Combine(parentFolder, folderName + "_crop");
-
-                    UpdateStartButtonState();
-
-                    // Config Save
-                    _config.LastCropSourceFolder = _cropSourceFolderPath;
-                    try
-                    {
-                        _configService.SaveConfig(_config);
-                        AppendLog($"Source Folder Select: {_cropSourceFolderPath}");
-                    }
-                    catch (Exception ex)
-                    {
-                        AppendLog($"Settings Save failed: {ex.Message}");
-                    }
+                    AppendLog($"Settings Save failed: {ex.Message}");
                 }
             }
         }
 
         private void btnBrowseDetModel_Click(object sender, EventArgs e)
         {
-            using (var dialog = new FolderBrowserDialog())
+            string selected = FolderPickerDialog.Show(this, "Select the folder containing the detection model (.dice file).", txtDetModelPath.Text);
+            if (selected != null)
             {
-                dialog.Description = "Select the folder containing the detection model (.dice file).";
-                if (!string.IsNullOrEmpty(txtDetModelPath.Text))
-                {
-                    dialog.SelectedPath = txtDetModelPath.Text;
-                }
-
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    txtDetModelPath.Text = dialog.SelectedPath;
-                    AppendLog($"Detection model folder selected: {dialog.SelectedPath}");
-                    SaveDetectModelPathFromInput(false, true);
-                }
+                txtDetModelPath.Text = selected;
+                AppendLog($"Detection model folder selected: {selected}");
+                SaveDetectModelPathFromInput(false, true);
             }
         }
 

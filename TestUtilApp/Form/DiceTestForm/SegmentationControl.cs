@@ -9,6 +9,7 @@ using OpenCvSharp.Extensions;
 using TestUtilApp.Dice;
 using TestUtilApp.Models;
 using TestUtilApp.Services;
+using TestUtilApp.UI;
 
 namespace TestUtilApp.UI
 {
@@ -71,17 +72,12 @@ namespace TestUtilApp.UI
 
         private void btnBrowseSource_Click(object sender, EventArgs e)
         {
-            using (var dialog = new FolderBrowserDialog())
+            string selected = FolderPickerDialog.Show(this, "Select the folder containing images to segment.", txtSourceFolder.Text);
+            if (selected != null)
             {
-                dialog.Description = "Select the folder containing images to segment.";
-                dialog.SelectedPath = txtSourceFolder.Text;
-
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    txtSourceFolder.Text = dialog.SelectedPath;
-                    _config.LastSegmentSourceFolder = dialog.SelectedPath;
-                    _configService.SaveConfig(_config);
-                }
+                txtSourceFolder.Text = selected;
+                _config.LastSegmentSourceFolder = selected;
+                _configService.SaveConfig(_config);
             }
         }
 
@@ -118,29 +114,24 @@ namespace TestUtilApp.UI
 
         private void btnBrowseModel_Click(object sender, EventArgs e)
         {
-            using (var dialog = new FolderBrowserDialog())
+            string selected = FolderPickerDialog.Show(this, "Select the segmentation model folder.", txtModelPath.Text);
+            if (selected != null)
             {
-                dialog.Description = "Select the segmentation model folder.";
-                dialog.SelectedPath = txtModelPath.Text;
+                txtModelPath.Text = selected;
 
-                if (dialog.ShowDialog() == DialogResult.OK)
+                if (_config.DiceModels == null)
                 {
-                    txtModelPath.Text = dialog.SelectedPath;
-
-                    if (_config.DiceModels == null)
-                    {
-                        _config.DiceModels = new DiceModelsConfig();
-                    }
-
-                    if (_config.DiceModels.SegmentModel == null)
-                    {
-                        _config.DiceModels.SegmentModel = new DiceModelSetting();
-                    }
-
-                    _config.DiceModels.SegmentModel.Path = dialog.SelectedPath;
-                    _config.DiceModels.SegmentModel.Use = true;
-                    _configService.SaveConfig(_config);
+                    _config.DiceModels = new DiceModelsConfig();
                 }
+
+                if (_config.DiceModels.SegmentModel == null)
+                {
+                    _config.DiceModels.SegmentModel = new DiceModelSetting();
+                }
+
+                _config.DiceModels.SegmentModel.Path = selected;
+                _config.DiceModels.SegmentModel.Use = true;
+                _configService.SaveConfig(_config);
             }
         }
 
@@ -502,37 +493,33 @@ namespace TestUtilApp.UI
                 return;
             }
 
-            using (var dialog = new FolderBrowserDialog())
+            string saveFolder = FolderPickerDialog.Show(this, "Select the folder to save result images.");
+            if (saveFolder != null)
             {
-                dialog.Description = "Select the folder to save result images.";
-
-                if (dialog.ShowDialog() == DialogResult.OK)
+                try
                 {
-                    try
-                    {
-                        int savedCount = 0;
+                    int savedCount = 0;
 
-                        foreach (var result in _results)
+                    foreach (var result in _results)
+                    {
+                        if (result.ResultImage != null)
                         {
-                            if (result.ResultImage != null)
-                            {
-                                string outputPath = Path.Combine(dialog.SelectedPath,
-                                    Path.GetFileNameWithoutExtension(result.FileName) + "_seg.jpg");
+                            string outputPath = Path.Combine(saveFolder,
+                                Path.GetFileNameWithoutExtension(result.FileName) + "_seg.jpg");
 
-                                Cv2.ImWrite(outputPath, result.ResultImage);
-                                savedCount++;
-                            }
+                            Cv2.ImWrite(outputPath, result.ResultImage);
+                            savedCount++;
                         }
+                    }
 
-                        AppendLog($"{savedCount} result image(s) saved to: {dialog.SelectedPath}");
-                        MessageBox.Show($"{savedCount} result image(s) saved.",
-                            "Save Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Save error: {ex.Message}", "Error",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    AppendLog($"{savedCount} result image(s) saved to: {saveFolder}");
+                    MessageBox.Show($"{savedCount} result image(s) saved.",
+                        "Save Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Save error: {ex.Message}", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

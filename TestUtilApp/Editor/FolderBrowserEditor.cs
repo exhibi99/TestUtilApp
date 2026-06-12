@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Drawing.Design;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
+using TestUtilApp.UI;
 
 namespace TestUtilApp.Editors
 {
@@ -31,24 +32,9 @@ namespace TestUtilApp.Editors
 
                 if (editorService != null)
                 {
-                    using (var dialog = new FolderBrowserDialog())
-                    {
-                        dialog.Description = "Select the DICE model folder.";
-                        dialog.ShowNewFolderButton = true;
-
-                        // 현재 값이 있으면 초기 경로로 설정
-                        string currentValue = value as string;
-                        if (!string.IsNullOrEmpty(currentValue) && System.IO.Directory.Exists(currentValue))
-                        {
-                            dialog.SelectedPath = currentValue;
-                        }
-
-                        // 대화상자 표시
-                        if (dialog.ShowDialog() == DialogResult.OK)
-                        {
-                            return dialog.SelectedPath;
-                        }
-                    }
+                    string selected = FolderPickerDialog.Show(null, "Select the DICE model folder.", value as string);
+                    if (selected != null)
+                        return selected;
                 }
             }
 

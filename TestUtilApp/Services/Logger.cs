@@ -11,7 +11,7 @@ namespace TestUtilApp.Services
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs");
 
         private static string CurrentLogFile =>
-            Path.Combine(LogDirectory, $"app_log_{DateTime.Now:yyyy-MM-dd}.txt");
+            Path.Combine(LogDirectory, $"{DateTime.Now:yyyyMMdd}_TestUtilApp_LOG_.txt");
 
         public static void Info(string message)  => Write("INFO ", message);
         public static void Warn(string message)  => Write("WARN ", message);

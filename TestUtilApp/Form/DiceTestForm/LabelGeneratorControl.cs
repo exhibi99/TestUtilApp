@@ -10,6 +10,7 @@ using OpenCvSharp;
 using TestUtilApp.Dice;
 using TestUtilApp.Models;
 using TestUtilApp.Services;
+using TestUtilApp.UI;
 
 namespace TestUtilApp.UI
 {
@@ -269,47 +270,31 @@ namespace TestUtilApp.UI
 
         private void btnBrowseSource_Click(object sender, EventArgs e)
         {
-            using (var dialog = new FolderBrowserDialog())
+            string selected = FolderPickerDialog.Show(this, "Select the source folder containing images for label generation.", txtSourceFolder.Text);
+            if (selected != null)
             {
-                dialog.Description = "Select the source folder containing images for label generation.";
-                if (!string.IsNullOrEmpty(txtSourceFolder.Text))
+                txtSourceFolder.Text = selected;
+                _config.LastLabelGenSourceFolder = selected;
+
+                try
                 {
-                    dialog.SelectedPath = txtSourceFolder.Text;
+                    _configService.SaveConfig(_config);
                 }
-
-                if (dialog.ShowDialog() == DialogResult.OK)
+                catch (Exception ex)
                 {
-                    txtSourceFolder.Text = dialog.SelectedPath;
-                    _config.LastLabelGenSourceFolder = dialog.SelectedPath;
-
-                    try
-                    {
-                        _configService.SaveConfig(_config);
-                    }
-                    catch (Exception ex)
-                    {
-                        AppendLog($"Settings Save failed: {ex.Message}");
-                    }
+                    AppendLog($"Settings Save failed: {ex.Message}");
                 }
             }
         }
 
         private void btnBrowseDetectModel_Click(object sender, EventArgs e)
         {
-            using (var dialog = new FolderBrowserDialog())
+            string selected = FolderPickerDialog.Show(this, "Select the folder containing the detection model.", txtDetectModelPath.Text);
+            if (selected != null)
             {
-                dialog.Description = "Select the folder containing the detection model.";
-                if (!string.IsNullOrEmpty(txtDetectModelPath.Text) && Directory.Exists(txtDetectModelPath.Text))
-                {
-                    dialog.SelectedPath = txtDetectModelPath.Text;
-                }
-
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    txtDetectModelPath.Text = dialog.SelectedPath;
-                    SaveDetectModelPathFromInput(false);
-                    AppendLog($"Detection model path selected: {dialog.SelectedPath}");
-                }
+                txtDetectModelPath.Text = selected;
+                SaveDetectModelPathFromInput(false);
+                AppendLog($"Detection model path selected: {selected}");
             }
         }
 

@@ -331,48 +331,31 @@ namespace TestUtilApp.UI
 
         private void btnBrowseSource_Click(object sender, EventArgs e)
         {
-            using (var dialog = new FolderBrowserDialog())
+            string selected = FolderPickerDialog.Show(this, "Select the source folder containing images to classify.", txtSourceFolder.Text);
+            if (selected != null)
             {
-                dialog.Description = "Select the source folder containing images to classify.";
-                if (!string.IsNullOrEmpty(txtSourceFolder.Text))
+                txtSourceFolder.Text = selected;
+                _config.LastClassifySourceFolder = selected;
+
+                try
                 {
-                    dialog.SelectedPath = txtSourceFolder.Text;
+                    _configService.SaveConfig(_config);
                 }
-
-                if (dialog.ShowDialog() == DialogResult.OK)
+                catch (Exception ex)
                 {
-                    txtSourceFolder.Text = dialog.SelectedPath;
-                    _config.LastClassifySourceFolder = dialog.SelectedPath;
-
-                    try
-                    {
-                        _configService.SaveConfig(_config);
-                    }
-                    catch (Exception ex)
-                    {
-                        AppendLog($"Settings Save failed: {ex.Message}");
-                    }
+                    AppendLog($"Settings Save failed: {ex.Message}");
                 }
             }
         }
 
         private void BrowseClassificationModelPath(string modelName)
         {
-            using (var dialog = new FolderBrowserDialog())
+            string selected = FolderPickerDialog.Show(this, $"Select the folder containing the classification model: {modelName}", GetModelPathTextBox(modelName).Text);
+            if (selected != null)
             {
-                dialog.Description = $"Select the folder containing the classification model: {modelName}";
-                string currentPath = GetModelPathTextBox(modelName).Text;
-                if (!string.IsNullOrEmpty(currentPath) && Directory.Exists(currentPath))
-                {
-                    dialog.SelectedPath = currentPath;
-                }
-
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    GetModelPathTextBox(modelName).Text = dialog.SelectedPath;
-                    AppendLog($"Classification model folder selected ({modelName}): {dialog.SelectedPath}");
-                    SaveClassificationModelPathFromInput(modelName, false, true);
-                }
+                GetModelPathTextBox(modelName).Text = selected;
+                AppendLog($"Classification model folder selected ({modelName}): {selected}");
+                SaveClassificationModelPathFromInput(modelName, false, true);
             }
         }
 

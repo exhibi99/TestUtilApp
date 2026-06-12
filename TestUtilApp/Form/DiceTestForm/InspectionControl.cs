@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using TestUtilApp.Dice;
 using TestUtilApp.Models;
 using TestUtilApp.Services;
+using TestUtilApp.UI;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace TestUtilApp.UI
@@ -242,17 +243,12 @@ namespace TestUtilApp.UI
 
         private void btnBrowseSource_Click(object sender, EventArgs e)
         {
-            using (var dialog = new FolderBrowserDialog())
+            string selected = FolderPickerDialog.Show(this, "Select the folder containing images to inspect.", txtSourceFolder.Text);
+            if (selected != null)
             {
-                dialog.Description = "Select the folder containing images to inspect.";
-                dialog.SelectedPath = txtSourceFolder.Text;
-
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    txtSourceFolder.Text = dialog.SelectedPath;
-                    _config.LastClassifySourceFolder = dialog.SelectedPath;
-                    _configService.SaveConfig(_config);
-                }
+                txtSourceFolder.Text = selected;
+                _config.LastClassifySourceFolder = selected;
+                _configService.SaveConfig(_config);
             }
         }
 
@@ -1407,37 +1403,33 @@ namespace TestUtilApp.UI
                 return;
             }
 
-            using (var dialog = new FolderBrowserDialog())
+            string saveFolder = FolderPickerDialog.Show(this, "Select the folder to save result images.");
+            if (saveFolder != null)
             {
-                dialog.Description = "Select the folder to save result images.";
-
-                if (dialog.ShowDialog() == DialogResult.OK)
+                try
                 {
-                    try
-                    {
-                        int savedCount = 0;
+                    int savedCount = 0;
 
-                        foreach (var result in _inspectionResults)
+                    foreach (var result in _inspectionResults)
+                    {
+                        if (result.ResultImage != null)
                         {
-                            if (result.ResultImage != null)
-                            {
-                                string outputPath = Path.Combine(dialog.SelectedPath,
-                                    Path.GetFileNameWithoutExtension(result.FileName) + "_result.jpg");
+                            string outputPath = Path.Combine(saveFolder,
+                                Path.GetFileNameWithoutExtension(result.FileName) + "_result.jpg");
 
-                                Cv2.ImWrite(outputPath, result.ResultImage);
-                                savedCount++;
-                            }
+                            Cv2.ImWrite(outputPath, result.ResultImage);
+                            savedCount++;
                         }
+                    }
 
-                        AppendLog($"{savedCount} Results Image Save completed: {dialog.SelectedPath}");
-                        MessageBox.Show($"{savedCount} result image(s) saved.",
-                            "Save Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Save error: {ex.Message}", "Error",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    AppendLog($"{savedCount} Results Image Save completed: {saveFolder}");
+                    MessageBox.Show($"{savedCount} result image(s) saved.",
+                        "Save Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Save error: {ex.Message}", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

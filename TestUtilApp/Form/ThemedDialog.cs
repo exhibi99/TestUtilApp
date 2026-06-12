@@ -26,9 +26,10 @@ namespace TestUtilApp.UI
             string title,
             string content,
             DialogButtons buttons = DialogButtons.OK,
-            DialogIcon icon = DialogIcon.Info)
+            DialogIcon icon = DialogIcon.Info,
+            Size? size = null)
         {
-            using (var dlg = Build(title, content, buttons, icon))
+            using (var dlg = Build(title, content, buttons, icon, size))
             {
                 return owner != null ? dlg.ShowDialog(owner) : dlg.ShowDialog();
             }
@@ -40,7 +41,7 @@ namespace TestUtilApp.UI
 
         private static ThemedDialog Build(
             string title, string content,
-            DialogButtons buttons, DialogIcon icon)
+            DialogButtons buttons, DialogIcon icon, Size? size = null)
         {
             Color accentColor = GetIconColor(icon);
             string iconGlyph  = GetIconGlyph(icon);
@@ -52,7 +53,7 @@ namespace TestUtilApp.UI
                 StartPosition     = FormStartPosition.CenterParent,
                 ShowInTaskbar     = false,
                 BackColor         = UiTheme.Window,
-                Size              = new Size(560, 440),
+                Size              = size ?? new Size(560, 440),
                 Padding           = new Padding(0),
                 MinimizeBox       = false,
                 MaximizeBox       = false,
@@ -78,10 +79,10 @@ namespace TestUtilApp.UI
             var lblIcon = new Label
             {
                 Text      = iconGlyph,
-                Font      = new Font("Segoe UI", 16F, FontStyle.Bold),
+                Font      = new Font("Segoe UI", 14F, FontStyle.Bold),
                 ForeColor = accentColor,
                 AutoSize  = true,
-                Location  = new Point(18, 12),
+                Location  = new Point(16, 14),
             };
 
             var lblTitle = new Label
@@ -90,7 +91,7 @@ namespace TestUtilApp.UI
                 Font      = new Font("Segoe UI", 12F, FontStyle.Bold),
                 ForeColor = UiTheme.TextPrimary,
                 AutoSize  = true,
-                Location  = new Point(52, 15),
+                Location  = new Point(44, 15),
             };
 
             titlePanel.Controls.Add(lblIcon);
