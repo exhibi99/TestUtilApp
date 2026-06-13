@@ -32,6 +32,9 @@ namespace TestUtilApp.UI
             this.lblModelStatus = new System.Windows.Forms.Label();
             this.btnLoadModel = new System.Windows.Forms.Button();
             this.btnBrowseModel = new System.Windows.Forms.Button();
+            this.groupBoxLineDetect = new System.Windows.Forms.GroupBox();
+            this.rbLeftToRight = new System.Windows.Forms.RadioButton();
+            this.rbTopToBottom = new System.Windows.Forms.RadioButton();
             this.btnStartSegmentation = new System.Windows.Forms.Button();
             this.groupBoxResults = new System.Windows.Forms.GroupBox();
             this.listViewResults = new System.Windows.Forms.ListView();
@@ -89,12 +92,13 @@ namespace TestUtilApp.UI
             this.topPanel.Controls.Add(this.lblTitle);
             this.topPanel.Controls.Add(this.groupBoxSource);
             this.topPanel.Controls.Add(this.groupBoxModel);
+            this.topPanel.Controls.Add(this.groupBoxLineDetect);
             this.topPanel.Controls.Add(this.btnStartSegmentation);
             this.topPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.topPanel.Location = new System.Drawing.Point(10, 0);
             this.topPanel.Name = "topPanel";
             this.topPanel.Padding = new System.Windows.Forms.Padding(10);
-            this.topPanel.Size = new System.Drawing.Size(635, 232);
+            this.topPanel.Size = new System.Drawing.Size(635, 292);
             this.topPanel.TabIndex = 0;
             //
             // lblTitle
@@ -221,13 +225,53 @@ namespace TestUtilApp.UI
             //
             // btnStartSegmentation
             //
+            //
+            // groupBoxLineDetect
+            //
+            this.groupBoxLineDetect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxLineDetect.Controls.Add(this.rbLeftToRight);
+            this.groupBoxLineDetect.Controls.Add(this.rbTopToBottom);
+            this.groupBoxLineDetect.Location = new System.Drawing.Point(10, 194);
+            this.groupBoxLineDetect.Name = "groupBoxLineDetect";
+            this.groupBoxLineDetect.Size = new System.Drawing.Size(615, 50);
+            this.groupBoxLineDetect.TabIndex = 4;
+            this.groupBoxLineDetect.TabStop = false;
+            this.groupBoxLineDetect.Text = "Line Detect Direction";
+            //
+            // rbLeftToRight
+            //
+            this.rbLeftToRight.AutoSize = true;
+            this.rbLeftToRight.Checked = true;
+            this.rbLeftToRight.Location = new System.Drawing.Point(15, 22);
+            this.rbLeftToRight.Name = "rbLeftToRight";
+            this.rbLeftToRight.Size = new System.Drawing.Size(80, 24);
+            this.rbLeftToRight.TabIndex = 0;
+            this.rbLeftToRight.TabStop = true;
+            this.rbLeftToRight.Text = "좌 → 우";
+            this.rbLeftToRight.UseVisualStyleBackColor = true;
+            this.rbLeftToRight.CheckedChanged += new System.EventHandler(this.rbLineDirection_CheckedChanged);
+            //
+            // rbTopToBottom
+            //
+            this.rbTopToBottom.AutoSize = true;
+            this.rbTopToBottom.Location = new System.Drawing.Point(120, 22);
+            this.rbTopToBottom.Name = "rbTopToBottom";
+            this.rbTopToBottom.Size = new System.Drawing.Size(80, 24);
+            this.rbTopToBottom.TabIndex = 1;
+            this.rbTopToBottom.Text = "상 → 하";
+            this.rbTopToBottom.UseVisualStyleBackColor = true;
+            this.rbTopToBottom.CheckedChanged += new System.EventHandler(this.rbLineDirection_CheckedChanged);
+            //
+            // btnStartSegmentation
+            //
             this.btnStartSegmentation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnStartSegmentation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             this.btnStartSegmentation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStartSegmentation.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnStartSegmentation.ForeColor = System.Drawing.Color.White;
-            this.btnStartSegmentation.Location = new System.Drawing.Point(10, 192);
+            this.btnStartSegmentation.Location = new System.Drawing.Point(10, 252);
             this.btnStartSegmentation.Name = "btnStartSegmentation";
             this.btnStartSegmentation.Size = new System.Drawing.Size(615, 35);
             this.btnStartSegmentation.TabIndex = 3;
@@ -239,7 +283,7 @@ namespace TestUtilApp.UI
             //
             this.groupBoxResults.Controls.Add(this.listViewResults);
             this.groupBoxResults.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBoxResults.Location = new System.Drawing.Point(10, 210);
+            this.groupBoxResults.Location = new System.Drawing.Point(10, 270);
             this.groupBoxResults.Name = "groupBoxResults";
             this.groupBoxResults.Padding = new System.Windows.Forms.Padding(10);
             this.groupBoxResults.Size = new System.Drawing.Size(635, 480);
@@ -417,6 +461,9 @@ namespace TestUtilApp.UI
         private System.Windows.Forms.Label lblModelStatus;
         private System.Windows.Forms.Button btnLoadModel;
         private System.Windows.Forms.Button btnBrowseModel;
+        private System.Windows.Forms.GroupBox groupBoxLineDetect;
+        private System.Windows.Forms.RadioButton rbLeftToRight;
+        private System.Windows.Forms.RadioButton rbTopToBottom;
         private System.Windows.Forms.Button btnStartSegmentation;
         private System.Windows.Forms.GroupBox groupBoxResults;
         private System.Windows.Forms.ListView listViewResults;
