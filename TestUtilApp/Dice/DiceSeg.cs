@@ -56,7 +56,10 @@ namespace TestUtilApp.Dice
 					resUnit.img_height = result.Value["img_size"].height;
 					resUnit.img_width = result.Value["img_size"].width;
 					var segmentMapArr = result.Value["segments"].ToObject<Byte[,]>();
-					resUnit.segmentMap = new Mat(resUnit.img_height, resUnit.img_width, MatType.CV_8UC1, segmentMapArr);
+					int arrRows = segmentMapArr.GetLength(0);
+					int arrCols = segmentMapArr.GetLength(1);
+					Console.WriteLine($"[DiceSeg] img_size={resUnit.img_width}x{resUnit.img_height} / segments array={arrCols}x{arrRows}");
+					resUnit.segmentMap = new Mat(arrRows, arrCols, MatType.CV_8UC1, segmentMapArr);
 					res.Add(resUnit);
 				}
 				return res;

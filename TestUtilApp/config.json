@@ -13,17 +13,20 @@
   "DiceModels": {
     "DetectModel": {
       "Use": true,
-      "Path": "D:\\tmp11\\03_Project\\01_Detect\\checkpoint\\auto_saved"
+      "Path": "D:\\tmp12\\02_DL_Export\\01_Detect\\260420"
     },
     "ClassifyModel_A": {
       "Use": true,
-      "Path": "D:\\tmp11\\03_Project\\02_Classify\\checkpoint\\auto_saved"
+      "Path": "D:\\tmp12\\02_DL_Export\\02_Classify\\260420"
     },
     "ClassifyModel_B": {
       "Use": true,
       "Path": "D:\\tmp11\\04_DL_Export\\02_Classify\\260521"
     },
-    "SegmentModel": null
+    "SegmentModel": {
+      "Use": true,
+      "Path": "D:\\tmp7\\03_Export_Model\\01_SegLine\\260610\\auto_saved.TORCHSERVE"
+    }
   },
   "LabelGeneration": {
     "MinConfidence": 0.4,
@@ -106,58 +109,31 @@
     "CopyFolderCount": 30
   },
   "LastCropSourceFolder": "D:\\tmp11\\01_Training\\2nd\\01_Detect\\260604_1PVT",
-  "LastClassifySourceFolder": "D:\\tmp11\\99_Test\\260604_1PVT_crop",
+  "LastClassifySourceFolder": "D:\\tmp12\\99_Test\\260611_TestImage\\260610_SIEL_Shared_Check",
   "LastLabelGenSourceFolder": "D:\\tmp11\\99_Test\\260604_1PVT",
-  "DiceVersion": "v1",
-  "LastSegmentSourceFolder": null,
+  "DiceVersion": "v2",
+  "LastSegmentSourceFolder": "D:\\tmp7\\99_Test",
   "InspectionSpecJsonPath": "D:\\tmp3\\GMAPInspSpec.json",
   "InspectionConditions": [
     {
-      "Use": false,
-      "FileNameKeyword": "NoTarget",
+      "Use": true,
+      "FileNameKeyword": "",
       "DetectClassKeywords": [
-        "Tub",
-        "Drain"
+        "LeftPipe",
+        "RightPipe"
       ],
       "ClassifyModel": "A",
       "MinConfidence": 0.75
     },
     {
-      "Use": true,
-      "FileNameKeyword": "NoTarget",
+      "Use": false,
+      "FileNameKeyword": "LED",
       "DetectClassKeywords": [
         "Bubble",
         "Air"
       ],
       "ClassifyModel": "A",
       "MinConfidence": 0.75
-    },
-    {
-      "Use": true,
-      "FileNameKeyword": "",
-      "DetectClassKeywords": [
-        "A"
-      ],
-      "ClassifyModel": "A",
-      "MinConfidence": 0.0
-    },
-    {
-      "Use": true,
-      "FileNameKeyword": "",
-      "DetectClassKeywords": [
-        "A"
-      ],
-      "ClassifyModel": "A",
-      "MinConfidence": 0.0
-    },
-    {
-      "Use": true,
-      "FileNameKeyword": "",
-      "DetectClassKeywords": [
-        "A"
-      ],
-      "ClassifyModel": "A",
-      "MinConfidence": 0.0
     }
   ]
 }

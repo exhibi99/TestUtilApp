@@ -350,6 +350,23 @@ namespace TestUtilApp.UI
                     }
 
                     result.IsSuccess = true;
+
+                    Cv2.MinMaxLoc(segResult.segmentMap, out double minVal, out double maxVal);
+                    int nonZeroCount = Cv2.CountNonZero(segResult.segmentMap);
+                    Invoke(new Action(() =>
+                        AppendLog($"[{result.FileName}] segmentMap size:{segResult.segmentMap.Width}x{segResult.segmentMap.Height} nonZero:{nonZeroCount} min:{minVal} max:{maxVal}")));
+
+                    //// segmentMap 디버그 저장 (값을 0~255로 스케일해서 시각화)
+                    //string debugDir = @"D:\tmp7\98_SegMap";
+                    //System.IO.Directory.CreateDirectory(debugDir);
+                    //Mat debugMap = new Mat();
+                    //Cv2.Normalize(segResult.segmentMap, debugMap, 0, 255, NormTypes.MinMax, MatType.CV_8U);
+                    //string debugPath = System.IO.Path.Combine(debugDir, $"segmap_{result.FileName}");
+                    //Cv2.ImWrite(debugPath, debugMap);
+                    //debugMap.Dispose();
+                    //Invoke(new Action(() =>
+                    //    AppendLog($"  → segmap saved: {debugPath}")));
+
                     result.ResultImage = DrawSegmentationOnImage(originalImage, segResult.segmentMap);
                 }
             }
@@ -365,17 +382,18 @@ namespace TestUtilApp.UI
             Cv2.Resize(segmentMap, resizedMap, new OpenCvSharp.Size(originalImage.Width, originalImage.Height),
                 interpolation: InterpolationFlags.Nearest);
 
-            Mat colorMap = new Mat();
-            Cv2.ApplyColorMap(resizedMap, colorMap, ColormapTypes.Jet);
-
-            Mat overlaid = new Mat();
-            Cv2.AddWeighted(resultImage, 0.6, colorMap, 0.4, 0, overlaid);
+            if (Cv2.CountNonZero(resizedMap) > 0)
+            {
+                // 불량 영역만 빨간색(BGR: 0,0,255) 50% 오버레이
+                Mat overlay = resultImage.Clone();
+                overlay.SetTo(new Scalar(0, 0, 255), resizedMap);
+                Cv2.AddWeighted(resultImage, 0.5, overlay, 0.5, 0, resultImage);
+                overlay.Dispose();
+            }
 
             resizedMap.Dispose();
-            colorMap.Dispose();
-            resultImage.Dispose();
 
-            return overlaid;
+            return resultImage;
         }
 
         private List<string> GetImageFiles(string folder)
