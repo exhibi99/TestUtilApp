@@ -232,6 +232,12 @@
     <Compile Include="Form\VisionTestForm\OpenCvControl.Designer.cs">
       <DependentUpon>OpenCvControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form\VisionTestForm\CameraCalcControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Form\VisionTestForm\CameraCalcControl.Designer.cs">
+      <DependentUpon>CameraCalcControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form\DiceTestForm\ModelLoadingDialog.cs">
       <SubType>Form</SubType>
     </Compile>

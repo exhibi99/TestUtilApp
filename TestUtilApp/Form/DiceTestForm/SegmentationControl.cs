@@ -483,7 +483,7 @@ namespace TestUtilApp.UI
 
             Mat display = result.ResultImage.Clone();
 
-            if (result.SegmentMap != null && Cv2.CountNonZero(result.SegmentMap) > 0)
+            if (chkLineDetect.Checked && result.SegmentMap != null && Cv2.CountNonZero(result.SegmentMap) > 0)
             {
                 bool leftToRight = rbLeftToRight.Checked;
                 var swLine = Stopwatch.StartNew();
@@ -619,7 +619,7 @@ namespace TestUtilApp.UI
             else
             {
                 // tipLength는 0.05~0.3 사이로 제한
-                double tipLength = Math.Min(0.3, Math.Max(0.05, (thickness * 8.0) / arrowLen));
+                double tipLength = Math.Min(0.15, Math.Max(0.025, (thickness * 4.0) / arrowLen));
                 Cv2.ArrowedLine(image, ptA, ptB, color, thickness, tipLength: tipLength);
                 Cv2.ArrowedLine(image, ptB, ptA, color, thickness, tipLength: tipLength);
             }
@@ -705,6 +705,9 @@ namespace TestUtilApp.UI
                 {
                     int savedCount = 0;
 
+                    bool lineDetectOn = chkLineDetect.Checked;
+                    bool leftToRight = rbLeftToRight.Checked;
+
                     foreach (var result in _results)
                     {
                         if (result.ResultImage != null)
@@ -712,7 +715,14 @@ namespace TestUtilApp.UI
                             string outputPath = Path.Combine(saveFolder,
                                 Path.GetFileNameWithoutExtension(result.FileName) + "_seg.jpg");
 
-                            Cv2.ImWrite(outputPath, result.ResultImage);
+                            Mat saveImage = result.ResultImage.Clone();
+                            if (lineDetectOn && result.SegmentMap != null && Cv2.CountNonZero(result.SegmentMap) > 0)
+                            {
+                                DrawLineDetect(saveImage, result.SegmentMap, leftToRight);
+                            }
+
+                            Cv2.ImWrite(outputPath, saveImage);
+                            saveImage.Dispose();
                             savedCount++;
                         }
                     }

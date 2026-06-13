@@ -33,6 +33,7 @@ namespace TestUtilApp.UI
             this.btnLoadModel = new System.Windows.Forms.Button();
             this.btnBrowseModel = new System.Windows.Forms.Button();
             this.groupBoxLineDetect = new System.Windows.Forms.GroupBox();
+            this.chkLineDetect = new System.Windows.Forms.CheckBox();
             this.rbLeftToRight = new System.Windows.Forms.RadioButton();
             this.rbTopToBottom = new System.Windows.Forms.RadioButton();
             this.btnStartSegmentation = new System.Windows.Forms.Button();
@@ -230,6 +231,7 @@ namespace TestUtilApp.UI
             //
             this.groupBoxLineDetect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxLineDetect.Controls.Add(this.chkLineDetect);
             this.groupBoxLineDetect.Controls.Add(this.rbLeftToRight);
             this.groupBoxLineDetect.Controls.Add(this.rbTopToBottom);
             this.groupBoxLineDetect.Location = new System.Drawing.Point(10, 194);
@@ -237,16 +239,27 @@ namespace TestUtilApp.UI
             this.groupBoxLineDetect.Size = new System.Drawing.Size(615, 50);
             this.groupBoxLineDetect.TabIndex = 4;
             this.groupBoxLineDetect.TabStop = false;
-            this.groupBoxLineDetect.Text = "Line Detect Direction";
+            this.groupBoxLineDetect.Text = "Line Detect";
+            //
+            // chkLineDetect
+            //
+            this.chkLineDetect.AutoSize = true;
+            this.chkLineDetect.Location = new System.Drawing.Point(15, 22);
+            this.chkLineDetect.Name = "chkLineDetect";
+            this.chkLineDetect.Size = new System.Drawing.Size(50, 24);
+            this.chkLineDetect.TabIndex = 0;
+            this.chkLineDetect.Text = "On";
+            this.chkLineDetect.UseVisualStyleBackColor = true;
+            this.chkLineDetect.CheckedChanged += new System.EventHandler(this.rbLineDirection_CheckedChanged);
             //
             // rbLeftToRight
             //
             this.rbLeftToRight.AutoSize = true;
             this.rbLeftToRight.Checked = true;
-            this.rbLeftToRight.Location = new System.Drawing.Point(15, 22);
+            this.rbLeftToRight.Location = new System.Drawing.Point(85, 22);
             this.rbLeftToRight.Name = "rbLeftToRight";
             this.rbLeftToRight.Size = new System.Drawing.Size(80, 24);
-            this.rbLeftToRight.TabIndex = 0;
+            this.rbLeftToRight.TabIndex = 1;
             this.rbLeftToRight.TabStop = true;
             this.rbLeftToRight.Text = "좌 → 우";
             this.rbLeftToRight.UseVisualStyleBackColor = true;
@@ -255,10 +268,10 @@ namespace TestUtilApp.UI
             // rbTopToBottom
             //
             this.rbTopToBottom.AutoSize = true;
-            this.rbTopToBottom.Location = new System.Drawing.Point(120, 22);
+            this.rbTopToBottom.Location = new System.Drawing.Point(190, 22);
             this.rbTopToBottom.Name = "rbTopToBottom";
             this.rbTopToBottom.Size = new System.Drawing.Size(80, 24);
-            this.rbTopToBottom.TabIndex = 1;
+            this.rbTopToBottom.TabIndex = 2;
             this.rbTopToBottom.Text = "상 → 하";
             this.rbTopToBottom.UseVisualStyleBackColor = true;
             this.rbTopToBottom.CheckedChanged += new System.EventHandler(this.rbLineDirection_CheckedChanged);
@@ -462,6 +475,7 @@ namespace TestUtilApp.UI
         private System.Windows.Forms.Button btnLoadModel;
         private System.Windows.Forms.Button btnBrowseModel;
         private System.Windows.Forms.GroupBox groupBoxLineDetect;
+        private System.Windows.Forms.CheckBox chkLineDetect;
         private System.Windows.Forms.RadioButton rbLeftToRight;
         private System.Windows.Forms.RadioButton rbTopToBottom;
         private System.Windows.Forms.Button btnStartSegmentation;

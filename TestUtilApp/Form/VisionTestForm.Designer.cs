@@ -19,6 +19,7 @@ namespace TestUtilApp.UI
         {
             this.topPanel = new System.Windows.Forms.Panel();
             this.btnOpenCv = new System.Windows.Forms.Button();
+            this.btnCameraCalc = new System.Windows.Forms.Button();
             this.contentPanel = new System.Windows.Forms.Panel();
             this.bottomPanel = new System.Windows.Forms.Panel();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
@@ -32,6 +33,7 @@ namespace TestUtilApp.UI
             //
             this.topPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(28)))), ((int)(((byte)(55)))));
             this.topPanel.Controls.Add(this.btnOpenCv);
+            this.topPanel.Controls.Add(this.btnCameraCalc);
             this.topPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.topPanel.Location = new System.Drawing.Point(0, 0);
             this.topPanel.Name = "topPanel";
@@ -52,6 +54,20 @@ namespace TestUtilApp.UI
             this.btnOpenCv.Text = "OpenCV";
             this.btnOpenCv.UseVisualStyleBackColor = false;
             this.btnOpenCv.Click += new System.EventHandler(this.btnOpenCv_Click);
+            //
+            // btnCameraCalc
+            //
+            this.btnCameraCalc.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(42)))), ((int)(((byte)(75)))));
+            this.btnCameraCalc.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCameraCalc.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnCameraCalc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.btnCameraCalc.Location = new System.Drawing.Point(153, 12);
+            this.btnCameraCalc.Name = "btnCameraCalc";
+            this.btnCameraCalc.Size = new System.Drawing.Size(130, 69);
+            this.btnCameraCalc.TabIndex = 1;
+            this.btnCameraCalc.Text = "Camera Calc";
+            this.btnCameraCalc.UseVisualStyleBackColor = false;
+            this.btnCameraCalc.Click += new System.EventHandler(this.btnCameraCalc_Click);
             //
             // contentPanel
             //
@@ -115,6 +131,7 @@ namespace TestUtilApp.UI
 
         private System.Windows.Forms.Panel topPanel;
         private System.Windows.Forms.Button btnOpenCv;
+        private System.Windows.Forms.Button btnCameraCalc;
         private System.Windows.Forms.Panel contentPanel;
         private System.Windows.Forms.Panel bottomPanel;
         private System.Windows.Forms.StatusStrip statusStrip;

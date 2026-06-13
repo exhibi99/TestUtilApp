@@ -7,6 +7,7 @@ namespace TestUtilApp.UI
     public partial class VisionTestForm : UserControl, IActivatable
     {
         private OpenCvControl _openCvControl;
+        private CameraCalcControl _cameraCalcControl;
         private UserControl _currentControl;
         private Button _activeNavigationButton;
 
@@ -31,6 +32,7 @@ namespace TestUtilApp.UI
         private void InitializeControls()
         {
             _openCvControl = new OpenCvControl();
+            _cameraCalcControl = new CameraCalcControl();
         }
 
         private void LoadControlToPanel(UserControl control)
@@ -74,9 +76,17 @@ namespace TestUtilApp.UI
             RestoreNavigationButtonStates();
         }
 
+        private void btnCameraCalc_Click(object sender, EventArgs e)
+        {
+            LoadControlToPanel(_cameraCalcControl);
+            UpdateButtonStates(btnCameraCalc);
+            UpdateStatusLabel("Camera Calc");
+        }
+
         private void RestoreNavigationButtonStates()
         {
             UiTheme.ApplyNavigationButtonDefault(btnOpenCv);
+            UiTheme.ApplyNavigationButtonDefault(btnCameraCalc);
 
             if (_activeNavigationButton != null)
             {
