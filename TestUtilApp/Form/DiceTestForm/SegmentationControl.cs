@@ -167,6 +167,7 @@ namespace TestUtilApp.UI
             try
             {
                 bool isModelReady = await EnsureSegmentModelLoadedAsync(modelPath);
+                RefreshModelStatusLabel();
                 if (!isModelReady)
                 {
                     throw new InvalidOperationException("Segmentation model could not be loaded.");
@@ -355,17 +356,6 @@ namespace TestUtilApp.UI
                     int nonZeroCount = Cv2.CountNonZero(segResult.segmentMap);
                     Invoke(new Action(() =>
                         AppendLog($"[{result.FileName}] segmentMap size:{segResult.segmentMap.Width}x{segResult.segmentMap.Height} nonZero:{nonZeroCount} min:{minVal} max:{maxVal}")));
-
-                    //// segmentMap 디버그 저장 (값을 0~255로 스케일해서 시각화)
-                    //string debugDir = @"D:\tmp7\98_SegMap";
-                    //System.IO.Directory.CreateDirectory(debugDir);
-                    //Mat debugMap = new Mat();
-                    //Cv2.Normalize(segResult.segmentMap, debugMap, 0, 255, NormTypes.MinMax, MatType.CV_8U);
-                    //string debugPath = System.IO.Path.Combine(debugDir, $"segmap_{result.FileName}");
-                    //Cv2.ImWrite(debugPath, debugMap);
-                    //debugMap.Dispose();
-                    //Invoke(new Action(() =>
-                    //    AppendLog($"  → segmap saved: {debugPath}")));
 
                     result.ResultImage = DrawSegmentationOnImage(originalImage, segResult.segmentMap);
                 }

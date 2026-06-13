@@ -200,10 +200,10 @@ namespace TestUtilApp.UI
             // btnLoadModel
             //
             this.btnLoadModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnLoadModel.Location = new System.Drawing.Point(448, 22);
+            this.btnLoadModel.Location = new System.Drawing.Point(530, 22);
             this.btnLoadModel.Name = "btnLoadModel";
             this.btnLoadModel.Size = new System.Drawing.Size(75, 27);
-            this.btnLoadModel.TabIndex = 2;
+            this.btnLoadModel.TabIndex = 3;
             this.btnLoadModel.Text = "Load";
             this.btnLoadModel.UseVisualStyleBackColor = false;
             this.btnLoadModel.Click += new System.EventHandler(this.btnLoadModel_Click);
@@ -211,10 +211,10 @@ namespace TestUtilApp.UI
             // btnBrowseModel
             //
             this.btnBrowseModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBrowseModel.Location = new System.Drawing.Point(530, 22);
+            this.btnBrowseModel.Location = new System.Drawing.Point(448, 22);
             this.btnBrowseModel.Name = "btnBrowseModel";
             this.btnBrowseModel.Size = new System.Drawing.Size(75, 27);
-            this.btnBrowseModel.TabIndex = 3;
+            this.btnBrowseModel.TabIndex = 2;
             this.btnBrowseModel.Text = "Browse";
             this.btnBrowseModel.UseVisualStyleBackColor = false;
             this.btnBrowseModel.Click += new System.EventHandler(this.btnBrowseModel_Click);
