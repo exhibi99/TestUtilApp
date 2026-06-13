@@ -520,7 +520,7 @@ namespace TestUtilApp.UI
 
         private void btnAddCondition_Click(object sender, EventArgs e)
         {
-            dataGridViewConditions.Rows.Add(true, false, "", "A", "0.75");
+            dataGridViewConditions.Rows.Add(true, false, "", "", "A", "0.75");
         }
 
         private void btnRemoveCondition_Click(object sender, EventArgs e)
