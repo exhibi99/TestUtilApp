@@ -83,6 +83,24 @@ namespace TestUtilApp.UI
         // ── Reverse calc state
         private double? _revWd, _revFovX, _revFovY, _revMinFeat;
 
+        // ── Subject size (mm)
+        private double _subjectMmX = 800.0;
+        private double _subjectMmY = 800.0;
+
+        // ── Obstacle / occlusion state
+        private bool   _obstEnabled     = false;
+        private double _obstDistFromCam = 0;     // mm from camera along WD axis
+        private double _obstHeightMm    = 400.0; // obstacle center height from floor (mm)
+        private double _obstHalfH       = 100.0; // vertical half-size (mm)
+        private double _obstHalfW       = 100.0; // horizontal half-size (mm)
+        private double _obstOffsetX     = 0;    // horizontal offset in front view (mm)
+        private bool   _isDraggingObst  = false;
+        private int    _obstDragOffX    = 0;
+        private int    _obstDragOffY    = 0;
+        private bool   _isDraggingObstFront = false;
+        private int    _obstFrontDragOffX   = 0;
+        private int    _obstFrontDragOffY   = 0;
+
         // ── Side-view layout constants
         private const int SideMarginL   = 60;
         private const int SideMarginR   = 80;
@@ -150,6 +168,7 @@ namespace TestUtilApp.UI
             ApplyTheme();
             LoadCatalog();
             ReverseCalculate(silent: true);
+            InitObstacleEvents();
         }
 
         public void OnActivated()
@@ -467,6 +486,77 @@ namespace TestUtilApp.UI
             MessageBox.Show(msg, "입력 오류", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
         // ─────────────────────────────────────────────
+        //  Obstacle bar event wiring
+        // ─────────────────────────────────────────────
+        private void InitObstacleEvents()
+        {
+            // Subject size — update on Enter only
+            KeyEventHandler subjEnter = (s, e) =>
+            {
+                if (e.KeyCode != Keys.Enter) return;
+                if (double.TryParse(txtSubjX.Text, out double sx) && sx > 0) _subjectMmX = sx;
+                if (double.TryParse(txtSubjY.Text, out double sy) && sy > 0) _subjectMmY = sy;
+                pnlSideView.Invalidate();
+                pnlFrontView.Invalidate();
+                e.SuppressKeyPress = true;
+            };
+            txtSubjX.KeyDown += subjEnter;
+            txtSubjY.KeyDown += subjEnter;
+
+            // Obstacle checkbox
+            chkObst.CheckedChanged += (s, e) =>
+            {
+                _obstEnabled = chkObst.Checked;
+                if (_obstEnabled)
+                {
+                    _obstDistFromCam = _wd.HasValue ? _wd.Value / 2.0 : 350.0;
+                    _obstHeightMm    = _cameraHeightMm > 0 ? _cameraHeightMm : 400.0;
+                }
+                pnlSideView.Invalidate();
+                pnlFrontView.Invalidate();
+            };
+
+            // Obstacle size
+            EventHandler obstSizeChanged = (s, e) =>
+            {
+                if (double.TryParse(txtObstH.Text, out double h) && h > 0) _obstHalfH = h / 2.0;
+                if (double.TryParse(txtObstW.Text, out double w) && w > 0) _obstHalfW = w / 2.0;
+                if (_obstEnabled) { pnlSideView.Invalidate(); pnlFrontView.Invalidate(); }
+            };
+            txtObstH.TextChanged += obstSizeChanged;
+            txtObstW.TextChanged += obstSizeChanged;
+
+            // pnlSubjSide = 50% width, dynamic
+            pnlObstBar.Resize += (s, e) => pnlSubjSide.Width = pnlObstBar.Width / 2;
+            pnlSubjSide.Width = pnlObstBar.Width / 2;
+        }
+
+        private void btn3DView_Click(object sender, EventArgs e) => Open3DView();
+
+        private void Open3DView()
+        {
+            if (_fovX == null || _wd == null) return;
+
+            using (var dlg = new View3DForm(
+                wd          : _wd.Value,
+                camHeight   : _cameraHeightMm,
+                camOffsetX  : _cameraOffsetX,
+                fovX        : _fovX.Value,
+                fovY        : _fovY.Value,
+                obstEnabled : _obstEnabled,
+                obstDist    : _obstDistFromCam,
+                obstHeight  : _obstHeightMm,
+                obstOffsetX : _obstOffsetX,
+                obstHalfW   : _obstHalfW,
+                obstHalfH   : _obstHalfH,
+                subjectW    : _subjectMmX,
+                subjectH    : _subjectMmY))
+            {
+                dlg.ShowDialog(this);
+            }
+        }
+
+        // ─────────────────────────────────────────────
         //  Forward calculation
         // ─────────────────────────────────────────────
         private void btnCalcFov_Click(object sender, EventArgs e) => Calculate();
@@ -581,7 +671,7 @@ namespace TestUtilApp.UI
             int floorY = H - SideMarginBot;
             int availH = floorY - SideMarginTop;
             int subPx  = (int)(availH * 0.80);
-            double scaleV = subPx / 800.0;
+            double scaleV = subPx / _subjectMmY;
             midY = floorY - (int)(_cameraHeightMm * scaleV);
 
             subX = (int)(W * 0.75);
@@ -604,6 +694,15 @@ namespace TestUtilApp.UI
         private Rectangle GetCameraHitRect(int camX, int midY)
             => new Rectangle(camX - 38, midY - 22, 54, 44);
 
+        private Rectangle GetObstSideRect(int camX, int subX, int floorY, double scaleV)
+        {
+            if (_wd == null || _wd.Value <= 0 || _obstDistFromCam <= 0) return Rectangle.Empty;
+            int ox  = camX + (int)((_obstDistFromCam / _wd.Value) * (subX - camX));
+            int oty = floorY - (int)((_obstHeightMm + _obstHalfH) * scaleV);
+            int oby = floorY - (int)((_obstHeightMm - _obstHalfH) * scaleV);
+            return Rectangle.FromLTRB(ox - 8, oty - 4, ox + 8, oby + 4);
+        }
+
         // ─────────────────────────────────────────────
         //  Side View — mouse drag
         // ─────────────────────────────────────────────
@@ -611,6 +710,25 @@ namespace TestUtilApp.UI
         {
             if (_wd == null || _pixelsPerMm <= 0) return;
             GetSideLayout(out int midY, out int subX, out int camX);
+
+            int H      = pnlSideView.Height;
+            int floorY = H - SideMarginBot;
+            int availH = floorY - SideMarginTop;
+            int subPx  = (int)(availH * 0.80);
+            double scaleV = subPx / _subjectMmY;
+
+            // Obstacle hit check (higher priority than camera)
+            if (_obstEnabled && !GetObstSideRect(camX, subX, floorY, scaleV).IsEmpty &&
+                GetObstSideRect(camX, subX, floorY, scaleV).Contains(e.Location))
+            {
+                _isDraggingObst = true;
+                int ox = camX + (int)((_obstDistFromCam / _wd.Value) * (subX - camX));
+                int oy = floorY - (int)(_obstHeightMm * scaleV);
+                _obstDragOffX = e.X - ox;
+                _obstDragOffY = e.Y - oy;
+                pnlSideView.Cursor = Cursors.SizeAll;
+                return;
+            }
 
             if (GetCameraHitRect(camX, midY).Contains(e.Location))
             {
@@ -626,9 +744,31 @@ namespace TestUtilApp.UI
             if (_wd == null) return;
             GetSideLayout(out int midY, out int subX, out int camX);
 
+            int H2     = pnlSideView.Height;
+            int floorY2 = H2 - SideMarginBot;
+            int availH2 = floorY2 - SideMarginTop;
+            double scaleV2 = (int)(availH2 * 0.80) / _subjectMmY;
+
+            if (_isDraggingObst)
+            {
+                int ox = Math.Max(camX + 10, Math.Min(subX - 10, e.X - _obstDragOffX));
+                double newDist = (ox - camX) / (double)(subX - camX) * _wd.Value;
+                _obstDistFromCam = Math.Max(10, Math.Min(_wd.Value - 10, Math.Round(newDist / 5.0) * 5.0));
+
+                int oy = e.Y - _obstDragOffY;
+                double obstHtWorld = (floorY2 - oy) / scaleV2;
+                _obstHeightMm = Math.Max(0, Math.Min(800, Math.Round(obstHtWorld / 5.0) * 5.0));
+
+                pnlSideView.Invalidate();
+                pnlFrontView.Invalidate();
+                return;
+            }
+
             if (!_isDragging)
             {
-                pnlSideView.Cursor = GetCameraHitRect(camX, midY).Contains(e.Location)
+                bool overObst = _obstEnabled && !GetObstSideRect(camX, subX, floorY2, scaleV2).IsEmpty &&
+                                GetObstSideRect(camX, subX, floorY2, scaleV2).Contains(e.Location);
+                pnlSideView.Cursor = (overObst || GetCameraHitRect(camX, midY).Contains(e.Location))
                     ? Cursors.SizeAll : Cursors.Default;
                 return;
             }
@@ -645,10 +785,17 @@ namespace TestUtilApp.UI
             int floorY = H - SideMarginBot;
             int availH = floorY - SideMarginTop;
             int subPx  = (int)(availH * 0.80);
-            double scaleV = subPx / 800.0;
+            double scaleV = subPx / _subjectMmY;
             int newCamY   = e.Y - _dragOffsetY;
             double newHt  = (floorY - newCamY) / scaleV;
             _cameraHeightMm = Math.Max(0, Math.Min(800, Math.Round(newHt / 5.0) * 5.0));
+
+            // Keep obstacle fixed in world space (maintain distance from subject)
+            if (_obstEnabled && _obstDistFromCam > 0)
+            {
+                double distFromSubject = _wd.Value - _obstDistFromCam;
+                _obstDistFromCam = Math.Max(10, Math.Min(newWD - 10, newWD - distFromSubject));
+            }
 
             _wd   = newWD;
             _fovX = _wd.Value * _sensorX.Value / _fl.Value;
@@ -682,10 +829,18 @@ namespace TestUtilApp.UI
 
         private void pnlSideView_MouseUp(object sender, MouseEventArgs e)
         {
+            if (_isDraggingObst)
+            {
+                _isDraggingObst = false;
+                pnlSideView.Cursor = Cursors.Default;
+                pnlSideView.Invalidate();
+                pnlFrontView.Invalidate();
+                return;
+            }
             if (!_isDragging) return;
             _isDragging = false;
             pnlSideView.Cursor = Cursors.Default;
-            pnlSideView.Invalidate();   // 전체 갱신 (FOV 콘, WD 화살표 등)
+            pnlSideView.Invalidate();
             pnlFrontView.Invalidate();
         }
 
@@ -694,14 +849,23 @@ namespace TestUtilApp.UI
         // ─────────────────────────────────────────────
         private double GetFrontScale(int W, int H)
         {
-            int marginH = 70, marginV = 50;
-            double sv = (H - marginV * 2) * 0.82 / 800.0;
-            double sh = (W - marginH * 2) * 0.50 / 800.0;
+            int marginH = 60, marginV = 20;
+            double sv = (H - marginV - 50) * 0.97 / _subjectMmY;  // 50 = floorY bottom margin
+            double sh = (W - marginH * 2) * 0.78 / _subjectMmX;
             return Math.Max(0.05, Math.Min(sv, sh));
         }
 
         private Rectangle GetFrontCameraHitRect(int cx, int cy)
-            => new Rectangle(cx - 20, cy - 12, 40, 24);
+            => new Rectangle(cx - 10, cy - 12, 20, 24);
+
+        private Rectangle GetObstFrontRect(int W, int floorY, double scale)
+        {
+            int ox = W / 2 + (int)(_obstOffsetX * scale);
+            int oy = floorY - (int)(_obstHeightMm * scale);
+            int hw = Math.Max(4, (int)(_obstHalfW * scale));
+            int hh = Math.Max(4, (int)(_obstHalfH * scale));
+            return Rectangle.FromLTRB(ox - hw, oy - hh, ox + hw, oy + hh);
+        }
 
         // ─────────────────────────────────────────────
         //  Front View — mouse drag
@@ -712,8 +876,19 @@ namespace TestUtilApp.UI
             int W = pnlFrontView.Width, H = pnlFrontView.Height;
             double scale = GetFrontScale(W, H);
             int floorY = H - 50;
-            int camCX = W / 2 + (int)(_cameraOffsetX * scale);
-            int camCY = floorY - (int)(_cameraHeightMm * scale);
+            int camCX = W / 2 + (int)(_cameraOffsetX  * scale);
+            int camCY = floorY  - (int)(_cameraHeightMm * scale);
+
+            // Obstacle hit (higher priority)
+            if (_obstEnabled && GetObstFrontRect(W, floorY, scale).Contains(e.Location))
+            {
+                var r = GetObstFrontRect(W, floorY, scale);
+                _isDraggingObstFront = true;
+                _obstFrontDragOffX   = e.X - (r.Left + r.Width  / 2);
+                _obstFrontDragOffY   = e.Y - (r.Top  + r.Height / 2);
+                pnlFrontView.Cursor  = Cursors.SizeAll;
+                return;
+            }
 
             if (GetFrontCameraHitRect(camCX, camCY).Contains(e.Location))
             {
@@ -730,12 +905,24 @@ namespace TestUtilApp.UI
             int W = pnlFrontView.Width, H = pnlFrontView.Height;
             double scale = GetFrontScale(W, H);
             int floorY = H - 50;
-            int camCX = W / 2 + (int)(_cameraOffsetX * scale);
-            int camCY = floorY - (int)(_cameraHeightMm * scale);
+            int camCX = W / 2 + (int)(_cameraOffsetX  * scale);
+            int camCY = floorY  - (int)(_cameraHeightMm * scale);
+
+            if (_isDraggingObstFront)
+            {
+                int cx = e.X - _obstFrontDragOffX;
+                int cy = e.Y - _obstFrontDragOffY;
+                _obstOffsetX  = Math.Round((cx - W / 2) / scale / 5.0) * 5.0;
+                _obstHeightMm = Math.Max(0, Math.Round((floorY - cy) / scale / 5.0) * 5.0);
+                pnlSideView.Invalidate();
+                pnlFrontView.Invalidate();
+                return;
+            }
 
             if (!_isDraggingFront)
             {
-                pnlFrontView.Cursor = GetFrontCameraHitRect(camCX, camCY).Contains(e.Location)
+                bool overObst = _obstEnabled && GetObstFrontRect(W, floorY, scale).Contains(e.Location);
+                pnlFrontView.Cursor = (overObst || GetFrontCameraHitRect(camCX, camCY).Contains(e.Location))
                     ? Cursors.SizeAll : Cursors.Default;
                 return;
             }
@@ -757,16 +944,25 @@ namespace TestUtilApp.UI
             int newCamCY = floorY - (int)(_cameraHeightMm * scale);
             Rectangle newDirty = FrontCamDirtyRect(newCamCX, newCamCY, fovPxW, fovPxH);
 
-            pnlFrontView.Invalidate(Rectangle.Union(oldDirty, newDirty));
+            // Full repaint: obstacle shadow region may extend beyond camera+FOV dirty rect
+            pnlFrontView.Invalidate();
             // Side View는 MouseUp에서만 갱신
         }
 
         private void pnlFrontView_MouseUp(object sender, MouseEventArgs e)
         {
+            if (_isDraggingObstFront)
+            {
+                _isDraggingObstFront = false;
+                pnlFrontView.Cursor = Cursors.Default;
+                pnlSideView.Invalidate();
+                pnlFrontView.Invalidate();
+                return;
+            }
             if (!_isDraggingFront) return;
             _isDraggingFront = false;
             pnlFrontView.Cursor = Cursors.Default;
-            pnlSideView.Invalidate();   // 드래그 완료 후 Side View 한 번만 갱신
+            pnlSideView.Invalidate();
         }
 
         // ─────────────────────────────────────────────
@@ -795,8 +991,8 @@ namespace TestUtilApp.UI
             // ── Layout derived from GetSideLayout (must match its formula)
             int floorY    = H - SideMarginBot;
             int availH    = floorY - SideMarginTop;
-            int subjectPx = (int)(availH * 0.80);          // 800mm subject height in pixels
-            double scaleV = subjectPx / 800.0;             // px per mm (vertical)
+            int subjectPx = (int)(availH * 0.80);                    // subject height in pixels
+            double scaleV = subjectPx / _subjectMmY;                // px per mm (vertical)
             int subTop    = floorY - subjectPx;
             int fovHalfH  = (int)(_fovY.Value / 2.0 * scaleV);
             fovHalfH = Math.Max(8, fovHalfH);
@@ -826,14 +1022,14 @@ namespace TestUtilApp.UI
             using (Pen p = new Pen(colSubject, 1f))
             using (SolidBrush b = new SolidBrush(colSubject))
             using (Font f = new Font("Segoe UI", 7.5f))
-                DrawDimArrowV(g, p, b, f, subX - subBarW / 2 - 18, subTop, floorY, "800\nmm", colSubject, leftSide: true);
+                DrawDimArrowV(g, p, b, f, subX - subBarW / 2 - 18, subTop, floorY, $"{_subjectMmY:F0}\nmm", colSubject, leftSide: true);
 
             // Subject label (right of bar)
             using (Font f = new Font("Segoe UI", 8f))
             using (SolidBrush b = new SolidBrush(colSubject))
             {
                 g.DrawString("Subject", f, b, subX + subBarW / 2 + 5, camY - 8);
-                g.DrawString("800×800mm", f, b, subX + subBarW / 2 + 5, camY + 6);
+                g.DrawString($"{_subjectMmX:F0}×{_subjectMmY:F0}mm", f, b, subX + subBarW / 2 + 5, camY + 6);
             }
 
             // ── Camera height guide (dashed vertical from floor to camera center)
@@ -898,6 +1094,70 @@ namespace TestUtilApp.UI
                 SizeF sz = g.MeasureString(lbl, f);
                 g.DrawString(lbl, f, b, (camX + subX) / 2f - sz.Width / 2f, SideMarginTop - 4);
             }
+
+            // ── Obstacle + shadow
+            if (_obstEnabled && _wd.HasValue && _obstDistFromCam > 0 && _obstDistFromCam < _wd.Value)
+            {
+                double ratio = _obstDistFromCam / _wd.Value;
+                int ox    = camX + (int)(ratio * (subX - camX));
+                int otY   = floorY - (int)((_obstHeightMm + _obstHalfH) * scaleV);
+                int obY   = floorY - (int)((_obstHeightMm - _obstHalfH) * scaleV);
+                int oCtrY = floorY - (int)(_obstHeightMm * scaleV);
+
+                // Shadow: project obstacle top/bottom edges from camera through to subject
+                double projRatio = _wd.Value / _obstDistFromCam;
+                double shadowTopWorld = _cameraHeightMm + projRatio * (_obstHeightMm + _obstHalfH - _cameraHeightMm);
+                double shadowBotWorld = _cameraHeightMm + projRatio * (_obstHeightMm - _obstHalfH - _cameraHeightMm);
+                int stY = floorY - (int)(shadowTopWorld * scaleV);
+                int sbY = floorY - (int)(shadowBotWorld * scaleV);
+
+                // Clamp shadow to FOV cone at subject
+                int fovTopAtSub = camY - fovHalfH;
+                int fovBotAtSub = camY + fovHalfH;
+                stY = Math.Max(fovTopAtSub, Math.Min(fovBotAtSub, stY));
+                sbY = Math.Max(fovTopAtSub, Math.Min(fovBotAtSub, sbY));
+
+                Color colObst   = Color.FromArgb(220, 150, 60);
+                Color colShadow = Color.FromArgb(200, 80, 60);
+
+                // Shadow polygon (obstacle face → subject)
+                if (sbY > stY)
+                {
+                    using (SolidBrush b = new SolidBrush(Color.FromArgb(50, colShadow.R, colShadow.G, colShadow.B)))
+                        g.FillPolygon(b, new[]
+                        {
+                            new Point(ox, otY), new Point(ox, obY),
+                            new Point(subX, sbY), new Point(subX, stY),
+                        });
+                    using (Pen p = new Pen(Color.FromArgb(100, colShadow.R, colShadow.G, colShadow.B), 1f) { DashStyle = DashStyle.Dash })
+                    {
+                        g.DrawLine(p, camX, camY, ox, otY);
+                        g.DrawLine(p, camX, camY, ox, obY);
+                        g.DrawLine(p, ox, otY, subX, stY);
+                        g.DrawLine(p, ox, obY, subX, sbY);
+                    }
+                    // Shadow bar on subject
+                    using (SolidBrush b = new SolidBrush(Color.FromArgb(140, colShadow.R, colShadow.G, colShadow.B)))
+                        g.FillRectangle(b, subX - 4, stY, 8, sbY - stY);
+                }
+
+                // Obstacle body
+                bool hoverObst = _isDraggingObst;
+                using (SolidBrush b = new SolidBrush(Color.FromArgb(hoverObst ? 130 : 90, colObst.R, colObst.G, colObst.B)))
+                    g.FillRectangle(b, ox - 7, otY, 14, obY - otY);
+                using (Pen p = new Pen(colObst, hoverObst ? 2.5f : 2f))
+                    g.DrawRectangle(p, ox - 7, otY, 14, obY - otY);
+
+                // Obstacle label
+                using (Font f = new Font("Segoe UI", 7.5f))
+                using (SolidBrush b = new SolidBrush(colObst))
+                {
+                    string dLbl = $"{_obstDistFromCam:F0}mm";
+                    SizeF sz = g.MeasureString(dLbl, f);
+                    g.DrawString(dLbl, f, b, ox - sz.Width / 2f, obY + 3);
+                    g.DrawString("장애물", f, b, ox + 10, oCtrY - 7);
+                }
+            }
         }
 
         // ─────────────────────────────────────────────
@@ -915,16 +1175,16 @@ namespace TestUtilApp.UI
             if (_fovX == null) { DrawPlaceholder(g, W, H, ""); return; }
 
             double fovX = _fovX.Value, fovY = _fovY.Value;
-            const double subjectMm = 800.0;
 
-            // ── Unified scale: fit 800mm subject in available space
-            double scale  = GetFrontScale(W, H);
-            int floorY    = H - 50;
-            int subjectPx = (int)(subjectMm * scale);
+            // ── Unified scale: fit subject in available space
+            double scale     = GetFrontScale(W, H);
+            int floorY       = H - 50;
+            int subjectPxW   = (int)(_subjectMmX * scale);
+            int subjectPxH   = (int)(_subjectMmY * scale);
 
             // Subject: centered horizontally, sits on floor
-            int sx = W / 2 - subjectPx / 2;
-            int sy = floorY - subjectPx;
+            int sx = W / 2 - subjectPxW / 2;
+            int sy = floorY - subjectPxH;
 
             // Camera position (in front-elevation coords)
             int camCX = W / 2 + (int)(_cameraOffsetX  * scale);
@@ -953,12 +1213,12 @@ namespace TestUtilApp.UI
 
             // ── Subject rectangle
             using (SolidBrush b = new SolidBrush(Color.FromArgb(30, colSubject.R, colSubject.G, colSubject.B)))
-                g.FillRectangle(b, sx, sy, subjectPx, subjectPx);
+                g.FillRectangle(b, sx, sy, subjectPxW, subjectPxH);
             using (Pen p = new Pen(colSubject, 2f))
-                g.DrawRectangle(p, sx, sy, subjectPx, subjectPx);
+                g.DrawRectangle(p, sx, sy, subjectPxW, subjectPxH);
             using (Font f = new Font("Segoe UI", 8f))
             using (SolidBrush b = new SolidBrush(Color.FromArgb(180, colSubject.R, colSubject.G, colSubject.B)))
-                g.DrawString("Subject  800×800 mm", f, b, sx + 4, sy + 4);
+                g.DrawString($"Subject  {_subjectMmX:F0}×{_subjectMmY:F0} mm", f, b, sx + 4, sy + 4);
 
             // ── FOV rectangle
             using (SolidBrush b = new SolidBrush(Color.FromArgb(20, colFov.R, colFov.G, colFov.B)))
@@ -980,7 +1240,7 @@ namespace TestUtilApp.UI
                 g.DrawString(_cameraHeightMm.ToString("F0") + "mm", f, b, camCX + 4, (floorY + camCY) / 2 - 7);
 
             // ── Camera icon (navy rectangle)
-            Rectangle camBody = new Rectangle(camCX - 20, camCY - 10, 40, 20);
+            Rectangle camBody = new Rectangle(camCX - 10, camCY - 10, 20, 20);
             using (SolidBrush b = new SolidBrush(_isDraggingFront ? Color.FromArgb(60, 80, 140) : Color.FromArgb(30, 45, 100)))
                 g.FillRectangle(b, camBody);
             using (Pen p = new Pen(_isDraggingFront ? Color.FromArgb(140, 170, 255) : Color.FromArgb(80, 110, 200), _isDraggingFront ? 2.5f : 2f))
@@ -1000,6 +1260,107 @@ namespace TestUtilApp.UI
             {
                 SizeF sz = g.MeasureString("Camera", f);
                 g.DrawString("Camera", f, b, camCX - sz.Width / 2f, camCY - 28);
+            }
+
+            // ── Obstacle rectangle (on subject plane projection)
+            if (_obstEnabled)
+            {
+                Rectangle or = GetObstFrontRect(W, floorY, scale);
+                Color colObst = Color.FromArgb(220, 150, 60);
+                bool hovObst  = _isDraggingObstFront;
+                using (SolidBrush b = new SolidBrush(Color.FromArgb(hovObst ? 100 : 65, colObst.R, colObst.G, colObst.B)))
+                    g.FillRectangle(b, or);
+                using (Pen p = new Pen(colObst, hovObst ? 2.5f : 2f))
+                    g.DrawRectangle(p, or);
+                using (Font f = new Font("Segoe UI", 7.5f))
+                using (SolidBrush b = new SolidBrush(colObst))
+                {
+                    string lbl = "장애물";
+                    SizeF sz = g.MeasureString(lbl, f);
+                    g.DrawString(lbl, f, b, or.Left + (or.Width - sz.Width) / 2f, or.Top - sz.Height - 2);
+                    if (_obstOffsetX != 0)
+                    {
+                        string offLbl = (_obstOffsetX >= 0 ? "+" : "") + _obstOffsetX.ToString("F0") + "mm";
+                        g.DrawString(offLbl, f, b, or.Left + (or.Width - g.MeasureString(offLbl, f).Width) / 2f, or.Bottom + 2);
+                    }
+                }
+            }
+
+            // ── Obstacle shadow overlay on subject/FOV plane
+            if (_obstEnabled && _wd.HasValue)
+            {
+                // Auto-initialize if not yet placed (e.g. checkbox checked before WD was known)
+                if (_obstDistFromCam <= 0 || _obstDistFromCam >= _wd.Value)
+                    _obstDistFromCam = _wd.Value / 2.0;
+            }
+            if (_obstEnabled && _wd.HasValue && _obstDistFromCam > 0 && _obstDistFromCam < _wd.Value)
+            {
+                double projRatio = _wd.Value / _obstDistFromCam;
+
+                // Vertical shadow bounds (world mm from floor)
+                double shadowTopMm  = _cameraHeightMm + projRatio * (_obstHeightMm + _obstHalfH - _cameraHeightMm);
+                double shadowBotMm  = _cameraHeightMm + projRatio * (_obstHeightMm - _obstHalfH - _cameraHeightMm);
+
+                // Horizontal shadow bounds (world mm)
+                double shadowLeftMm  = _cameraOffsetX + projRatio * (_obstOffsetX - _obstHalfW - _cameraOffsetX);
+                double shadowRightMm = _cameraOffsetX + projRatio * (_obstOffsetX + _obstHalfW - _cameraOffsetX);
+
+                // Convert to screen (subject center = W/2, floor = floorY, scale = scale)
+                int shLeft  = W / 2 + (int)(shadowLeftMm  * scale);
+                int shRight = W / 2 + (int)(shadowRightMm * scale);
+                int shTop   = floorY - (int)(shadowTopMm  * scale);
+                int shBot   = floorY - (int)(shadowBotMm  * scale);
+
+                // Clamp to subject area (not FOV — shadow can extend beyond FOV)
+                shLeft  = Math.Max(sx,           Math.Min(sx + subjectPxW, shLeft));
+                shRight = Math.Max(sx,           Math.Min(sx + subjectPxW, shRight));
+                shTop   = Math.Max(sy,           Math.Min(sy + subjectPxH, shTop));
+                shBot   = Math.Max(sy,           Math.Min(sy + subjectPxH, shBot));
+
+                if (shRight > shLeft && shBot > shTop)
+                {
+                    Color colGray = Color.FromArgb(150, 160, 165);
+                    Color colBlind = Color.FromArgb(210, 80, 70);
+
+                    // Full shadow area — gray
+                    using (SolidBrush b = new SolidBrush(Color.FromArgb(55, colGray.R, colGray.G, colGray.B)))
+                        g.FillRectangle(b, shLeft, shTop, shRight - shLeft, shBot - shTop);
+                    using (Pen p = new Pen(Color.FromArgb(140, colGray.R, colGray.G, colGray.B), 1.5f) { DashStyle = DashStyle.Dash })
+                        g.DrawRectangle(p, shLeft, shTop, shRight - shLeft, shBot - shTop);
+                    using (Font f = new Font("Segoe UI", 8f))
+                    using (SolidBrush b = new SolidBrush(Color.FromArgb(160, colGray.R, colGray.G, colGray.B)))
+                    {
+                        string lbl = "shadow";
+                        SizeF sz = g.MeasureString(lbl, f);
+                        float tx = (shLeft + shRight) / 2f - sz.Width / 2f;
+                        float ty = (shTop + shBot) / 2f - sz.Height / 2f;
+                        if (shBot - shTop > 16 && shRight - shLeft > 40)
+                            g.DrawString(lbl, f, b, tx, ty);
+                    }
+
+                    // FOV 간섭 영역 — red
+                    int isLeft  = Math.Max(shLeft,  fx);
+                    int isRight = Math.Min(shRight, fx + fovPxW);
+                    int isTop   = Math.Max(shTop,   fy);
+                    int isBot   = Math.Min(shBot,   fy + fovPxH);
+                    if (isRight > isLeft && isBot > isTop)
+                    {
+                        using (SolidBrush b = new SolidBrush(Color.FromArgb(110, colBlind.R, colBlind.G, colBlind.B)))
+                            g.FillRectangle(b, isLeft, isTop, isRight - isLeft, isBot - isTop);
+                        using (Pen p = new Pen(Color.FromArgb(220, colBlind.R, colBlind.G, colBlind.B), 1.5f))
+                            g.DrawRectangle(p, isLeft, isTop, isRight - isLeft, isBot - isTop);
+                        using (Font f = new Font("Segoe UI", 8f, FontStyle.Bold))
+                        using (SolidBrush b = new SolidBrush(colBlind))
+                        {
+                            string lbl = "blind";
+                            SizeF sz = g.MeasureString(lbl, f);
+                            float tx = (isLeft + isRight) / 2f - sz.Width / 2f;
+                            float ty = (isTop + isBot) / 2f - sz.Height / 2f;
+                            if (isBot - isTop > 16 && isRight - isLeft > 30)
+                                g.DrawString(lbl, f, b, tx, ty);
+                        }
+                    }
+                }
             }
 
             // ── Dimension arrows

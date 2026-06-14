@@ -80,10 +80,28 @@ namespace TestUtilApp.UI
             this.lblResResult = new System.Windows.Forms.Label();
             this.pnlDiagrams = new System.Windows.Forms.Panel();
             this.splitDiagram = new System.Windows.Forms.SplitContainer();
-            this.lblSideTitle = new System.Windows.Forms.Label();
             this.pnlSideView = new System.Windows.Forms.Panel();
-            this.lblFrontTitle = new System.Windows.Forms.Label();
+            this.pnlObstBar = new System.Windows.Forms.Panel();
+            this.pnlObstSide = new System.Windows.Forms.Panel();
+            this.txtObstH = new System.Windows.Forms.TextBox();
+            this.chkObst = new System.Windows.Forms.CheckBox();
+            this.lblObstH = new System.Windows.Forms.Label();
+            this.lblObstW = new System.Windows.Forms.Label();
+            this.txtObstW = new System.Windows.Forms.TextBox();
+            this.lblObstWu = new System.Windows.Forms.Label();
+            this.pnlObstDiv = new System.Windows.Forms.Panel();
+            this.pnlSubjSide = new System.Windows.Forms.Panel();
+            this.lblSubjTitle = new System.Windows.Forms.Label();
+            this.lblSubjX = new System.Windows.Forms.Label();
+            this.txtSubjX = new System.Windows.Forms.TextBox();
+            this.lblSubjY = new System.Windows.Forms.Label();
+            this.txtSubjY = new System.Windows.Forms.TextBox();
+            this.pnlObstPad = new System.Windows.Forms.Panel();
+            this.btn3DView = new System.Windows.Forms.Button();
+            this.pnlRightPad = new System.Windows.Forms.Panel();
+            this.lblSideTitle = new System.Windows.Forms.Label();
             this.pnlFrontView = new System.Windows.Forms.Panel();
+            this.lblFrontTitle = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
             this.splitMain.Panel1.SuspendLayout();
             this.splitMain.Panel2.SuspendLayout();
@@ -101,6 +119,9 @@ namespace TestUtilApp.UI
             this.splitDiagram.Panel1.SuspendLayout();
             this.splitDiagram.Panel2.SuspendLayout();
             this.splitDiagram.SuspendLayout();
+            this.pnlObstBar.SuspendLayout();
+            this.pnlObstSide.SuspendLayout();
+            this.pnlSubjSide.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitMain
@@ -116,8 +137,8 @@ namespace TestUtilApp.UI
             // splitMain.Panel2
             // 
             this.splitMain.Panel2.Controls.Add(this.pnlDiagrams);
-            this.splitMain.Size = new System.Drawing.Size(1180, 700);
-            this.splitMain.SplitterDistance = 547;
+            this.splitMain.Size = new System.Drawing.Size(1278, 700);
+            this.splitMain.SplitterDistance = 592;
             this.splitMain.TabIndex = 0;
             // 
             // tabMain
@@ -129,7 +150,7 @@ namespace TestUtilApp.UI
             this.tabMain.Location = new System.Drawing.Point(0, 0);
             this.tabMain.Name = "tabMain";
             this.tabMain.SelectedIndex = 0;
-            this.tabMain.Size = new System.Drawing.Size(547, 700);
+            this.tabMain.Size = new System.Drawing.Size(592, 700);
             this.tabMain.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabMain.TabIndex = 0;
             this.tabMain.SelectedIndexChanged += new System.EventHandler(this.tabMain_SelectedIndexChanged);
@@ -143,7 +164,7 @@ namespace TestUtilApp.UI
             this.tabReverse.Controls.Add(this.dgvResults);
             this.tabReverse.Location = new System.Drawing.Point(4, 30);
             this.tabReverse.Name = "tabReverse";
-            this.tabReverse.Size = new System.Drawing.Size(539, 666);
+            this.tabReverse.Size = new System.Drawing.Size(584, 666);
             this.tabReverse.TabIndex = 0;
             this.tabReverse.Text = "과제 → 장비";
             // 
@@ -303,7 +324,7 @@ namespace TestUtilApp.UI
             this.grpRevRes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(220)))), ((int)(((byte)(180)))));
             this.grpRevRes.Location = new System.Drawing.Point(244, 4);
             this.grpRevRes.Name = "grpRevRes";
-            this.grpRevRes.Size = new System.Drawing.Size(291, 220);
+            this.grpRevRes.Size = new System.Drawing.Size(336, 220);
             this.grpRevRes.TabIndex = 1;
             this.grpRevRes.TabStop = false;
             this.grpRevRes.Text = "분 해 능";
@@ -352,7 +373,7 @@ namespace TestUtilApp.UI
             this.pnlCatalogBar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(210)))), ((int)(((byte)(220)))));
             this.pnlCatalogBar.Location = new System.Drawing.Point(4, 228);
             this.pnlCatalogBar.Name = "pnlCatalogBar";
-            this.pnlCatalogBar.Size = new System.Drawing.Size(531, 64);
+            this.pnlCatalogBar.Size = new System.Drawing.Size(576, 64);
             this.pnlCatalogBar.TabIndex = 2;
             // 
             // lblCatalogInfo
@@ -370,7 +391,7 @@ namespace TestUtilApp.UI
             this.btnCatalogEdit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(42)))), ((int)(((byte)(75)))));
             this.btnCatalogEdit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCatalogEdit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(220)))), ((int)(((byte)(180)))));
-            this.btnCatalogEdit.Location = new System.Drawing.Point(349, 2);
+            this.btnCatalogEdit.Location = new System.Drawing.Point(394, 2);
             this.btnCatalogEdit.Name = "btnCatalogEdit";
             this.btnCatalogEdit.Size = new System.Drawing.Size(98, 24);
             this.btnCatalogEdit.TabIndex = 1;
@@ -384,7 +405,7 @@ namespace TestUtilApp.UI
             this.btnCatalogReload.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(42)))), ((int)(((byte)(75)))));
             this.btnCatalogReload.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCatalogReload.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(220)))), ((int)(((byte)(180)))));
-            this.btnCatalogReload.Location = new System.Drawing.Point(451, 2);
+            this.btnCatalogReload.Location = new System.Drawing.Point(496, 2);
             this.btnCatalogReload.Name = "btnCatalogReload";
             this.btnCatalogReload.Size = new System.Drawing.Size(80, 24);
             this.btnCatalogReload.TabIndex = 2;
@@ -407,7 +428,7 @@ namespace TestUtilApp.UI
             this.btnLensCatalogEdit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(42)))), ((int)(((byte)(75)))));
             this.btnLensCatalogEdit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLensCatalogEdit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(220)))), ((int)(((byte)(180)))));
-            this.btnLensCatalogEdit.Location = new System.Drawing.Point(349, 33);
+            this.btnLensCatalogEdit.Location = new System.Drawing.Point(394, 33);
             this.btnLensCatalogEdit.Name = "btnLensCatalogEdit";
             this.btnLensCatalogEdit.Size = new System.Drawing.Size(98, 24);
             this.btnLensCatalogEdit.TabIndex = 4;
@@ -421,7 +442,7 @@ namespace TestUtilApp.UI
             this.btnLensCatalogReload.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(42)))), ((int)(((byte)(75)))));
             this.btnLensCatalogReload.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLensCatalogReload.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(220)))), ((int)(((byte)(180)))));
-            this.btnLensCatalogReload.Location = new System.Drawing.Point(451, 33);
+            this.btnLensCatalogReload.Location = new System.Drawing.Point(496, 33);
             this.btnLensCatalogReload.Name = "btnLensCatalogReload";
             this.btnLensCatalogReload.Size = new System.Drawing.Size(80, 24);
             this.btnLensCatalogReload.TabIndex = 5;
@@ -467,7 +488,7 @@ namespace TestUtilApp.UI
             this.dgvResults.ReadOnly = true;
             this.dgvResults.RowHeadersVisible = false;
             this.dgvResults.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvResults.Size = new System.Drawing.Size(531, 367);
+            this.dgvResults.Size = new System.Drawing.Size(576, 367);
             this.dgvResults.TabIndex = 1;
             this.dgvResults.SelectionChanged += new System.EventHandler(this.dgvResults_SelectionChanged);
             // 
@@ -525,7 +546,7 @@ namespace TestUtilApp.UI
             this.tabForward.Controls.Add(this.grpFov);
             this.tabForward.Location = new System.Drawing.Point(4, 30);
             this.tabForward.Name = "tabForward";
-            this.tabForward.Size = new System.Drawing.Size(539, 666);
+            this.tabForward.Size = new System.Drawing.Size(584, 666);
             this.tabForward.TabIndex = 1;
             this.tabForward.Text = "장비 → FOV";
             // 
@@ -561,7 +582,7 @@ namespace TestUtilApp.UI
             this.grpFov.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(210)))), ((int)(((byte)(220)))));
             this.grpFov.Location = new System.Drawing.Point(4, 4);
             this.grpFov.Name = "grpFov";
-            this.grpFov.Size = new System.Drawing.Size(439, 400);
+            this.grpFov.Size = new System.Drawing.Size(484, 400);
             this.grpFov.TabIndex = 0;
             this.grpFov.TabStop = false;
             this.grpFov.Text = "FOV 계산  ( 카메라 + 렌즈 → FOV )";
@@ -791,68 +812,292 @@ namespace TestUtilApp.UI
             this.lblResResult.Text = "-";
             // 
             // pnlDiagrams
-            //
+            // 
             this.pnlDiagrams.Controls.Add(this.splitDiagram);
             this.pnlDiagrams.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlDiagrams.Location = new System.Drawing.Point(0, 0);
             this.pnlDiagrams.Name = "pnlDiagrams";
+            this.pnlDiagrams.Size = new System.Drawing.Size(682, 700);
             this.pnlDiagrams.TabIndex = 0;
-            //
+            // 
             // splitDiagram
-            //
+            // 
+            this.splitDiagram.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(45)))), ((int)(((byte)(65)))));
             this.splitDiagram.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitDiagram.FixedPanel = System.Windows.Forms.FixedPanel.None;
-            this.splitDiagram.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            this.splitDiagram.Panel1.Controls.Add(this.pnlSideView);
-            this.splitDiagram.Panel1.Controls.Add(this.lblSideTitle);
-            this.splitDiagram.Panel2.Controls.Add(this.pnlFrontView);
-            this.splitDiagram.Panel2.Controls.Add(this.lblFrontTitle);
             this.splitDiagram.Location = new System.Drawing.Point(0, 0);
             this.splitDiagram.Name = "splitDiagram";
-            this.splitDiagram.SplitterDistance = 350;
+            this.splitDiagram.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitDiagram.Panel1
+            // 
+            this.splitDiagram.Panel1.Controls.Add(this.pnlSideView);
+            this.splitDiagram.Panel1.Controls.Add(this.pnlObstBar);
+            this.splitDiagram.Panel1.Controls.Add(this.lblSideTitle);
+            // 
+            // splitDiagram.Panel2
+            // 
+            this.splitDiagram.Panel2.Controls.Add(this.pnlFrontView);
+            this.splitDiagram.Panel2.Controls.Add(this.lblFrontTitle);
+            this.splitDiagram.Size = new System.Drawing.Size(682, 700);
+            this.splitDiagram.SplitterDistance = 497;
             this.splitDiagram.SplitterWidth = 5;
             this.splitDiagram.TabIndex = 0;
-            this.splitDiagram.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(45)))), ((int)(((byte)(65)))));
-            //
-            // lblSideTitle
-            //
-            this.lblSideTitle.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblSideTitle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.lblSideTitle.Name = "lblSideTitle";
-            this.lblSideTitle.Size = new System.Drawing.Size(709, 22);
-            this.lblSideTitle.TabIndex = 0;
-            this.lblSideTitle.Text = "  Side View  ( Camera ← WD → Subject )";
-            this.lblSideTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            //
+            // 
             // pnlSideView
-            //
+            // 
             this.pnlSideView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlSideView.Location = new System.Drawing.Point(0, 56);
             this.pnlSideView.Name = "pnlSideView";
+            this.pnlSideView.Size = new System.Drawing.Size(682, 441);
             this.pnlSideView.TabIndex = 1;
             this.pnlSideView.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlSideView_Paint);
             this.pnlSideView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnlSideView_MouseDown);
             this.pnlSideView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnlSideView_MouseMove);
             this.pnlSideView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnlSideView_MouseUp);
+            // 
+            // pnlObstBar
+            // 
+            this.pnlObstBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(24)))), ((int)(((byte)(36)))));
+            this.pnlObstBar.Controls.Add(this.pnlObstSide);
+            this.pnlObstBar.Controls.Add(this.pnlObstDiv);
+            this.pnlObstBar.Controls.Add(this.pnlSubjSide);
+            this.pnlObstBar.Controls.Add(this.pnlObstPad);
+            this.pnlObstBar.Controls.Add(this.btn3DView);
+            this.pnlObstBar.Controls.Add(this.pnlRightPad);
+            this.pnlObstBar.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlObstBar.Location = new System.Drawing.Point(0, 22);
+            this.pnlObstBar.Name = "pnlObstBar";
+            this.pnlObstBar.Size = new System.Drawing.Size(682, 34);
+            this.pnlObstBar.TabIndex = 2;
+            // 
+            // pnlObstSide
+            // 
+            this.pnlObstSide.BackColor = System.Drawing.Color.Transparent;
+            this.pnlObstSide.Controls.Add(this.txtObstH);
+            this.pnlObstSide.Controls.Add(this.chkObst);
+            this.pnlObstSide.Controls.Add(this.lblObstH);
+            this.pnlObstSide.Controls.Add(this.lblObstW);
+            this.pnlObstSide.Controls.Add(this.txtObstW);
+            this.pnlObstSide.Controls.Add(this.lblObstWu);
+            this.pnlObstSide.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlObstSide.Location = new System.Drawing.Point(296, 0);
+            this.pnlObstSide.Name = "pnlObstSide";
+            this.pnlObstSide.Size = new System.Drawing.Size(293, 34);
+            this.pnlObstSide.TabIndex = 2;
+            // 
+            // txtObstH
+            // 
+            this.txtObstH.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            this.txtObstH.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtObstH.ForeColor = System.Drawing.Color.White;
+            this.txtObstH.Location = new System.Drawing.Point(162, 5);
+            this.txtObstH.Name = "txtObstH";
+            this.txtObstH.Size = new System.Drawing.Size(39, 23);
+            this.txtObstH.TabIndex = 2;
+            this.txtObstH.Text = "200";
+            this.txtObstH.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // chkObst
+            // 
+            this.chkObst.AutoSize = true;
+            this.chkObst.BackColor = System.Drawing.Color.Transparent;
+            this.chkObst.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(210)))), ((int)(((byte)(220)))));
+            this.chkObst.Location = new System.Drawing.Point(8, 9);
+            this.chkObst.Name = "chkObst";
+            this.chkObst.Size = new System.Drawing.Size(72, 19);
+            this.chkObst.TabIndex = 0;
+            this.chkObst.Text = "Obstacle";
+            this.chkObst.UseVisualStyleBackColor = false;
+            // 
+            // lblObstH
+            // 
+            this.lblObstH.AutoSize = true;
+            this.lblObstH.BackColor = System.Drawing.Color.Transparent;
+            this.lblObstH.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(160)))), ((int)(((byte)(180)))));
+            this.lblObstH.Location = new System.Drawing.Point(147, 9);
+            this.lblObstH.Name = "lblObstH";
+            this.lblObstH.Size = new System.Drawing.Size(16, 15);
+            this.lblObstH.TabIndex = 1;
+            this.lblObstH.Text = "H";
+            // 
+            // lblObstW
+            // 
+            this.lblObstW.AutoSize = true;
+            this.lblObstW.BackColor = System.Drawing.Color.Transparent;
+            this.lblObstW.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(160)))), ((int)(((byte)(180)))));
+            this.lblObstW.Location = new System.Drawing.Point(86, 9);
+            this.lblObstW.Name = "lblObstW";
+            this.lblObstW.Size = new System.Drawing.Size(18, 15);
+            this.lblObstW.TabIndex = 4;
+            this.lblObstW.Text = "W";
+            // 
+            // txtObstW
+            // 
+            this.txtObstW.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            this.txtObstW.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtObstW.ForeColor = System.Drawing.Color.White;
+            this.txtObstW.Location = new System.Drawing.Point(105, 5);
+            this.txtObstW.Name = "txtObstW";
+            this.txtObstW.Size = new System.Drawing.Size(39, 23);
+            this.txtObstW.TabIndex = 5;
+            this.txtObstW.Text = "200";
+            this.txtObstW.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // lblObstWu
+            // 
+            this.lblObstWu.AutoSize = true;
+            this.lblObstWu.BackColor = System.Drawing.Color.Transparent;
+            this.lblObstWu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(160)))), ((int)(((byte)(180)))));
+            this.lblObstWu.Location = new System.Drawing.Point(307, 10);
+            this.lblObstWu.Name = "lblObstWu";
+            this.lblObstWu.Size = new System.Drawing.Size(29, 15);
+            this.lblObstWu.TabIndex = 6;
+            this.lblObstWu.Text = "mm";
+            // 
+            // pnlObstDiv
+            // 
+            this.pnlObstDiv.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(50)))), ((int)(((byte)(70)))));
+            this.pnlObstDiv.Dock = System.Windows.Forms.DockStyle.Left;
+            this.pnlObstDiv.Location = new System.Drawing.Point(295, 0);
+            this.pnlObstDiv.Name = "pnlObstDiv";
+            this.pnlObstDiv.Size = new System.Drawing.Size(1, 34);
+            this.pnlObstDiv.TabIndex = 1;
+            // 
+            // pnlSubjSide
+            // 
+            this.pnlSubjSide.BackColor = System.Drawing.Color.Transparent;
+            this.pnlSubjSide.Controls.Add(this.lblSubjTitle);
+            this.pnlSubjSide.Controls.Add(this.lblSubjX);
+            this.pnlSubjSide.Controls.Add(this.txtSubjX);
+            this.pnlSubjSide.Controls.Add(this.lblSubjY);
+            this.pnlSubjSide.Controls.Add(this.txtSubjY);
+            this.pnlSubjSide.Dock = System.Windows.Forms.DockStyle.Left;
+            this.pnlSubjSide.Location = new System.Drawing.Point(0, 0);
+            this.pnlSubjSide.Name = "pnlSubjSide";
+            this.pnlSubjSide.Size = new System.Drawing.Size(295, 34);
+            this.pnlSubjSide.TabIndex = 0;
+            // 
+            // lblSubjTitle
+            // 
+            this.lblSubjTitle.AutoSize = true;
+            this.lblSubjTitle.BackColor = System.Drawing.Color.Transparent;
+            this.lblSubjTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(220)))), ((int)(((byte)(180)))));
+            this.lblSubjTitle.Location = new System.Drawing.Point(8, 10);
+            this.lblSubjTitle.Name = "lblSubjTitle";
+            this.lblSubjTitle.Size = new System.Drawing.Size(52, 15);
+            this.lblSubjTitle.TabIndex = 0;
+            this.lblSubjTitle.Text = "Subject :";
+            // 
+            // lblSubjX
+            // 
+            this.lblSubjX.AutoSize = true;
+            this.lblSubjX.BackColor = System.Drawing.Color.Transparent;
+            this.lblSubjX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(160)))), ((int)(((byte)(180)))));
+            this.lblSubjX.Location = new System.Drawing.Point(66, 9);
+            this.lblSubjX.Name = "lblSubjX";
+            this.lblSubjX.Size = new System.Drawing.Size(18, 15);
+            this.lblSubjX.TabIndex = 1;
+            this.lblSubjX.Text = "W";
+            // 
+            // txtSubjX
+            // 
+            this.txtSubjX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            this.txtSubjX.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtSubjX.ForeColor = System.Drawing.Color.White;
+            this.txtSubjX.Location = new System.Drawing.Point(84, 5);
+            this.txtSubjX.Name = "txtSubjX";
+            this.txtSubjX.Size = new System.Drawing.Size(39, 23);
+            this.txtSubjX.TabIndex = 2;
+            this.txtSubjX.Text = "800";
+            this.txtSubjX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // lblSubjY
+            // 
+            this.lblSubjY.AutoSize = true;
+            this.lblSubjY.BackColor = System.Drawing.Color.Transparent;
+            this.lblSubjY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(160)))), ((int)(((byte)(180)))));
+            this.lblSubjY.Location = new System.Drawing.Point(128, 8);
+            this.lblSubjY.Name = "lblSubjY";
+            this.lblSubjY.Size = new System.Drawing.Size(16, 15);
+            this.lblSubjY.TabIndex = 4;
+            this.lblSubjY.Text = "H";
+            // 
+            // txtSubjY
+            // 
+            this.txtSubjY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            this.txtSubjY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtSubjY.ForeColor = System.Drawing.Color.White;
+            this.txtSubjY.Location = new System.Drawing.Point(145, 5);
+            this.txtSubjY.Name = "txtSubjY";
+            this.txtSubjY.Size = new System.Drawing.Size(39, 23);
+            this.txtSubjY.TabIndex = 5;
+            this.txtSubjY.Text = "800";
+            this.txtSubjY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // pnlObstPad
+            // 
+            this.pnlObstPad.BackColor = System.Drawing.Color.Transparent;
+            this.pnlObstPad.Dock = System.Windows.Forms.DockStyle.Right;
+            this.pnlObstPad.Location = new System.Drawing.Point(589, 0);
+            this.pnlObstPad.Name = "pnlObstPad";
+            this.pnlObstPad.Size = new System.Drawing.Size(13, 34);
+            this.pnlObstPad.TabIndex = 3;
+            // 
+            // btn3DView
+            // 
+            this.btn3DView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(42)))), ((int)(((byte)(75)))));
+            this.btn3DView.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btn3DView.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn3DView.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(220)))), ((int)(((byte)(180)))));
+            this.btn3DView.Location = new System.Drawing.Point(602, 0);
+            this.btn3DView.Name = "btn3DView";
+            this.btn3DView.Size = new System.Drawing.Size(80, 34);
+            this.btn3DView.TabIndex = 4;
+            this.btn3DView.Text = "3D View";
+            this.btn3DView.UseVisualStyleBackColor = false;
+            this.btn3DView.Click += new System.EventHandler(this.btn3DView_Click);
             //
-            // lblFrontTitle
+            // pnlRightPad
             //
-            this.lblFrontTitle.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblFrontTitle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.lblFrontTitle.Name = "lblFrontTitle";
-            this.lblFrontTitle.Size = new System.Drawing.Size(709, 22);
-            this.lblFrontTitle.TabIndex = 0;
-            this.lblFrontTitle.Text = "  Front View  ( FOV at Subject Plane )";
-            this.lblFrontTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.pnlRightPad.BackColor = System.Drawing.Color.Transparent;
+            this.pnlRightPad.Dock = System.Windows.Forms.DockStyle.Right;
+            this.pnlRightPad.Name = "pnlRightPad";
+            this.pnlRightPad.Width = 8;
+            this.pnlRightPad.TabIndex = 5;
             //
+            // lblSideTitle
+            // 
+            this.lblSideTitle.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblSideTitle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.lblSideTitle.Location = new System.Drawing.Point(0, 0);
+            this.lblSideTitle.Name = "lblSideTitle";
+            this.lblSideTitle.Size = new System.Drawing.Size(682, 22);
+            this.lblSideTitle.TabIndex = 0;
+            this.lblSideTitle.Text = "  Side View  ( Camera ← WD → Subject )";
+            this.lblSideTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // pnlFrontView
-            //
+            // 
             this.pnlFrontView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlFrontView.Location = new System.Drawing.Point(0, 22);
             this.pnlFrontView.Name = "pnlFrontView";
+            this.pnlFrontView.Size = new System.Drawing.Size(682, 176);
             this.pnlFrontView.TabIndex = 1;
             this.pnlFrontView.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlFrontView_Paint);
             this.pnlFrontView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnlFrontView_MouseDown);
             this.pnlFrontView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnlFrontView_MouseMove);
             this.pnlFrontView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnlFrontView_MouseUp);
+            // 
+            // lblFrontTitle
+            // 
+            this.lblFrontTitle.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblFrontTitle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.lblFrontTitle.Location = new System.Drawing.Point(0, 0);
+            this.lblFrontTitle.Name = "lblFrontTitle";
+            this.lblFrontTitle.Size = new System.Drawing.Size(682, 22);
+            this.lblFrontTitle.TabIndex = 0;
+            this.lblFrontTitle.Text = "  Front View  ( FOV at Subject Plane )";
+            this.lblFrontTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // CameraCalcControl
             // 
@@ -863,7 +1108,7 @@ namespace TestUtilApp.UI
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.Name = "CameraCalcControl";
-            this.Size = new System.Drawing.Size(1180, 700);
+            this.Size = new System.Drawing.Size(1278, 700);
             this.splitMain.Panel1.ResumeLayout(false);
             this.splitMain.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).EndInit();
@@ -880,11 +1125,16 @@ namespace TestUtilApp.UI
             this.tabForward.ResumeLayout(false);
             this.grpFov.ResumeLayout(false);
             this.grpFov.PerformLayout();
+            this.pnlDiagrams.ResumeLayout(false);
             this.splitDiagram.Panel1.ResumeLayout(false);
             this.splitDiagram.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitDiagram)).EndInit();
             this.splitDiagram.ResumeLayout(false);
-            this.pnlDiagrams.ResumeLayout(false);
+            this.pnlObstBar.ResumeLayout(false);
+            this.pnlObstSide.ResumeLayout(false);
+            this.pnlObstSide.PerformLayout();
+            this.pnlSubjSide.ResumeLayout(false);
+            this.pnlSubjSide.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -964,5 +1214,25 @@ namespace TestUtilApp.UI
         private System.Windows.Forms.Panel pnlSideView;
         private System.Windows.Forms.Label lblFrontTitle;
         private System.Windows.Forms.Panel pnlFrontView;
+
+        // Obstacle bar
+        private System.Windows.Forms.Panel pnlObstBar;
+        private System.Windows.Forms.Panel pnlSubjSide;
+        private System.Windows.Forms.Label lblSubjTitle;
+        private System.Windows.Forms.Label lblSubjX;
+        private System.Windows.Forms.TextBox txtSubjX;
+        private System.Windows.Forms.Label lblSubjY;
+        private System.Windows.Forms.TextBox txtSubjY;
+        private System.Windows.Forms.Panel pnlObstDiv;
+        private System.Windows.Forms.Panel pnlObstSide;
+        private System.Windows.Forms.CheckBox chkObst;
+        private System.Windows.Forms.Label lblObstH;
+        private System.Windows.Forms.TextBox txtObstH;
+        private System.Windows.Forms.Label lblObstW;
+        private System.Windows.Forms.TextBox txtObstW;
+        private System.Windows.Forms.Label lblObstWu;
+        private System.Windows.Forms.Panel pnlObstPad;
+        private System.Windows.Forms.Button btn3DView;
+        private System.Windows.Forms.Panel pnlRightPad;
     }
 }

@@ -178,52 +178,52 @@
     <Compile Include="Form\VisionTestForm\OpenCV\Algorithms\CropAlgorithm.cs" />
     <Compile Include="Form\VisionTestForm\OpenCV\Algorithms\ThresholdAlgorithm.cs" />
     <Compile Include="Form\VisionTestForm\OpenCV\Algorithms\ContourAlgorithm.cs" />
-    <Compile Include="Form\VisionTestForm\OpenCV\AlgorithmSettingsPanel.cs">
+    <Compile Include="Form\VisionTestForm\OpenCV\Panel\AlgorithmSettingsPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Form\VisionTestForm\OpenCV\ThresholdSettingsPanel.cs">
+    <Compile Include="Form\VisionTestForm\OpenCV\Panel\ThresholdSettingsPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Form\VisionTestForm\OpenCV\ThresholdSettingsPanel.Designer.cs">
+    <Compile Include="Form\VisionTestForm\OpenCV\Panel\ThresholdSettingsPanel.Designer.cs">
       <DependentUpon>ThresholdSettingsPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form\VisionTestForm\OpenCV\CropSettingsPanel.cs">
+    <Compile Include="Form\VisionTestForm\OpenCV\Panel\CropSettingsPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Form\VisionTestForm\OpenCV\CropSettingsPanel.Designer.cs">
+    <Compile Include="Form\VisionTestForm\OpenCV\Panel\CropSettingsPanel.Designer.cs">
       <DependentUpon>CropSettingsPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form\VisionTestForm\OpenCV\ContourSettingsPanel.cs">
+    <Compile Include="Form\VisionTestForm\OpenCV\Panel\ContourSettingsPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Form\VisionTestForm\OpenCV\ContourSettingsPanel.Designer.cs">
+    <Compile Include="Form\VisionTestForm\OpenCV\Panel\ContourSettingsPanel.Designer.cs">
       <DependentUpon>ContourSettingsPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form\VisionTestForm\OpenCV\AcquireDialog.cs">
+    <Compile Include="Form\VisionTestForm\OpenCV\Dialog\AcquireDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form\VisionTestForm\OpenCV\AcquireDialog.Designer.cs">
+    <Compile Include="Form\VisionTestForm\OpenCV\Dialog\AcquireDialog.Designer.cs">
       <DependentUpon>AcquireDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form\VisionTestForm\OpenCV\ThresholdDialog.cs">
+    <Compile Include="Form\VisionTestForm\OpenCV\Dialog\ThresholdDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form\VisionTestForm\OpenCV\ThresholdDialog.Designer.cs">
+    <Compile Include="Form\VisionTestForm\OpenCV\Dialog\ThresholdDialog.Designer.cs">
       <DependentUpon>ThresholdDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form\VisionTestForm\DarkButton.cs">
+    <Compile Include="Form\Comon\DarkButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Form\VisionTestForm\AlgorithmListControl.cs">
+    <Compile Include="Form\VisionTestForm\OpenCV\Control\AlgorithmListControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Form\VisionTestForm\AlgorithmListControl.Designer.cs">
+    <Compile Include="Form\VisionTestForm\OpenCV\Control\AlgorithmListControl.Designer.cs">
       <DependentUpon>AlgorithmListControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form\VisionTestForm\PipelineCanvasControl.cs">
+    <Compile Include="Form\VisionTestForm\OpenCV\Control\PipelineCanvasControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Form\VisionTestForm\PipelineViewForm.cs">
+    <Compile Include="Form\VisionTestForm\OpenCV\Dialog\PipelineViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form\VisionTestForm\OpenCvControl.cs">
@@ -232,32 +232,35 @@
     <Compile Include="Form\VisionTestForm\OpenCvControl.Designer.cs">
       <DependentUpon>OpenCvControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form\VisionTestForm\CameraCalcControl.cs">
+    <Compile Include="Form\VisionTestForm\CamearCalc\CameraCalcControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Form\VisionTestForm\CameraCalcControl.Designer.cs">
+    <Compile Include="Form\VisionTestForm\CamearCalc\View3DForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\VisionTestForm\CamearCalc\CameraCalcControl.Designer.cs">
       <DependentUpon>CameraCalcControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form\VisionTestForm\CameraEditorForm.cs">
+    <Compile Include="Form\VisionTestForm\CamearCalc\CameraEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form\VisionTestForm\CameraEditorForm.Designer.cs">
+    <Compile Include="Form\VisionTestForm\CamearCalc\CameraEditorForm.Designer.cs">
       <DependentUpon>CameraEditorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form\VisionTestForm\LensEditorForm.cs">
+    <Compile Include="Form\VisionTestForm\CamearCalc\LensEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form\VisionTestForm\LensEditorForm.Designer.cs">
+    <Compile Include="Form\VisionTestForm\CamearCalc\LensEditorForm.Designer.cs">
       <DependentUpon>LensEditorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Form\DiceTestForm\ModelLoadingDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form\ThemedDialog.cs">
+    <Compile Include="Form\Comon\ThemedDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form\FolderPickerDialog.cs" />
-    <Compile Include="Form\ObjectData\InspectionSpec.cs" />
+    <Compile Include="Form\Comon\FolderPickerDialog.cs" />
+    <Compile Include="Form\Comon\ObjectData\InspectionSpec.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -320,25 +323,25 @@
     <EmbeddedResource Include="Form\DiceTestForm\LabelGeneratorControl.resx">
       <DependentUpon>LabelGeneratorControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form\VisionTestForm\CameraCalcControl.resx">
+    <EmbeddedResource Include="Form\VisionTestForm\CamearCalc\CameraCalcControl.resx">
       <DependentUpon>CameraCalcControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form\VisionTestForm\OpenCV\AcquireDialog.resx">
+    <EmbeddedResource Include="Form\VisionTestForm\OpenCV\Dialog\AcquireDialog.resx">
       <DependentUpon>AcquireDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form\VisionTestForm\OpenCV\ThresholdDialog.resx">
+    <EmbeddedResource Include="Form\VisionTestForm\OpenCV\Dialog\ThresholdDialog.resx">
       <DependentUpon>ThresholdDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form\VisionTestForm\AlgorithmListControl.resx">
+    <EmbeddedResource Include="Form\VisionTestForm\OpenCV\Control\AlgorithmListControl.resx">
       <DependentUpon>AlgorithmListControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form\VisionTestForm\OpenCV\ContourSettingsPanel.resx">
+    <EmbeddedResource Include="Form\VisionTestForm\OpenCV\Panel\ContourSettingsPanel.resx">
       <DependentUpon>ContourSettingsPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form\VisionTestForm\OpenCV\CropSettingsPanel.resx">
+    <EmbeddedResource Include="Form\VisionTestForm\OpenCV\Panel\CropSettingsPanel.resx">
       <DependentUpon>CropSettingsPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form\VisionTestForm\OpenCV\ThresholdSettingsPanel.resx">
+    <EmbeddedResource Include="Form\VisionTestForm\OpenCV\Panel\ThresholdSettingsPanel.resx">
       <DependentUpon>ThresholdSettingsPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form\VisionTestForm\OpenCvControl.resx">
