@@ -28,7 +28,10 @@
       "Bash(Select-Object FullName, PSIsContainer)",
       "Bash(Format-Table -AutoSize)",
       "PowerShell(Get-ChildItem -Path \"C:\\\\GitHub\\\\TestUtilApp\\\\DICE\" -Force | Where-Object { -not $_.PSIsContainer })",
-      "Bash(Copy-Item \"C:\\\\tmp\\\\03_Icon\\\\icons8-refresh-40.png\" \"C:\\\\GitHub\\\\TestUtilApp\\\\TestUtilApp\\\\icons8-refresh-40.png\" -Force)"
+      "Bash(Copy-Item \"C:\\\\tmp\\\\03_Icon\\\\icons8-refresh-40.png\" \"C:\\\\GitHub\\\\TestUtilApp\\\\TestUtilApp\\\\icons8-refresh-40.png\" -Force)",
+      "WebFetch(domain:www.baslerweb.com)",
+      "WebFetch(domain:docs.baslerweb.com)",
+      "PowerShell(cd C:\\\\GitHub\\\\TestUtilApp; dotnet build TestUtilApp\\\\TestUtilApp.csproj -nologo -v quiet 2>&1 | Where-Object { $_ -match \"error|warning CS\" } | Select-Object -First 20)"
     ]
   }
 }
