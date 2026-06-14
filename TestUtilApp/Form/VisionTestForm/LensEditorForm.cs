@@ -7,23 +7,23 @@ using Newtonsoft.Json;
 
 namespace TestUtilApp.UI
 {
-    public partial class CameraEditorForm : Form
+    public partial class LensEditorForm : Form
     {
-        private static string ConfigPath  => CameraCalcControl.ConfigJsonPath;
-        private static string RuntimePath => CameraCalcControl.RuntimeJsonPath;
+        private static string ConfigPath  => CameraCalcControl.LensConfigJsonPath;
+        private static string RuntimePath => CameraCalcControl.RuntimeLensJsonPath;
 
-        public CameraEditorForm(IEnumerable<CameraCalcControl.CameraEntry> cameras)
+        public LensEditorForm(IEnumerable<CameraCalcControl.LensEntry> lenses)
         {
             InitializeComponent();
             ApplyTheme();
-            LoadRows(cameras);
+            LoadRows(lenses);
         }
 
-        private void LoadRows(IEnumerable<CameraCalcControl.CameraEntry> cameras)
+        private void LoadRows(IEnumerable<CameraCalcControl.LensEntry> lenses)
         {
-            dgvCameras.Rows.Clear();
-            foreach (var c in cameras)
-                dgvCameras.Rows.Add(c.name, c.sensorX, c.sensorY, c.pixelUm, c.pixelW, c.pixelH);
+            dgvLenses.Rows.Clear();
+            foreach (var l in lenses)
+                dgvLenses.Rows.Add(l.name, l.manufacturer, l.focalLength, l.minWD, l.imageCircle);
         }
 
         // ─────────────────────────────────────────────
@@ -31,17 +31,17 @@ namespace TestUtilApp.UI
         // ─────────────────────────────────────────────
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            int idx = dgvCameras.Rows.Add("New Camera", 8.45, 7.07, 3.45, 2448, 2048);
-            dgvCameras.ClearSelection();
-            dgvCameras.Rows[idx].Selected = true;
-            dgvCameras.CurrentCell = dgvCameras.Rows[idx].Cells[0];
-            dgvCameras.BeginEdit(true);
+            int idx = dgvLenses.Rows.Add("New Lens", "Kowa", 25, 150, 11);
+            dgvLenses.ClearSelection();
+            dgvLenses.Rows[idx].Selected = true;
+            dgvLenses.CurrentCell = dgvLenses.Rows[idx].Cells[0];
+            dgvLenses.BeginEdit(true);
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            foreach (DataGridViewRow row in dgvCameras.SelectedRows)
-                if (!row.IsNewRow) dgvCameras.Rows.Remove(row);
+            foreach (DataGridViewRow row in dgvLenses.SelectedRows)
+                if (!row.IsNewRow) dgvLenses.Rows.Remove(row);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -54,8 +54,7 @@ namespace TestUtilApp.UI
             {
                 File.WriteAllText(RuntimePath, json);
 
-                // 프로젝트 소스 Config도 동기화 (경로가 실제로 존재할 때만)
-                string srcConfig = CameraCalcControl.SourceConfigJsonPath;
+                string srcConfig = CameraCalcControl.SourceLensConfigJsonPath;
                 if (Directory.Exists(Path.GetDirectoryName(srcConfig)))
                     File.WriteAllText(srcConfig, json);
             }
@@ -78,26 +77,27 @@ namespace TestUtilApp.UI
         // ─────────────────────────────────────────────
         //  Validation & build
         // ─────────────────────────────────────────────
-        private List<CameraCalcControl.CameraEntry> BuildList()
+        private List<CameraCalcControl.LensEntry> BuildList()
         {
-            var list = new List<CameraCalcControl.CameraEntry>();
-            for (int i = 0; i < dgvCameras.Rows.Count; i++)
+            var list = new List<CameraCalcControl.LensEntry>();
+            for (int i = 0; i < dgvLenses.Rows.Count; i++)
             {
-                var row = dgvCameras.Rows[i];
+                var row = dgvLenses.Rows[i];
                 if (row.IsNewRow) continue;
 
                 string name = row.Cells[0].Value?.ToString()?.Trim();
-                if (string.IsNullOrEmpty(name)) { ShowRowError(i, "카메라명을 입력하세요."); return null; }
+                if (string.IsNullOrEmpty(name)) { ShowRowError(i, "렌즈명을 입력하세요."); return null; }
 
-                if (!TryParseCell(row, 1, out double sx)) { ShowRowError(i, "Sensor X 값이 올바르지 않습니다."); return null; }
-                if (!TryParseCell(row, 2, out double sy)) { ShowRowError(i, "Sensor Y 값이 올바르지 않습니다."); return null; }
-                if (!TryParseCell(row, 3, out double pu)) { ShowRowError(i, "Pixel μm 값이 올바르지 않습니다."); return null; }
-                if (!TryParseIntCell(row, 4, out int pw)) { ShowRowError(i, "Pixel W 값이 올바르지 않습니다."); return null; }
-                if (!TryParseIntCell(row, 5, out int ph)) { ShowRowError(i, "Pixel H 값이 올바르지 않습니다."); return null; }
+                string manufacturer = row.Cells[1].Value?.ToString()?.Trim() ?? "";
 
-                list.Add(new CameraCalcControl.CameraEntry
+                if (!TryParseCell(row, 2, out double fl))          { ShowRowError(i, "초점거리 값이 올바르지 않습니다."); return null; }
+                if (!TryParseCell(row, 3, out double minWD))       { ShowRowError(i, "최소WD 값이 올바르지 않습니다.");   return null; }
+                if (!TryParseCell(row, 4, out double imageCircle)) { ShowRowError(i, "이미지서클 값이 올바르지 않습니다."); return null; }
+
+                list.Add(new CameraCalcControl.LensEntry
                 {
-                    name = name, sensorX = sx, sensorY = sy, pixelUm = pu, pixelW = pw, pixelH = ph
+                    name = name, manufacturer = manufacturer,
+                    focalLength = fl, minWD = minWD, imageCircle = imageCircle,
                 });
             }
             return list;
@@ -106,13 +106,10 @@ namespace TestUtilApp.UI
         private static bool TryParseCell(DataGridViewRow row, int col, out double val)
             => double.TryParse(row.Cells[col].Value?.ToString(), out val) && val > 0;
 
-        private static bool TryParseIntCell(DataGridViewRow row, int col, out int val)
-            => int.TryParse(row.Cells[col].Value?.ToString(), out val) && val > 0;
-
         private void ShowRowError(int rowIdx, string msg)
         {
-            dgvCameras.ClearSelection();
-            dgvCameras.Rows[rowIdx].Selected = true;
+            dgvLenses.ClearSelection();
+            dgvLenses.Rows[rowIdx].Selected = true;
             MessageBox.Show($"행 {rowIdx + 1}: {msg}", "입력 오류", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
@@ -122,7 +119,6 @@ namespace TestUtilApp.UI
         private void ApplyTheme()
         {
             Color dark     = Color.FromArgb(12, 14, 18);
-            Color panel    = Color.FromArgb(22, 28, 38);
             Color border   = Color.FromArgb(40, 55, 80);
             Color fg       = Color.FromArgb(200, 210, 220);
             Color accent   = Color.FromArgb(0, 220, 180);
@@ -133,22 +129,22 @@ namespace TestUtilApp.UI
             BackColor = dark;
             pnlButtons.BackColor = Color.FromArgb(18, 24, 36);
 
-            dgvCameras.BackgroundColor = inputBg;
-            dgvCameras.GridColor = border;
-            dgvCameras.BorderStyle = BorderStyle.None;
-            dgvCameras.EnableHeadersVisualStyles = false;
-            dgvCameras.DefaultCellStyle.BackColor = inputBg;
-            dgvCameras.DefaultCellStyle.ForeColor = fg;
-            dgvCameras.DefaultCellStyle.SelectionBackColor = Color.FromArgb(35, 55, 90);
-            dgvCameras.DefaultCellStyle.SelectionForeColor = Color.White;
-            dgvCameras.DefaultCellStyle.Font = new Font("Segoe UI", 9f);
-            dgvCameras.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvCameras.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvCameras.ColumnHeadersDefaultCellStyle.BackColor = headerBg;
-            dgvCameras.ColumnHeadersDefaultCellStyle.ForeColor = accent;
-            dgvCameras.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9f, FontStyle.Bold);
-            dgvCameras.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            dgvCameras.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(20, 26, 36);
+            dgvLenses.BackgroundColor = inputBg;
+            dgvLenses.GridColor = border;
+            dgvLenses.BorderStyle = BorderStyle.None;
+            dgvLenses.EnableHeadersVisualStyles = false;
+            dgvLenses.DefaultCellStyle.BackColor = inputBg;
+            dgvLenses.DefaultCellStyle.ForeColor = fg;
+            dgvLenses.DefaultCellStyle.SelectionBackColor = Color.FromArgb(35, 55, 90);
+            dgvLenses.DefaultCellStyle.SelectionForeColor = Color.White;
+            dgvLenses.DefaultCellStyle.Font = new Font("Segoe UI", 9f);
+            dgvLenses.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvLenses.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvLenses.ColumnHeadersDefaultCellStyle.BackColor = headerBg;
+            dgvLenses.ColumnHeadersDefaultCellStyle.ForeColor = accent;
+            dgvLenses.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9f, FontStyle.Bold);
+            dgvLenses.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dgvLenses.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(20, 26, 36);
 
             foreach (Button btn in new[] { btnAdd, btnDelete, btnSave, btnCancel })
             {

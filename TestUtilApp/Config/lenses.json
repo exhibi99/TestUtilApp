@@ -1,0 +1,17 @@
+[
+  { "name": "Basler C23-0618-5M", "manufacturer": "Basler", "focalLength": 6,  "minWD": 100, "imageCircle": 11 },
+  { "name": "Basler C23-0818-5M", "manufacturer": "Basler", "focalLength": 8,  "minWD": 100, "imageCircle": 11 },
+  { "name": "Basler C23-1218-5M", "manufacturer": "Basler", "focalLength": 12, "minWD": 100, "imageCircle": 11 },
+  { "name": "Basler C23-1618-5M", "manufacturer": "Basler", "focalLength": 16, "minWD": 100, "imageCircle": 11 },
+  { "name": "Basler C23-2518-5M", "manufacturer": "Basler", "focalLength": 25, "minWD": 200, "imageCircle": 11 },
+  { "name": "Basler C23-3518-5M", "manufacturer": "Basler", "focalLength": 35, "minWD": 300, "imageCircle": 11 },
+  { "name": "Basler C23-5018-5M", "manufacturer": "Basler", "focalLength": 50, "minWD": 500, "imageCircle": 11 },
+  { "name": "Kowa LM6HC",         "manufacturer": "Kowa",   "focalLength": 6,  "minWD": 100, "imageCircle": 11 },
+  { "name": "Kowa LM8HC",         "manufacturer": "Kowa",   "focalLength": 8,  "minWD": 100, "imageCircle": 11 },
+  { "name": "Kowa LM12HC",        "manufacturer": "Kowa",   "focalLength": 12, "minWD": 100, "imageCircle": 11 },
+  { "name": "Kowa LM16HC",        "manufacturer": "Kowa",   "focalLength": 16, "minWD": 100, "imageCircle": 11 },
+  { "name": "Kowa LM25HC",        "manufacturer": "Kowa",   "focalLength": 25, "minWD": 150, "imageCircle": 11 },
+  { "name": "Kowa LM35HC",        "manufacturer": "Kowa",   "focalLength": 35, "minWD": 200, "imageCircle": 11 },
+  { "name": "Kowa LM50HC",        "manufacturer": "Kowa",   "focalLength": 50, "minWD": 300, "imageCircle": 11 },
+  { "name": "Kowa LM75HC",        "manufacturer": "Kowa",   "focalLength": 75, "minWD": 500, "imageCircle": 11 }
+]

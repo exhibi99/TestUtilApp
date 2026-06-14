@@ -101,6 +101,7 @@ namespace TestUtilApp
             this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Text = "Test Utility";
             this.tabControlMain.ResumeLayout(false);
             this.ResumeLayout(false);

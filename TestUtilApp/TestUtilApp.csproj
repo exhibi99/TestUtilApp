@@ -244,6 +244,12 @@
     <Compile Include="Form\VisionTestForm\CameraEditorForm.Designer.cs">
       <DependentUpon>CameraEditorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form\VisionTestForm\LensEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\VisionTestForm\LensEditorForm.Designer.cs">
+      <DependentUpon>LensEditorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form\DiceTestForm\ModelLoadingDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -314,6 +320,9 @@
     <EmbeddedResource Include="Form\DiceTestForm\LabelGeneratorControl.resx">
       <DependentUpon>LabelGeneratorControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Form\VisionTestForm\CameraCalcControl.resx">
+      <DependentUpon>CameraCalcControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form\VisionTestForm\OpenCV\AcquireDialog.resx">
       <DependentUpon>AcquireDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -366,6 +375,9 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="Config\cameras.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Config\lenses.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="OpenCvSharpExtern.dll">
