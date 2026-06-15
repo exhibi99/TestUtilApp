@@ -88,9 +88,9 @@ namespace TestUtilApp.UI
         private double _subjectMmY = 800.0;
 
         // ── Obstacle / occlusion state
-        private bool   _obstEnabled     = false;
-        private double _obstDistFromCam = 0;     // mm from camera along WD axis
-        private double _obstHeightMm    = 400.0; // obstacle center height from floor (mm)
+        private bool   _obstEnabled     = true;
+        private double _obstDistFromCam = 250.0; // mm from camera along WD axis
+        private double _obstHeightMm    = 100.0; // obstacle center height from floor (mm) — floor: center == halfH
         private double _obstHalfH       = 100.0; // vertical half-size (mm)
         private double _obstHalfW       = 100.0; // horizontal half-size (mm)
         private double _obstOffsetX     = 0;    // horizontal offset in front view (mm)
@@ -100,6 +100,13 @@ namespace TestUtilApp.UI
         private bool   _isDraggingObstFront = false;
         private int    _obstFrontDragOffX   = 0;
         private int    _obstFrontDragOffY   = 0;
+        private bool   _isResizingObstFront = false;
+        private double _obstResizeBaseW     = 0;
+        private double _obstResizeBaseH     = 0;
+        private int    _obstResizeStartX    = 0;
+        private int    _obstResizeStartY    = 0;
+        private double _obstResizeFixedLeft = 0;  // 리사이즈 중 고정될 좌측 mm (camera-relative)
+        private double _obstResizeFixedTop  = 0;  // 리사이즈 중 고정될 상단 mm (from floor)
 
         // ── Side-view layout constants
         private const int SideMarginL   = 60;
@@ -464,7 +471,7 @@ namespace TestUtilApp.UI
             if (_revMinFeat.HasValue)
             {
                 double px = _revMinFeat.Value / resMm;
-                lblRevResPx.Text      = $"최소검출  {px:F1} px";
+                lblRevResPx.Text      = $"최소검출 크기의 픽셀({_revMinFeat.Value:F2} mm) : {px:F1} px";
                 lblRevResPx.ForeColor = px >= 1.5
                     ? Color.FromArgb(80, 210, 130)
                     : Color.FromArgb(220, 100, 80);
@@ -509,8 +516,8 @@ namespace TestUtilApp.UI
                 _obstEnabled = chkObst.Checked;
                 if (_obstEnabled)
                 {
-                    _obstDistFromCam = _wd.HasValue ? _wd.Value / 2.0 : 350.0;
-                    _obstHeightMm    = _cameraHeightMm > 0 ? _cameraHeightMm : 400.0;
+                    _obstDistFromCam = _wd.HasValue ? _wd.Value / 3.0 : 250.0;
+                    _obstHeightMm    = _obstHalfH; // floor: bottom = 0
                 }
                 pnlSideView.Invalidate();
                 pnlFrontView.Invalidate();
@@ -867,6 +874,13 @@ namespace TestUtilApp.UI
             return Rectangle.FromLTRB(ox - hw, oy - hh, ox + hw, oy + hh);
         }
 
+        // 우측하단 리사이즈 핸들 영역 (12×12 px)
+        private Rectangle GetObstFrontResizeHandle(int W, int floorY, double scale)
+        {
+            var r = GetObstFrontRect(W, floorY, scale);
+            return new Rectangle(r.Right - 12, r.Bottom - 12, 12, 12);
+        }
+
         // ─────────────────────────────────────────────
         //  Front View — mouse drag
         // ─────────────────────────────────────────────
@@ -879,7 +893,21 @@ namespace TestUtilApp.UI
             int camCX = W / 2 + (int)(_cameraOffsetX  * scale);
             int camCY = floorY  - (int)(_cameraHeightMm * scale);
 
-            // Obstacle hit (higher priority)
+            // Obstacle resize handle (우선순위 최상)
+            if (_obstEnabled && GetObstFrontResizeHandle(W, floorY, scale).Contains(e.Location))
+            {
+                _isResizingObstFront = true;
+                _obstResizeBaseW     = _obstHalfW * 2;
+                _obstResizeBaseH     = _obstHalfH * 2;
+                _obstResizeStartX    = e.X;
+                _obstResizeStartY    = e.Y;
+                _obstResizeFixedLeft = _obstOffsetX - _obstHalfW;        // 좌측 고정
+                _obstResizeFixedTop  = _obstHeightMm + _obstHalfH;       // 상단 고정
+                pnlFrontView.Cursor  = Cursors.SizeNWSE;
+                return;
+            }
+
+            // Obstacle move
             if (_obstEnabled && GetObstFrontRect(W, floorY, scale).Contains(e.Location))
             {
                 var r = GetObstFrontRect(W, floorY, scale);
@@ -908,6 +936,23 @@ namespace TestUtilApp.UI
             int camCX = W / 2 + (int)(_cameraOffsetX  * scale);
             int camCY = floorY  - (int)(_cameraHeightMm * scale);
 
+            if (_isResizingObstFront)
+            {
+                double newW = Math.Max(10, _obstResizeBaseW + (e.X - _obstResizeStartX) / scale);
+                double newH = Math.Max(10, _obstResizeBaseH + (e.Y - _obstResizeStartY) / scale);
+                _obstHalfW    = Math.Round(newW / 2 / 5.0) * 5.0;
+                _obstHalfH    = Math.Round(newH / 2 / 5.0) * 5.0;
+                // 상단-좌측 고정: 중심 위치 보정
+                _obstOffsetX  = _obstResizeFixedLeft + _obstHalfW;
+                _obstHeightMm = _obstResizeFixedTop  - _obstHalfH;
+                // UI 텍스트박스 동기화
+                txtObstW.Text = (_obstHalfW * 2).ToString("F0");
+                txtObstH.Text = (_obstHalfH * 2).ToString("F0");
+                pnlSideView.Invalidate();
+                pnlFrontView.Invalidate();
+                return;
+            }
+
             if (_isDraggingObstFront)
             {
                 int cx = e.X - _obstFrontDragOffX;
@@ -921,8 +966,14 @@ namespace TestUtilApp.UI
 
             if (!_isDraggingFront)
             {
-                bool overObst = _obstEnabled && GetObstFrontRect(W, floorY, scale).Contains(e.Location);
-                pnlFrontView.Cursor = (overObst || GetFrontCameraHitRect(camCX, camCY).Contains(e.Location))
+                if (_obstEnabled)
+                {
+                    if (GetObstFrontResizeHandle(W, floorY, scale).Contains(e.Location))
+                    { pnlFrontView.Cursor = Cursors.SizeNWSE; return; }
+                    if (GetObstFrontRect(W, floorY, scale).Contains(e.Location))
+                    { pnlFrontView.Cursor = Cursors.SizeAll; return; }
+                }
+                pnlFrontView.Cursor = GetFrontCameraHitRect(camCX, camCY).Contains(e.Location)
                     ? Cursors.SizeAll : Cursors.Default;
                 return;
             }
@@ -951,6 +1002,14 @@ namespace TestUtilApp.UI
 
         private void pnlFrontView_MouseUp(object sender, MouseEventArgs e)
         {
+            if (_isResizingObstFront)
+            {
+                _isResizingObstFront = false;
+                pnlFrontView.Cursor = Cursors.Default;
+                pnlSideView.Invalidate();
+                pnlFrontView.Invalidate();
+                return;
+            }
             if (_isDraggingObstFront)
             {
                 _isDraggingObstFront = false;
@@ -999,7 +1058,7 @@ namespace TestUtilApp.UI
 
             Color colFov     = Color.FromArgb(60, 200, 100);
             Color colWD      = Color.FromArgb(80, 160, 255);
-            Color colSubject = Color.FromArgb(200, 180, 80);
+            Color colSubject = Color.FromArgb(80, 170, 230);
             Color colCamera  = _isDragging ? Color.FromArgb(220, 230, 255) : Color.FromArgb(150, 180, 220);
             Color colFloor   = Color.FromArgb(70, 90, 110);
             Color colDim     = Color.FromArgb(120, 130, 145);
@@ -1010,6 +1069,31 @@ namespace TestUtilApp.UI
             using (Font f = new Font("Segoe UI", 7.5f))
             using (SolidBrush b = new SolidBrush(colFloor))
                 g.DrawString("Floor", f, b, SideMarginL + 2, floorY + 3);
+
+            // ── Coordinate axis (origin = camera position / floor)
+            {
+                int axOX = camX;
+                int axOY = floorY;
+                int axLenY = 36, axLenX = 72;   // X = depth (WD direction)
+                Color colAx = Color.FromArgb(200, 200, 60);
+                using (Pen p = new Pen(colAx, 1.5f))
+                using (SolidBrush b = new SolidBrush(colAx))
+                using (Font fAx = new Font("Segoe UI", 7.5f, FontStyle.Bold))
+                {
+                    // Y axis (up)
+                    g.DrawLine(p, axOX, axOY, axOX, axOY - axLenY);
+                    g.DrawLine(p, axOX, axOY - axLenY, axOX - 4, axOY - axLenY + 7);
+                    g.DrawLine(p, axOX, axOY - axLenY, axOX + 4, axOY - axLenY + 7);
+                    g.DrawString("Y", fAx, b, axOX + 5, axOY - axLenY - 2);
+                    // Z axis (right = depth toward subject)
+                    g.DrawLine(p, axOX, axOY, axOX + axLenX, axOY);
+                    g.DrawLine(p, axOX + axLenX, axOY, axOX + axLenX - 7, axOY - 4);
+                    g.DrawLine(p, axOX + axLenX, axOY, axOX + axLenX - 7, axOY + 4);
+                    g.DrawString("Z", fAx, b, axOX + axLenX + 3, axOY - 8);
+                    // Origin dot
+                    g.FillEllipse(b, axOX - 3, axOY - 3, 6, 6);
+                }
+            }
 
             // ── Subject box (side view — visible as a vertical bar, 800mm tall)
             const int subBarW = 8;
@@ -1117,7 +1201,7 @@ namespace TestUtilApp.UI
                 stY = Math.Max(fovTopAtSub, Math.Min(fovBotAtSub, stY));
                 sbY = Math.Max(fovTopAtSub, Math.Min(fovBotAtSub, sbY));
 
-                Color colObst   = Color.FromArgb(220, 150, 60);
+                Color colObst   = Color.FromArgb(240, 120, 30);
                 Color colShadow = Color.FromArgb(200, 80, 60);
 
                 // Shadow polygon (obstacle face → subject)
@@ -1151,11 +1235,66 @@ namespace TestUtilApp.UI
                 // Obstacle label
                 using (Font f = new Font("Segoe UI", 7.5f))
                 using (SolidBrush b = new SolidBrush(colObst))
-                {
-                    string dLbl = $"{_obstDistFromCam:F0}mm";
-                    SizeF sz = g.MeasureString(dLbl, f);
-                    g.DrawString(dLbl, f, b, ox - sz.Width / 2f, obY + 3);
                     g.DrawString("장애물", f, b, ox + 10, oCtrY - 7);
+            }
+
+            // ── Top-right info panel: Camera(X,Y,Z) + Obstacle(Y,Z)  [camera = Z origin]
+            {
+                Color colCamVal  = Color.FromArgb(150, 180, 220);
+                Color colObstVal = Color.FromArgb(240, 120, 30);
+                Color colHeader  = Color.FromArgb(200, 200, 210);
+                Color colLabel   = Color.FromArgb(130, 145, 165);
+
+                double camZ  = 0;                                         // camera is Z origin
+                double obstZ = _obstEnabled ? _obstDistFromCam : double.NaN;
+                double obstY = _obstEnabled ? _obstHeightMm    : double.NaN;
+
+                var rows = new (string lbl, string val, bool isTitle, bool isObst)[]
+                {
+                    ("[ Camera ]",   "",                                                          true,  false),
+                    ("  X",          $"{(_cameraOffsetX >= 0 ? "+" : "")}{_cameraOffsetX:F0} mm", false, false),
+                    ("  Y",          $"{_cameraHeightMm:F0} mm",                                  false, false),
+                    ("  Z",          $"{camZ:F0} mm",                                             false, false),
+                    ("",             "",                                                          false, false),
+                    ("[ Obstacle ]", "",                                                          true,  true),
+                    ("  Y",          _obstEnabled ? $"{obstY:F0} mm" : "-",                       false, true),
+                    ("  Z",          _obstEnabled ? $"{obstZ:F0} mm" : "-",                       false, true),
+                };
+
+                using (Font fInfo  = new Font("Segoe UI", 8f))
+                using (Font fTitle = new Font("Segoe UI", 8f, FontStyle.Bold))
+                {
+                    float lineH  = fInfo.GetHeight(g) + 1f;
+                    float panelH = rows.Length * lineH + 10f;
+                    float panelW = 148f;
+                    float px     = W - panelW - 6f;
+                    float py     = SideMarginTop + 2f;
+
+                    using (SolidBrush bg = new SolidBrush(Color.FromArgb(55, 20, 25, 35)))
+                        g.FillRectangle(bg, px - 4, py - 2, panelW, panelH);
+                    using (Pen border = new Pen(Color.FromArgb(55, 200, 210, 220), 1f))
+                        g.DrawRectangle(border, px - 4, py - 2, panelW, panelH);
+
+                    float y0 = py + 3f;
+                    foreach (var (lbl, val, isTitle, isObst) in rows)
+                    {
+                        Color valColor = isObst ? colObstVal : colCamVal;
+                        if (isTitle)
+                        {
+                            Color hdrColor = isObst ? colObstVal : colHeader;
+                            using (SolidBrush b = new SolidBrush(hdrColor))
+                                g.DrawString(lbl, fTitle, b, px, y0);
+                        }
+                        else if (lbl != "")
+                        {
+                            using (SolidBrush b = new SolidBrush(colLabel))
+                                g.DrawString(lbl, fInfo, b, px, y0);
+                            SizeF vsz = g.MeasureString(val, fInfo);
+                            using (SolidBrush b = new SolidBrush(valColor))
+                                g.DrawString(val, fInfo, b, px + panelW - vsz.Width - 8f, y0);
+                        }
+                        y0 += lineH;
+                    }
                 }
             }
         }
@@ -1196,7 +1335,7 @@ namespace TestUtilApp.UI
             int fx = camCX - fovPxW / 2;
             int fy = camCY - fovPxH / 2;
 
-            Color colSubject = Color.FromArgb(200, 180, 80);
+            Color colSubject = Color.FromArgb(80, 170, 230);
             Color colFov     = Color.FromArgb(60, 200, 100);
             Color colDim     = Color.FromArgb(80, 160, 255);
             Color colFloor   = Color.FromArgb(70, 90, 110);
@@ -1209,7 +1348,33 @@ namespace TestUtilApp.UI
                 g.DrawLine(p, 30, floorY, W - 30, floorY);
             using (Font f = new Font("Segoe UI", 7.5f))
             using (SolidBrush b = new SolidBrush(colFloor))
-                g.DrawString("Floor", f, b, 32, floorY - 16);  // 라인 위에 표시 (FOV X 라벨과 겹침 방지)
+                g.DrawString("Floor", f, b, 32, floorY - 16);
+
+            // ── Coordinate axis (bottom-left, origin = camera center / floor)
+            {
+                int camAxisX = W / 2 + (int)(_cameraOffsetX * scale);
+                int axOX = camAxisX;
+                int axOY = floorY;
+                int axLenY = 36, axLenX = 72;
+                Color colAx = Color.FromArgb(200, 200, 60);
+                using (Pen p = new Pen(colAx, 1.5f))
+                using (SolidBrush b = new SolidBrush(colAx))
+                using (Font fAx = new Font("Segoe UI", 7.5f, FontStyle.Bold))
+                {
+                    // Y axis (up)
+                    g.DrawLine(p, axOX, axOY, axOX, axOY - axLenY);
+                    g.DrawLine(p, axOX, axOY - axLenY, axOX - 4, axOY - axLenY + 7);
+                    g.DrawLine(p, axOX, axOY - axLenY, axOX + 4, axOY - axLenY + 7);
+                    g.DrawString("Y", fAx, b, axOX + 5, axOY - axLenY - 2);
+                    // X axis (right)
+                    g.DrawLine(p, axOX, axOY, axOX + axLenX, axOY);
+                    g.DrawLine(p, axOX + axLenX, axOY, axOX + axLenX - 7, axOY - 4);
+                    g.DrawLine(p, axOX + axLenX, axOY, axOX + axLenX - 7, axOY + 4);
+                    g.DrawString("X", fAx, b, axOX + axLenX + 3, axOY - 8);
+                    // Origin dot
+                    g.FillEllipse(b, axOX - 3, axOY - 3, 6, 6);
+                }
+            }
 
             // ── Subject rectangle
             using (SolidBrush b = new SolidBrush(Color.FromArgb(30, colSubject.R, colSubject.G, colSubject.B)))
@@ -1266,8 +1431,8 @@ namespace TestUtilApp.UI
             if (_obstEnabled)
             {
                 Rectangle or = GetObstFrontRect(W, floorY, scale);
-                Color colObst = Color.FromArgb(220, 150, 60);
-                bool hovObst  = _isDraggingObstFront;
+                Color colObst = Color.FromArgb(240, 120, 30);
+                bool hovObst  = _isDraggingObstFront || _isResizingObstFront;
                 using (SolidBrush b = new SolidBrush(Color.FromArgb(hovObst ? 100 : 65, colObst.R, colObst.G, colObst.B)))
                     g.FillRectangle(b, or);
                 using (Pen p = new Pen(colObst, hovObst ? 2.5f : 2f))
@@ -1278,11 +1443,15 @@ namespace TestUtilApp.UI
                     string lbl = "장애물";
                     SizeF sz = g.MeasureString(lbl, f);
                     g.DrawString(lbl, f, b, or.Left + (or.Width - sz.Width) / 2f, or.Top - sz.Height - 2);
-                    if (_obstOffsetX != 0)
-                    {
-                        string offLbl = (_obstOffsetX >= 0 ? "+" : "") + _obstOffsetX.ToString("F0") + "mm";
-                        g.DrawString(offLbl, f, b, or.Left + (or.Width - g.MeasureString(offLbl, f).Width) / 2f, or.Bottom + 2);
-                    }
+                }
+                // Resize handle (bottom-right corner)
+                Rectangle rh = GetObstFrontResizeHandle(W, floorY, scale);
+                using (SolidBrush b = new SolidBrush(Color.FromArgb(200, colObst.R, colObst.G, colObst.B)))
+                    g.FillRectangle(b, rh);
+                using (Pen p = new Pen(Color.White, 1f))
+                {
+                    g.DrawLine(p, rh.Left + 3, rh.Bottom - 3, rh.Right - 3, rh.Bottom - 3);
+                    g.DrawLine(p, rh.Right - 3, rh.Top + 3,  rh.Right - 3, rh.Bottom - 3);
                 }
             }
 
@@ -1364,15 +1533,102 @@ namespace TestUtilApp.UI
             }
 
             // ── Dimension arrows
-            using (Pen p = new Pen(colDim, 1.5f))
-            using (SolidBrush b = new SolidBrush(colDim))
+            using (Pen p = new Pen(colFov, 1.5f))
+            using (SolidBrush b = new SolidBrush(colFov))
             using (Font f = new Font("Segoe UI", 9f, FontStyle.Bold))
             {
                 int arrowY = floorY + 26;
                 DrawDimArrow(g, p, b, f, fx, arrowY, fx + fovPxW,
-                    "FOV X = " + fovX.ToString("F1") + " mm", colDim);
+                    "FOV X = " + fovX.ToString("F1") + " mm", colFov);
                 DrawDimArrowV(g, p, b, f, Math.Min(fx, sx) - 36, fy, fy + fovPxH,
-                    "FOV Y\n" + fovY.ToString("F1") + " mm", colDim, leftSide: true);
+                    "FOV Y\n" + fovY.ToString("F1") + " mm", colFov, leftSide: true);
+            }
+
+            // ── Top-right info panel: obstacle position + blind area (FOV intersection)
+            if (_obstEnabled && _wd.HasValue && _obstDistFromCam > 0 && _obstDistFromCam < _wd.Value)
+            {
+                double projRatio     = _wd.Value / _obstDistFromCam;
+                double shadowTopMm   = _cameraHeightMm + projRatio * (_obstHeightMm + _obstHalfH - _cameraHeightMm);
+                double shadowBotMm   = _cameraHeightMm + projRatio * (_obstHeightMm - _obstHalfH - _cameraHeightMm);
+                double shadowLeftMm  = _cameraOffsetX  + projRatio * (_obstOffsetX - _obstHalfW - _cameraOffsetX);
+                double shadowRightMm = _cameraOffsetX  + projRatio * (_obstOffsetX + _obstHalfW - _cameraOffsetX);
+
+                // FOV bounds on subject plane (world mm)
+                double fovLeft   = _cameraOffsetX  - fovX / 2;
+                double fovRight  = _cameraOffsetX  + fovX / 2;
+                double fovBottom = _cameraHeightMm - fovY / 2;
+                double fovTop2   = _cameraHeightMm + fovY / 2;
+
+                // Blind = shadow ∩ FOV
+                double blindLeft  = Math.Max(shadowLeftMm,  fovLeft);
+                double blindRight = Math.Min(shadowRightMm, fovRight);
+                double blindBot   = Math.Max(shadowBotMm,   fovBottom);
+                double blindTop2  = Math.Min(shadowTopMm,   fovTop2);
+                bool   hasBlind   = blindRight > blindLeft && blindTop2 > blindBot;
+
+                // X: camera-center relative, Y: from floor
+                double obstDispX  = _obstOffsetX - _cameraOffsetX;
+                double obstDispY  = _obstHeightMm;
+                double blindDispX = blindLeft - _cameraOffsetX;
+                double blindDispY = blindBot;
+                double blindW     = blindRight - blindLeft;
+                double blindH     = blindTop2  - blindBot;
+
+                Color colObstVal  = Color.FromArgb(240, 120, 30);
+                Color colBlindVal = Color.FromArgb(220, 70, 60);
+                Color colHeader   = Color.FromArgb(200, 200, 210);
+                Color colLabel    = Color.FromArgb(160, 170, 185);
+
+                var lines = new (string label, string value, bool isTitle, bool isBlind)[]
+                {
+                    ("[ Obstacle ]",    "",                                          true,  false),
+                    ("  Dist",          $"{_obstDistFromCam:F1} mm",                 false, false),
+                    ("  X",             $"{obstDispX:+0.0;-0.0;0.0} mm",             false, false),
+                    ("  Y",             $"{obstDispY:F1} mm",                        false, false),
+                    ("",                "",                                          false, false),
+                    ("[ Blind / FOV ]", "",                                          true,  true),
+                    ("  X",             hasBlind ? $"{blindDispX:+0.0;-0.0;0.0} mm" : "-",  false, true),
+                    ("  Y",             hasBlind ? $"{blindDispY:F1} mm"             : "-",  false, true),
+                    ("  W",             hasBlind ? $"{blindW:F1} mm"                 : "-",  false, true),
+                    ("  H",             hasBlind ? $"{blindH:F1} mm"                 : "-",  false, true),
+                };
+
+                using (Font fInfo  = new Font("Segoe UI", 8f))
+                using (Font fTitle = new Font("Segoe UI", 8f, FontStyle.Bold))
+                {
+                    float lineH  = fInfo.GetHeight(g) + 1f;
+                    float panelH = lines.Length * lineH + 10f;
+                    float panelW = 160f;
+                    float px     = W - panelW - 8f;
+                    float py     = 8f;
+
+                    using (SolidBrush bg = new SolidBrush(Color.FromArgb(55, 20, 25, 35)))
+                        g.FillRectangle(bg, px - 4, py - 2, panelW, panelH);
+                    using (Pen border = new Pen(Color.FromArgb(60, 200, 210, 220), 1f))
+                        g.DrawRectangle(border, px - 4, py - 2, panelW, panelH);
+
+                    float y0 = py + 3f;
+                    foreach (var (label, value, isTitle, isBlind) in lines)
+                    {
+                        Color valColor = isBlind ? colBlindVal : colObstVal;
+                        if (isTitle)
+                        {
+                            Color hdrColor = isBlind ? colBlindVal : colHeader;
+                            using (SolidBrush b = new SolidBrush(hdrColor))
+                                g.DrawString(label, fTitle, b, px, y0);
+                        }
+                        else if (label != "")
+                        {
+                            using (SolidBrush b = new SolidBrush(colLabel))
+                                g.DrawString(label, fInfo, b, px, y0);
+                            SizeF vsz = g.MeasureString(value, fInfo);
+                            using (SolidBrush b = new SolidBrush(valColor))
+                                g.DrawString(value, fInfo, b, px + panelW - vsz.Width - 8f, y0);
+                        }
+                        y0 += lineH;
+                    }
+
+                }
             }
         }
 

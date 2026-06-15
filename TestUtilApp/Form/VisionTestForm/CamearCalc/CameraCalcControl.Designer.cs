@@ -907,6 +907,7 @@ namespace TestUtilApp.UI
             this.chkObst.Size = new System.Drawing.Size(72, 19);
             this.chkObst.TabIndex = 0;
             this.chkObst.Text = "Obstacle";
+            this.chkObst.Checked = true;
             this.chkObst.UseVisualStyleBackColor = false;
             // 
             // lblObstH

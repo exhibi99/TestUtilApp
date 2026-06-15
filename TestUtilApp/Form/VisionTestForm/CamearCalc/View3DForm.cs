@@ -244,12 +244,12 @@ namespace TestUtilApp.UI
 
             using (SolidBrush b = new SolidBrush(Color.FromArgb(22, 200, 180, 80)))
                 FillQuad3D(g, b, sx1, 0, sz, sx2, 0, sz, sx2, sh, sz, sx1, sh, sz, W, H);
-            using (Pen p = new Pen(Color.FromArgb(200, 180, 80), 2f))
+            using (Pen p = new Pen(Color.FromArgb(80, 170, 230), 2f))
                 OutlineQuad3D(g, p, sx1, 0, sz, sx2, 0, sz, sx2, sh, sz, sx1, sh, sz, W, H);
 
             var subLbl = Project(sx2 + 10, sh, sz, W, H);
             using (Font f = new Font("Segoe UI", 8.5f))
-            using (SolidBrush b = new SolidBrush(Color.FromArgb(200, 180, 80)))
+            using (SolidBrush b = new SolidBrush(Color.FromArgb(80, 170, 230)))
                 g.DrawString($"Subject  {_subjectW:F0}×{_subjectH:F0} mm", f, b, subLbl.X, subLbl.Y - 18);
 
             // ── FOV at subject plane ─────────────────────────────
@@ -385,7 +385,7 @@ namespace TestUtilApp.UI
                 lines.Add(("  WD",       $"{_wd:F0} mm",                   Color.FromArgb(190, 210, 255)));
                 lines.Add(("  FOV",      $"{_fovX:F0} × {_fovY:F0} mm",   Color.FromArgb(190, 210, 255)));
                 lines.Add(("", "", Color.Transparent));
-                lines.Add(("[ Subject ]", "", Color.FromArgb(200, 180, 80)));
+                lines.Add(("[ Subject ]", "", Color.FromArgb(80, 170, 230)));
                 lines.Add(("  Size",     $"{_subjectW:F0} × {_subjectH:F0} mm", Color.FromArgb(220, 200, 100)));
                 lines.Add(("  Z",        $"{_wd:F0} mm (WD)",              Color.FromArgb(220, 200, 100)));
                 if (_obstEnabled && _obstDist > 0 && _obstDist < _wd)
@@ -490,7 +490,7 @@ namespace TestUtilApp.UI
                 var pCamTop    = Project(_camOffsetX, _camHeight, 0, W, H);
 
                 Color colWD   = Color.FromArgb(120, 160, 210);
-                Color colObst = Color.FromArgb(210, 160, 70);
+                Color colObst = Color.FromArgb(240, 120, 30);
 
                 // WD: cam floor → subject floor (along bottom of scene)
                 Dim2D(pCamFloor, pSubFloor, $"WD = {_wd:F0} mm", colWD, pLine, 28f);
