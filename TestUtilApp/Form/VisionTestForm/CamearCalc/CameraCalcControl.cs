@@ -25,9 +25,11 @@ namespace TestUtilApp.UI
         {
             public string Name;
             public string Manufacturer;
-            public double FocalLength;  // mm
-            public double MinWD;        // mm
-            public double ImageCircle;  // mm (직경)
+            public double FocalLength;    // mm (0 if fixed-magnification)
+            public double Magnification;  // >0 for fixed-mag macro lenses (e.g. 0.2 = 0.2X)
+            public double MinWD;          // mm
+            public double ImageCircle;    // mm (직경)
+            public bool IsFixedMag => Magnification > 0;
         }
 
         // ── Camera JSON DTO (CameraEditorForm에서도 접근)
@@ -44,11 +46,12 @@ namespace TestUtilApp.UI
         // ── Lens JSON DTO (LensEditorForm에서도 접근)
         public class LensEntry
         {
-            public string name         { get; set; }
-            public string manufacturer { get; set; }
-            public double focalLength  { get; set; }
-            public double minWD        { get; set; }
-            public double imageCircle  { get; set; }
+            public string  name          { get; set; }
+            public string  manufacturer  { get; set; }
+            public double  focalLength   { get; set; }
+            public double? magnification { get; set; }  // fixed-mag macro lenses only
+            public double  minWD         { get; set; }
+            public double  imageCircle   { get; set; }
         }
 
         // ── Camera 파일 경로
@@ -78,10 +81,17 @@ namespace TestUtilApp.UI
         private List<LensSpec>   _lenses  = new List<LensSpec>();
 
         // ── Forward calc state
-        private double? _wd, _fl, _sensorX, _sensorY, _fovX, _fovY;
+        private double? _wd, _fl, _mag, _sensorX, _sensorY, _fovX, _fovY;
 
         // ── Reverse calc state
         private double? _revWd, _revFovX, _revFovY, _revMinFeat;
+
+        // ── Search filters
+        private bool   _minPixFilterEnabled = false;
+        private int    _minPixCount         = 10;
+        private string _camKeyword          = "";
+        private string _lensKeyword         = "";
+        private Form   _searchingPopup      = null;
 
         // ── Subject size (mm)
         private double _subjectMmX = 800.0;
@@ -189,8 +199,13 @@ namespace TestUtilApp.UI
         // ─────────────────────────────────────────────
         private void LoadCatalog()
         {
-            if (!File.Exists(RuntimeJsonPath) && File.Exists(ConfigJsonPath))
-                try { File.Copy(ConfigJsonPath, RuntimeJsonPath); } catch { }
+            // Config 폴더 버전이 더 최신이면 bin root 파일을 덮어씀
+            if (File.Exists(ConfigJsonPath))
+            {
+                if (!File.Exists(RuntimeJsonPath) ||
+                    File.GetLastWriteTime(ConfigJsonPath) > File.GetLastWriteTime(RuntimeJsonPath))
+                    try { File.Copy(ConfigJsonPath, RuntimeJsonPath, true); } catch { }
+            }
 
             string loadPath = File.Exists(RuntimeJsonPath) ? RuntimeJsonPath
                             : File.Exists(ConfigJsonPath)  ? ConfigJsonPath
@@ -228,8 +243,13 @@ namespace TestUtilApp.UI
 
         private void LoadLenses()
         {
-            if (!File.Exists(RuntimeLensJsonPath) && File.Exists(LensConfigJsonPath))
-                try { File.Copy(LensConfigJsonPath, RuntimeLensJsonPath); } catch { }
+            // Config 폴더 버전이 더 최신이면 bin root 파일을 덮어씀
+            if (File.Exists(LensConfigJsonPath))
+            {
+                if (!File.Exists(RuntimeLensJsonPath) ||
+                    File.GetLastWriteTime(LensConfigJsonPath) > File.GetLastWriteTime(RuntimeLensJsonPath))
+                    try { File.Copy(LensConfigJsonPath, RuntimeLensJsonPath, true); } catch { }
+            }
 
             string loadPath = File.Exists(RuntimeLensJsonPath) ? RuntimeLensJsonPath
                             : File.Exists(LensConfigJsonPath)  ? LensConfigJsonPath
@@ -248,7 +268,9 @@ namespace TestUtilApp.UI
                         _lenses.Add(new LensSpec
                         {
                             Name = l.name, Manufacturer = l.manufacturer ?? "",
-                            FocalLength = l.focalLength, MinWD = l.minWD, ImageCircle = l.imageCircle,
+                            FocalLength = l.focalLength,
+                            Magnification = l.magnification ?? 0,
+                            MinWD = l.minWD, ImageCircle = l.imageCircle,
                         });
                 }
             }
@@ -274,7 +296,9 @@ namespace TestUtilApp.UI
             int prevLens = cmbFovLens.SelectedIndex;
             cmbFovLens.Items.Clear();
             foreach (var l in _lenses)
-                cmbFovLens.Items.Add($"{l.Name}  ({l.FocalLength:F0}mm)");
+                cmbFovLens.Items.Add(l.IsFixedMag
+                    ? $"{l.Name}  ({l.Magnification:F3}X)"
+                    : $"{l.Name}  ({l.FocalLength:F0}mm)");
             if (prevLens >= 0 && prevLens < cmbFovLens.Items.Count)
                 cmbFovLens.SelectedIndex = prevLens;
             cmbFovLens.EndUpdate();
@@ -356,7 +380,101 @@ namespace TestUtilApp.UI
         // ─────────────────────────────────────────────
         //  Reverse calculation
         // ─────────────────────────────────────────────
-        private void btnRevCalc_Click(object sender, EventArgs e) => ReverseCalculate();
+        private void btnRevCalc_Click(object sender, EventArgs e) => RunReverseCalculate();
+
+        private void chkMinPixFilter_CheckedChanged(object sender, EventArgs e)
+        {
+            _minPixFilterEnabled = chkMinPixFilter.Checked;
+            txtMinPixCount.Enabled = _minPixFilterEnabled;
+            RunReverseCalculate(silent: true);
+        }
+
+        private void txtMinPixCount_TextChanged(object sender, EventArgs e)
+        {
+            if (int.TryParse(txtMinPixCount.Text.Trim(), out int n) && n > 0)
+            {
+                _minPixCount = n;
+                if (_minPixFilterEnabled)
+                    RunReverseCalculate(silent: true);
+            }
+        }
+
+        private void txtCamKeyword_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.Enter) return;
+            _camKeyword = txtCamKeyword.Text.Trim();
+            RunReverseCalculate(silent: true);
+            e.SuppressKeyPress = true;
+        }
+
+        private void txtLensKeyword_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.Enter) return;
+            _lensKeyword = txtLensKeyword.Text.Trim();
+            RunReverseCalculate(silent: true);
+            e.SuppressKeyPress = true;
+        }
+
+        private void RunReverseCalculate(bool silent = false)
+        {
+            ShowSearchingPopup(true);
+            // Update()로 팝업을 즉시 렌더한 뒤 계산 시작 (BeginInvoke만으로는 WM_PAINT 순서 보장 안됨)
+            _searchingPopup?.Update();
+            BeginInvoke(new Action(() =>
+            {
+                try { ReverseCalculate(silent); }
+                finally { ShowSearchingPopup(false); }
+            }));
+        }
+
+        private void ShowSearchingPopup(bool show)
+        {
+            if (show)
+            {
+                if (_searchingPopup != null) return;
+                var parentForm = this.FindForm();
+                var center = dgvResults.PointToScreen(
+                    new Point(dgvResults.Width / 2, dgvResults.Height / 2));
+                Color popupBg     = Color.FromArgb(10, 16, 26);    // 거의 검정
+                Color popupFg     = Color.FromArgb(0, 220, 200);   // 밝은 cyan 텍스트
+                Color popupBorder = Color.FromArgb(0, 180, 160);   // cyan 테두리
+                var lbl = new Label
+                {
+                    Text      = "검색 중...",
+                    Dock      = DockStyle.Fill,
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    ForeColor = popupFg,
+                    BackColor = popupBg,
+                    Font      = new Font("Segoe UI", 12, FontStyle.Bold),
+                };
+                // 테두리 Panel로 감싸기
+                var border = new Panel
+                {
+                    Dock      = DockStyle.Fill,
+                    BackColor = popupBorder,
+                    Padding   = new Padding(2),
+                };
+                border.Controls.Add(lbl);
+                _searchingPopup = new Form
+                {
+                    FormBorderStyle = FormBorderStyle.None,
+                    Size            = new Size(400, 104),
+                    BackColor       = popupBg,
+                    StartPosition   = FormStartPosition.Manual,
+                    Location        = new Point(center.X - 200, center.Y - 52),
+                    ShowInTaskbar   = false,
+                    TopMost         = true,
+                };
+                _searchingPopup.Controls.Add(border);
+                _searchingPopup.Show(parentForm);
+            }
+            else
+            {
+                _searchingPopup?.Close();
+                _searchingPopup?.Dispose();
+                _searchingPopup = null;
+            }
+        }
 
         private void ReverseCalculate(bool silent = false)
         {
@@ -377,24 +495,49 @@ namespace TestUtilApp.UI
 
             dgvResults.Rows.Clear();
 
+            bool hasCamKw  = !string.IsNullOrEmpty(_camKeyword);
+            bool hasLensKw = !string.IsNullOrEmpty(_lensKeyword);
+
             foreach (var cam in _cameras)
             {
+                if (hasCamKw && cam.Name.IndexOf(_camKeyword, StringComparison.OrdinalIgnoreCase) < 0)
+                    continue;
+
                 double sensorDiag = Math.Sqrt(cam.SensorX * cam.SensorX + cam.SensorY * cam.SensorY);
 
                 foreach (var lens in _lenses)
                 {
+                    if (hasLensKw && lens.Name.IndexOf(_lensKeyword, StringComparison.OrdinalIgnoreCase) < 0)
+                        continue;
                     // 이미지 서클 호환성 체크: 센서 대각선 ≤ 이미지 서클
                     if (lens.ImageCircle < sensorDiag) continue;
 
                     // 최소 WD 체크
                     if (wd < lens.MinWD) continue;
 
-                    double actualFovX = wd * cam.SensorX / lens.FocalLength;
-                    double actualFovY = wd * cam.SensorY / lens.FocalLength;
+                    double actualFovX, actualFovY;
+                    if (lens.IsFixedMag)
+                    {
+                        actualFovX = cam.SensorX / lens.Magnification;
+                        actualFovY = cam.SensorY / lens.Magnification;
+                    }
+                    else
+                    {
+                        if (lens.FocalLength <= 0) continue;
+                        actualFovX = wd * cam.SensorX / lens.FocalLength;
+                        actualFovY = wd * cam.SensorY / lens.FocalLength;
+                    }
                     if (actualFovX < targetX || actualFovY < targetY) continue;
 
                     double resMm = actualFovX / cam.PixelW;
                     bool resFits = resMm <= minFeat;
+
+                    // 최소 픽셀 필터
+                    if (_minPixFilterEnabled)
+                    {
+                        double px = minFeat / resMm;
+                        if (px < _minPixCount) continue;
+                    }
 
                     int rowIdx = dgvResults.Rows.Add(
                         cam.Name,
@@ -435,7 +578,8 @@ namespace TestUtilApp.UI
             var (cam, lens, fovX, fovY, resMm) = ((CameraSpec, LensSpec, double, double, double))row.Tag;
 
             _wd = _revWd;
-            _fl = lens.FocalLength;
+            _fl  = lens.IsFixedMag ? (double?)null : lens.FocalLength;
+            _mag = lens.IsFixedMag ? lens.Magnification : (double?)null;
             _sensorX = cam.SensorX;
             _sensorY = cam.SensorY;
             _fovX = fovX;
@@ -591,7 +735,16 @@ namespace TestUtilApp.UI
             if (cmbFovLens.SelectedIndex < 0 || cmbFovLens.SelectedIndex >= _lenses.Count) return;
             var lens = _lenses[cmbFovLens.SelectedIndex];
             _suppressInputEvent = true;
-            txtFovFL.Text = lens.FocalLength.ToString("F0");
+            if (lens.IsFixedMag)
+            {
+                txtFovFL.Text    = lens.Magnification.ToString("F3");
+                txtFovFL.Enabled = false;
+            }
+            else
+            {
+                txtFovFL.Text    = lens.FocalLength.ToString("F0");
+                txtFovFL.Enabled = true;
+            }
             _suppressInputEvent = false;
             UpdateCompatibilityWarning();
             Calculate(silent: true);
@@ -625,19 +778,38 @@ namespace TestUtilApp.UI
         private void Calculate(bool silent = false)
         {
             if (!double.TryParse(txtFovWD.Text.Trim(),      out double wd) ||
-                !double.TryParse(txtFovFL.Text.Trim(),      out double fl) ||
                 !double.TryParse(txtFovSensorX.Text.Trim(), out double sx) ||
-                !double.TryParse(txtFovSensorY.Text.Trim(), out double sy) ||
-                fl == 0)
+                !double.TryParse(txtFovSensorY.Text.Trim(), out double sy))
             {
                 if (!silent)
                     MessageBox.Show("입력값을 확인하세요.", "입력 오류", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            _wd = wd; _fl = fl; _sensorX = sx; _sensorY = sy;
-            _fovX = wd * sx / fl;
-            _fovY = wd * sy / fl;
+            // Check if selected lens is fixed-magnification
+            bool isFixedMag = cmbFovLens.SelectedIndex >= 0 &&
+                              cmbFovLens.SelectedIndex < _lenses.Count &&
+                              _lenses[cmbFovLens.SelectedIndex].IsFixedMag;
+
+            if (isFixedMag)
+            {
+                double mag = _lenses[cmbFovLens.SelectedIndex].Magnification;
+                _wd = wd; _fl = 0; _mag = mag; _sensorX = sx; _sensorY = sy;
+                _fovX = sx / mag;
+                _fovY = sy / mag;
+            }
+            else
+            {
+                if (!double.TryParse(txtFovFL.Text.Trim(), out double fl) || fl == 0)
+                {
+                    if (!silent)
+                        MessageBox.Show("입력값을 확인하세요.", "입력 오류", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                _wd = wd; _fl = fl; _mag = null; _sensorX = sx; _sensorY = sy;
+                _fovX = wd * sx / fl;
+                _fovY = wd * sy / fl;
+            }
 
             if (!_isDragging) RebuildPixelsPerMm();
 
@@ -804,9 +976,16 @@ namespace TestUtilApp.UI
                 _obstDistFromCam = Math.Max(10, Math.Min(newWD - 10, newWD - distFromSubject));
             }
 
-            _wd   = newWD;
-            _fovX = _wd.Value * _sensorX.Value / _fl.Value;
-            _fovY = _wd.Value * _sensorY.Value / _fl.Value;
+            _wd = newWD;
+            if (_mag.HasValue && _mag.Value > 0)
+            {
+                // fixed-mag: FOV does not change with WD
+            }
+            else if (_fl.HasValue && _fl.Value > 0)
+            {
+                _fovX = _wd.Value * _sensorX.Value / _fl.Value;
+                _fovY = _wd.Value * _sensorY.Value / _fl.Value;
+            }
 
             _suppressInputEvent = true;
             if (tabMain.SelectedIndex == 0)
@@ -817,7 +996,9 @@ namespace TestUtilApp.UI
                 if (dgvResults.CurrentRow?.Tag is ValueTuple<CameraSpec, LensSpec, double, double, double> tag)
                 {
                     var (cam, lens, _, _, _) = tag;
-                    double fovX  = newWD * cam.SensorX / lens.FocalLength;
+                    double fovX = lens.IsFixedMag
+                        ? cam.SensorX / lens.Magnification
+                        : newWD * cam.SensorX / lens.FocalLength;
                     double resMm = fovX / cam.PixelW;
                     UpdateRevResPanel(resMm);
                 }
@@ -1731,6 +1912,16 @@ namespace TestUtilApp.UI
                 if (c is TextBox txt) { txt.BackColor = inputBg; txt.ForeColor = Color.White; txt.BorderStyle = BorderStyle.FixedSingle; }
                 if (c is Button btn)  StyleButton(btn, btnBg, accent, border);
             }
+            // Search filter panel
+            pnlSearchFilter.BackColor = Color.FromArgb(18, 24, 36);
+            foreach (Control c in pnlSearchFilter.Controls)
+            {
+                if (c is Label  lbl) { lbl.ForeColor = fg; lbl.BackColor = Color.Transparent; }
+                if (c is TextBox tb) { tb.BackColor = inputBg; tb.ForeColor = Color.White; tb.BorderStyle = BorderStyle.FixedSingle; }
+                if (c is CheckBox cb) { cb.ForeColor = fg; cb.BackColor = Color.Transparent; }
+            }
+            txtMinPixCount.Enabled = false;  // disabled until checkbox is checked
+
             grpRevRes.ForeColor = Color.FromArgb(0, 220, 180); grpRevRes.BackColor = panel;
             lblRevResMm.ForeColor    = accent;                        lblRevResMm.BackColor    = panel;
             lblRevResUm.ForeColor    = Color.FromArgb(120, 160, 200); lblRevResUm.BackColor    = panel;

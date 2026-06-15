@@ -104,7 +104,7 @@ namespace TestUtilApp.UI
         }
 
         private static bool TryParseCell(DataGridViewRow row, int col, out double val)
-            => double.TryParse(row.Cells[col].Value?.ToString(), out val) && val > 0;
+            => double.TryParse(row.Cells[col].Value?.ToString(), out val) && val >= 0;
 
         private static bool TryParseIntCell(DataGridViewRow row, int col, out int val)
             => int.TryParse(row.Cells[col].Value?.ToString(), out val) && val > 0;
@@ -149,6 +149,21 @@ namespace TestUtilApp.UI
             dgvCameras.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9f, FontStyle.Bold);
             dgvCameras.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
             dgvCameras.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(20, 26, 36);
+            dgvCameras.RowHeadersDefaultCellStyle.BackColor = Color.FromArgb(22, 30, 45);
+            dgvCameras.RowHeadersDefaultCellStyle.ForeColor = Color.FromArgb(120, 140, 165);
+            dgvCameras.RowHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(35, 55, 90);
+            dgvCameras.RowPostPaint += (s, e) =>
+            {
+                var fmt = new System.Drawing.StringFormat
+                {
+                    Alignment = System.Drawing.StringAlignment.Center,
+                    LineAlignment = System.Drawing.StringAlignment.Center
+                };
+                var rect = new Rectangle(e.RowBounds.Left, e.RowBounds.Top,
+                    dgvCameras.RowHeadersWidth - 2, e.RowBounds.Height);
+                using (var br = new SolidBrush(Color.FromArgb(120, 140, 165)))
+                    e.Graphics.DrawString((e.RowIndex + 1).ToString(), dgvCameras.Font, br, rect, fmt);
+            };
 
             foreach (Button btn in new[] { btnAdd, btnDelete, btnSave, btnCancel })
             {

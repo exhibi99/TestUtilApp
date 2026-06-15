@@ -49,6 +49,643 @@
     "imageCircle": 11
   },
   {
+    "name": "LM3JC10M",
+    "manufacturer": "Kowa",
+    "focalLength": 3.7,
+    "minWD": 100,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM3NCM",
+    "manufacturer": "Kowa",
+    "focalLength": 3.5,
+    "minWD": 100,
+    "imageCircle": 8.93
+  },
+  {
+    "name": "LM3NCM-WP",
+    "manufacturer": "Kowa",
+    "focalLength": 3.5,
+    "minWD": 100,
+    "imageCircle": 8.93
+  },
+  {
+    "name": "LM4HC",
+    "manufacturer": "Kowa",
+    "focalLength": 4.7,
+    "minWD": 100,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM4NC3, build to order",
+    "manufacturer": "Kowa",
+    "focalLength": 4.0,
+    "minWD": 100,
+    "imageCircle": 8.0
+  },
+  {
+    "name": "LM4NCL",
+    "manufacturer": "Kowa",
+    "focalLength": 3.5,
+    "minWD": 200,
+    "imageCircle": 8.93
+  },
+  {
+    "name": "LM5JC10M",
+    "manufacturer": "Kowa",
+    "focalLength": 5.0,
+    "minWD": 100,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM5JCM",
+    "manufacturer": "Kowa",
+    "focalLength": 5.0,
+    "minWD": 100,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM5JCM-V",
+    "manufacturer": "Kowa",
+    "focalLength": 5.0,
+    "minWD": 100,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM5JCM-WP",
+    "manufacturer": "Kowa",
+    "focalLength": 5.0,
+    "minWD": 100,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM5NCL",
+    "manufacturer": "Kowa",
+    "focalLength": 4.5,
+    "minWD": 200,
+    "imageCircle": 8.93
+  },
+  {
+    "name": "LM6FC24M",
+    "manufacturer": "Kowa",
+    "focalLength": 6.5,
+    "minWD": 100,
+    "imageCircle": 17.6
+  },
+  {
+    "name": "LM6HC",
+    "manufacturer": "Kowa",
+    "focalLength": 6.0,
+    "minWD": 100,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM6HC-SW",
+    "manufacturer": "Kowa",
+    "focalLength": 6.0,
+    "minWD": 100,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM6HC-V",
+    "manufacturer": "Kowa",
+    "focalLength": 6.0,
+    "minWD": 100,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM6JC",
+    "manufacturer": "Kowa",
+    "focalLength": 6.0,
+    "minWD": 100,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM6NC3, build to order",
+    "manufacturer": "Kowa",
+    "focalLength": 6.0,
+    "minWD": 100,
+    "imageCircle": 8.0
+  },
+  {
+    "name": "LM6NCL",
+    "manufacturer": "Kowa",
+    "focalLength": 6.0,
+    "minWD": 200,
+    "imageCircle": 8.93
+  },
+  {
+    "name": "LM6NCM",
+    "manufacturer": "Kowa",
+    "focalLength": 6.0,
+    "minWD": 100,
+    "imageCircle": 8.0
+  },
+  {
+    "name": "LM8FC24M",
+    "manufacturer": "Kowa",
+    "focalLength": 8.5,
+    "minWD": 100,
+    "imageCircle": 17.6
+  },
+  {
+    "name": "LM8HC",
+    "manufacturer": "Kowa",
+    "focalLength": 8.0,
+    "minWD": 100,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM8HC-SW",
+    "manufacturer": "Kowa",
+    "focalLength": 8.0,
+    "minWD": 300,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM8HC-V",
+    "manufacturer": "Kowa",
+    "focalLength": 8.0,
+    "minWD": 100,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM8HC-VIS-SW",
+    "manufacturer": "Kowa",
+    "focalLength": 8.0,
+    "minWD": 200,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM8JC",
+    "manufacturer": "Kowa",
+    "focalLength": 8.0,
+    "minWD": 100,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM8JC1MS",
+    "manufacturer": "Kowa",
+    "focalLength": 8.0,
+    "minWD": 100,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM8JC5MC",
+    "manufacturer": "Kowa",
+    "focalLength": 8.0,
+    "minWD": 150,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM8JC5MC-WP",
+    "manufacturer": "Kowa",
+    "focalLength": 8.0,
+    "minWD": 150,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM8JC10M",
+    "manufacturer": "Kowa",
+    "focalLength": 8.5,
+    "minWD": 100,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM8JCM-V",
+    "manufacturer": "Kowa",
+    "focalLength": 8.0,
+    "minWD": 100,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM8JCM-WP",
+    "manufacturer": "Kowa",
+    "focalLength": 8.0,
+    "minWD": 100,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM8XC",
+    "manufacturer": "Kowa",
+    "focalLength": 8.5,
+    "minWD": 100,
+    "imageCircle": 21.64
+  },
+  {
+    "name": "LM12FC24M",
+    "manufacturer": "Kowa",
+    "focalLength": 12.0,
+    "minWD": 100,
+    "imageCircle": 17.6
+  },
+  {
+    "name": "LM12HC",
+    "manufacturer": "Kowa",
+    "focalLength": 12.5,
+    "minWD": 300,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM12HC-SW",
+    "manufacturer": "Kowa",
+    "focalLength": 12.5,
+    "minWD": 900,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM12HC-V",
+    "manufacturer": "Kowa",
+    "focalLength": 12.5,
+    "minWD": 300,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM12HC-VIS-SW",
+    "manufacturer": "Kowa",
+    "focalLength": 12.0,
+    "minWD": 200,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM12JC",
+    "manufacturer": "Kowa",
+    "focalLength": 12.0,
+    "minWD": 100,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM12JC1MS",
+    "manufacturer": "Kowa",
+    "focalLength": 12.0,
+    "minWD": 150,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM12JC5M2",
+    "manufacturer": "Kowa",
+    "focalLength": 12.5,
+    "minWD": 100,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM12JC5MC",
+    "manufacturer": "Kowa",
+    "focalLength": 12.0,
+    "minWD": 200,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM12JC5MC-WP",
+    "manufacturer": "Kowa",
+    "focalLength": 12.0,
+    "minWD": 200,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM12JC10M",
+    "manufacturer": "Kowa",
+    "focalLength": 12.0,
+    "minWD": 100,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM12JCM-V",
+    "manufacturer": "Kowa",
+    "focalLength": 12.0,
+    "minWD": 150,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM12JCM-WP",
+    "manufacturer": "Kowa",
+    "focalLength": 12.0,
+    "minWD": 150,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM12NC3, build to order",
+    "manufacturer": "Kowa",
+    "focalLength": 12.0,
+    "minWD": 150,
+    "imageCircle": 8.0
+  },
+  {
+    "name": "LM12NCL",
+    "manufacturer": "Kowa",
+    "focalLength": 12.0,
+    "minWD": 300,
+    "imageCircle": 8.93
+  },
+  {
+    "name": "LM12XC",
+    "manufacturer": "Kowa",
+    "focalLength": 12.0,
+    "minWD": 100,
+    "imageCircle": 21.64
+  },
+  {
+    "name": "LM15FC-R",
+    "manufacturer": "Kowa",
+    "focalLength": 15.0,
+    "minWD": 100,
+    "imageCircle": 17.6
+  },
+  {
+    "name": "LM16EC-IR",
+    "manufacturer": "Kowa",
+    "focalLength": 16.0,
+    "minWD": 500,
+    "imageCircle": 19.3
+  },
+  {
+    "name": "LM16FC24M",
+    "manufacturer": "Kowa",
+    "focalLength": 16.0,
+    "minWD": 100,
+    "imageCircle": 17.6
+  },
+  {
+    "name": "LM16HC-SW",
+    "manufacturer": "Kowa",
+    "focalLength": 16.0,
+    "minWD": 650,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM16HC-V",
+    "manufacturer": "Kowa",
+    "focalLength": 16.0,
+    "minWD": 300,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM16HC-VIS-SW",
+    "manufacturer": "Kowa",
+    "focalLength": 16.0,
+    "minWD": 200,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM16JC",
+    "manufacturer": "Kowa",
+    "focalLength": 16.0,
+    "minWD": 200,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM16JC1MS",
+    "manufacturer": "Kowa",
+    "focalLength": 16.0,
+    "minWD": 200,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM16JC5M2",
+    "manufacturer": "Kowa",
+    "focalLength": 16.0,
+    "minWD": 100,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM16JC5MC",
+    "manufacturer": "Kowa",
+    "focalLength": 16.0,
+    "minWD": 200,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM16JC5MC-WP",
+    "manufacturer": "Kowa",
+    "focalLength": 16.0,
+    "minWD": 200,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM16JC10M",
+    "manufacturer": "Kowa",
+    "focalLength": 16.0,
+    "minWD": 100,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM16JCM-V",
+    "manufacturer": "Kowa",
+    "focalLength": 16.0,
+    "minWD": 200,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM16JCM-WP",
+    "manufacturer": "Kowa",
+    "focalLength": 16.0,
+    "minWD": 200,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM16XC",
+    "manufacturer": "Kowa",
+    "focalLength": 16.0,
+    "minWD": 100,
+    "imageCircle": 21.64
+  },
+  {
+    "name": "LM25EC-IR",
+    "manufacturer": "Kowa",
+    "focalLength": 25.0,
+    "minWD": 500,
+    "imageCircle": 19.3
+  },
+  {
+    "name": "LM25FC24M",
+    "manufacturer": "Kowa",
+    "focalLength": 25.0,
+    "minWD": 100,
+    "imageCircle": 17.6
+  },
+  {
+    "name": "LM25HC",
+    "manufacturer": "Kowa",
+    "focalLength": 25.0,
+    "minWD": 300,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM25HC-SW",
+    "manufacturer": "Kowa",
+    "focalLength": 25.0,
+    "minWD": 450,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM25HC-V",
+    "manufacturer": "Kowa",
+    "focalLength": 25.0,
+    "minWD": 300,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM25HC-VIS-SW",
+    "manufacturer": "Kowa",
+    "focalLength": 25.0,
+    "minWD": 200,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM25JC",
+    "manufacturer": "Kowa",
+    "focalLength": 25.0,
+    "minWD": 200,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM25JC1MS",
+    "manufacturer": "Kowa",
+    "focalLength": 25.0,
+    "minWD": 200,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM25JC5M2",
+    "manufacturer": "Kowa",
+    "focalLength": 25.0,
+    "minWD": 100,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM25JC5MC",
+    "manufacturer": "Kowa",
+    "focalLength": 25.0,
+    "minWD": 200,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM25JC5MC-WP",
+    "manufacturer": "Kowa",
+    "focalLength": 25.0,
+    "minWD": 200,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM25JC10M",
+    "manufacturer": "Kowa",
+    "focalLength": 25.0,
+    "minWD": 100,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM25JCM-V",
+    "manufacturer": "Kowa",
+    "focalLength": 25.0,
+    "minWD": 200,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM25JCM-WP",
+    "manufacturer": "Kowa",
+    "focalLength": 25.0,
+    "minWD": 200,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM25NC3, build to order",
+    "manufacturer": "Kowa",
+    "focalLength": 25.0,
+    "minWD": 200,
+    "imageCircle": 8.0
+  },
+  {
+    "name": "LM25XC",
+    "manufacturer": "Kowa",
+    "focalLength": 25.0,
+    "minWD": 150,
+    "imageCircle": 21.64
+  },
+  {
+    "name": "LM35EC-IR",
+    "manufacturer": "Kowa",
+    "focalLength": 35.0,
+    "minWD": 500,
+    "imageCircle": 19.3
+  },
+  {
+    "name": "LM35FC24M",
+    "manufacturer": "Kowa",
+    "focalLength": 35.0,
+    "minWD": 200,
+    "imageCircle": 17.6
+  },
+  {
+    "name": "LM35HC",
+    "manufacturer": "Kowa",
+    "focalLength": 35.0,
+    "minWD": 300,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM35HC-OPT",
+    "manufacturer": "Kowa",
+    "focalLength": 35.0,
+    "minWD": 250,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM35HC-SW",
+    "manufacturer": "Kowa",
+    "focalLength": 35.0,
+    "minWD": 400,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM35HC-V",
+    "manufacturer": "Kowa",
+    "focalLength": 35.0,
+    "minWD": 300,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM35HC-VIS-SW",
+    "manufacturer": "Kowa",
+    "focalLength": 35.0,
+    "minWD": 200,
+    "imageCircle": 16.0
+  },
+  {
+    "name": "LM35JC",
+    "manufacturer": "Kowa",
+    "focalLength": 35.0,
+    "minWD": 300,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM35JC1MS",
+    "manufacturer": "Kowa",
+    "focalLength": 35.0,
+    "minWD": 200,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM35JC5M2",
+    "manufacturer": "Kowa",
+    "focalLength": 35.0,
+    "minWD": 180,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM35JC5MC",
+    "manufacturer": "Kowa",
+    "focalLength": 35.0,
+    "minWD": 200,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "LM35JC10M",
+    "manufacturer": "Kowa",
+    "focalLength": 35.0,
+    "minWD": 100,
+    "imageCircle": 11.0
+  },
+  {
     "name": "LM35JCM-V",
     "manufacturer": "Kowa",
     "focalLength": 35.0,
@@ -229,5 +866,149 @@
     "focalLength": 11.5,
     "minWD": 10,
     "imageCircle": 11.0
+  },
+  {
+    "name": "MCL0.063X-240-9",
+    "manufacturer": "ALT System",
+    "focalLength": 0,
+    "magnification": 0.063,
+    "minWD": 240,
+    "imageCircle": 9.0
+  },
+  {
+    "name": "MCL0.063X-300-9",
+    "manufacturer": "ALT System",
+    "focalLength": 0,
+    "magnification": 0.063,
+    "minWD": 300,
+    "imageCircle": 9.0
+  },
+  {
+    "name": "MCL0.2X-255-9",
+    "manufacturer": "ALT System",
+    "focalLength": 0,
+    "magnification": 0.2,
+    "minWD": 255,
+    "imageCircle": 9.0
+  },
+  {
+    "name": "MCL0.22X-310-11",
+    "manufacturer": "ALT System",
+    "focalLength": 0,
+    "magnification": 0.22,
+    "minWD": 310,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "MCL0.228X-220-8",
+    "manufacturer": "ALT System",
+    "focalLength": 0,
+    "magnification": 0.228,
+    "minWD": 220,
+    "imageCircle": 8.0
+  },
+  {
+    "name": "MCL0.25X-279-11",
+    "manufacturer": "ALT System",
+    "focalLength": 0,
+    "magnification": 0.25,
+    "minWD": 279,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "MCL0.3X-195-9",
+    "manufacturer": "ALT System",
+    "focalLength": 0,
+    "magnification": 0.3,
+    "minWD": 195,
+    "imageCircle": 9.0
+  },
+  {
+    "name": "MCL0.3X-240-11",
+    "manufacturer": "ALT System",
+    "focalLength": 0,
+    "magnification": 0.3,
+    "minWD": 240,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "MCL0.32X-225-11",
+    "manufacturer": "ALT System",
+    "focalLength": 0,
+    "magnification": 0.32,
+    "minWD": 225,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "MCL0.35X-210-11",
+    "manufacturer": "ALT System",
+    "focalLength": 0,
+    "magnification": 0.35,
+    "minWD": 210,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "MCL0.37X-200-11",
+    "manufacturer": "ALT System",
+    "focalLength": 0,
+    "magnification": 0.37,
+    "minWD": 200,
+    "imageCircle": 11.0
+  },
+  {
+    "name": "MCL0.4X-190-18",
+    "manufacturer": "ALT System",
+    "focalLength": 0,
+    "magnification": 0.4,
+    "minWD": 190,
+    "imageCircle": 18.0
+  },
+  {
+    "name": "MCL0.43X-135-14",
+    "manufacturer": "ALT System",
+    "focalLength": 0,
+    "magnification": 0.43,
+    "minWD": 135,
+    "imageCircle": 14.0
+  },
+  {
+    "name": "MCL0.466X-125-14",
+    "manufacturer": "ALT System",
+    "focalLength": 0,
+    "magnification": 0.466,
+    "minWD": 125,
+    "imageCircle": 14.0
+  },
+  {
+    "name": "MCL0.5X-160-18",
+    "manufacturer": "ALT System",
+    "focalLength": 0,
+    "magnification": 0.5,
+    "minWD": 160,
+    "imageCircle": 18.0
+  },
+  {
+    "name": "MCL0.55X-107-18",
+    "manufacturer": "ALT System",
+    "focalLength": 0,
+    "magnification": 0.55,
+    "minWD": 107,
+    "imageCircle": 18.0
+  },
+  {
+    "name": "MCL0.568X-145-18",
+    "manufacturer": "ALT System",
+    "focalLength": 0,
+    "magnification": 0.568,
+    "minWD": 145,
+    "imageCircle": 18.0
+  },
+  {
+    "name": "MCL0.67X-128-18",
+    "manufacturer": "ALT System",
+    "focalLength": 0,
+    "magnification": 0.67,
+    "minWD": 128,
+    "imageCircle": 18.0
   }
 ]

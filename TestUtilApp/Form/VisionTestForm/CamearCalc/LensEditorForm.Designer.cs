@@ -13,11 +13,12 @@ namespace TestUtilApp.UI
         private void InitializeComponent()
         {
             this.dgvLenses       = new System.Windows.Forms.DataGridView();
-            this.colLensName     = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colManufacturer = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colFocalLength  = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colMinWD        = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colImageCircle  = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colLensName      = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colManufacturer  = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colFocalLength   = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colMagnification = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colMinWD         = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colImageCircle   = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlButtons      = new System.Windows.Forms.Panel();
             this.btnAdd          = new System.Windows.Forms.Button();
             this.btnDelete       = new System.Windows.Forms.Button();
@@ -35,21 +36,23 @@ namespace TestUtilApp.UI
                 | System.Windows.Forms.AnchorStyles.Right;
             this.dgvLenses.Location = new System.Drawing.Point(0, 0);
             this.dgvLenses.Name = "dgvLenses";
-            this.dgvLenses.Size = new System.Drawing.Size(780, 460);
+            this.dgvLenses.Size = new System.Drawing.Size(860, 460);
             this.dgvLenses.TabIndex = 0;
-            this.dgvLenses.RowHeadersVisible = false;
+            this.dgvLenses.RowHeadersVisible = true;
+            this.dgvLenses.RowHeadersWidth = 44;
             this.dgvLenses.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvLenses.AllowUserToAddRows = false;
             this.dgvLenses.AllowUserToDeleteRows = false;
             this.dgvLenses.AllowUserToResizeRows = false;
             this.dgvLenses.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[]
-                { this.colLensName, this.colManufacturer, this.colFocalLength, this.colMinWD, this.colImageCircle });
+                { this.colLensName, this.colManufacturer, this.colFocalLength, this.colMagnification, this.colMinWD, this.colImageCircle });
 
-            this.colLensName.HeaderText     = "렌즈명";           this.colLensName.Name     = "colLensName";     this.colLensName.Width     = 240;
-            this.colManufacturer.HeaderText = "제조사";           this.colManufacturer.Name = "colManufacturer"; this.colManufacturer.Width = 100;
-            this.colFocalLength.HeaderText  = "초점거리 (mm)";    this.colFocalLength.Name  = "colFocalLength";  this.colFocalLength.Width  = 110;
-            this.colMinWD.HeaderText        = "최소 WD (mm)";     this.colMinWD.Name        = "colMinWD";        this.colMinWD.Width        = 110;
-            this.colImageCircle.HeaderText  = "이미지서클 (mm)";  this.colImageCircle.Name  = "colImageCircle";  this.colImageCircle.Width  = 110;
+            this.colLensName.HeaderText      = "렌즈명";           this.colLensName.Name      = "colLensName";      this.colLensName.Width      = 220;
+            this.colManufacturer.HeaderText  = "제조사";           this.colManufacturer.Name  = "colManufacturer";  this.colManufacturer.Width  = 100;
+            this.colFocalLength.HeaderText   = "초점거리 (mm)";    this.colFocalLength.Name   = "colFocalLength";   this.colFocalLength.Width   = 100;
+            this.colMagnification.HeaderText = "배율 (0=미사용)";  this.colMagnification.Name = "colMagnification"; this.colMagnification.Width = 110;
+            this.colMinWD.HeaderText         = "최소 WD (mm)";     this.colMinWD.Name         = "colMinWD";         this.colMinWD.Width         = 100;
+            this.colImageCircle.HeaderText   = "이미지서클 (mm)";  this.colImageCircle.Name   = "colImageCircle";   this.colImageCircle.Width   = 100;
 
             // ── pnlButtons
             this.pnlButtons.Anchor = System.Windows.Forms.AnchorStyles.Bottom
@@ -61,7 +64,7 @@ namespace TestUtilApp.UI
             this.pnlButtons.Controls.Add(this.btnCancel);
             this.pnlButtons.Location = new System.Drawing.Point(0, 460);
             this.pnlButtons.Name = "pnlButtons";
-            this.pnlButtons.Size = new System.Drawing.Size(780, 44);
+            this.pnlButtons.Size = new System.Drawing.Size(860, 44);
             this.pnlButtons.TabIndex = 1;
 
             this.btnAdd.Location    = new System.Drawing.Point(8, 8);
@@ -76,13 +79,13 @@ namespace TestUtilApp.UI
             this.btnDelete.Text     = "- 행 삭제";
             this.btnDelete.Click   += new System.EventHandler(this.btnDelete_Click);
 
-            this.btnCancel.Location = new System.Drawing.Point(676, 8);
+            this.btnCancel.Location = new System.Drawing.Point(756, 8);
             this.btnCancel.Name     = "btnCancel";
             this.btnCancel.Size     = new System.Drawing.Size(90, 28);
             this.btnCancel.Text     = "취소";
             this.btnCancel.Click   += new System.EventHandler(this.btnCancel_Click);
 
-            this.btnSave.Location   = new System.Drawing.Point(578, 8);
+            this.btnSave.Location   = new System.Drawing.Point(658, 8);
             this.btnSave.Name       = "btnSave";
             this.btnSave.Size       = new System.Drawing.Size(90, 28);
             this.btnSave.Text       = "저장";
@@ -91,7 +94,7 @@ namespace TestUtilApp.UI
             // ── Form
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(780, 504);
+            this.ClientSize = new System.Drawing.Size(860, 504);
             this.Controls.Add(this.dgvLenses);
             this.Controls.Add(this.pnlButtons);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
@@ -109,6 +112,7 @@ namespace TestUtilApp.UI
         private System.Windows.Forms.DataGridViewTextBoxColumn colLensName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colManufacturer;
         private System.Windows.Forms.DataGridViewTextBoxColumn colFocalLength;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMagnification;
         private System.Windows.Forms.DataGridViewTextBoxColumn colMinWD;
         private System.Windows.Forms.DataGridViewTextBoxColumn colImageCircle;
         private System.Windows.Forms.Panel pnlButtons;

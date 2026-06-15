@@ -23,7 +23,7 @@ namespace TestUtilApp.UI
         {
             dgvLenses.Rows.Clear();
             foreach (var l in lenses)
-                dgvLenses.Rows.Add(l.name, l.manufacturer, l.focalLength, l.minWD, l.imageCircle);
+                dgvLenses.Rows.Add(l.name, l.manufacturer, l.focalLength, l.magnification ?? 0, l.minWD, l.imageCircle);
         }
 
         // ─────────────────────────────────────────────
@@ -31,7 +31,7 @@ namespace TestUtilApp.UI
         // ─────────────────────────────────────────────
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            int idx = dgvLenses.Rows.Add("New Lens", "Kowa", 25, 150, 11);
+            int idx = dgvLenses.Rows.Add("New Lens", "Kowa", 25, 0, 150, 11);
             dgvLenses.ClearSelection();
             dgvLenses.Rows[idx].Selected = true;
             dgvLenses.CurrentCell = dgvLenses.Rows[idx].Cells[0];
@@ -90,21 +90,26 @@ namespace TestUtilApp.UI
 
                 string manufacturer = row.Cells[1].Value?.ToString()?.Trim() ?? "";
 
-                if (!TryParseCell(row, 2, out double fl))          { ShowRowError(i, "초점거리 값이 올바르지 않습니다."); return null; }
-                if (!TryParseCell(row, 3, out double minWD))       { ShowRowError(i, "최소WD 값이 올바르지 않습니다.");   return null; }
-                if (!TryParseCell(row, 4, out double imageCircle)) { ShowRowError(i, "이미지서클 값이 올바르지 않습니다."); return null; }
+                // col 2: focalLength (0 allowed for fixed-mag lenses)
+                if (!TryParseCellNonNeg(row, 2, out double fl))    { ShowRowError(i, "초점거리 값이 올바르지 않습니다."); return null; }
+                // col 3: magnification (0 = not a fixed-mag lens)
+                if (!TryParseCellNonNeg(row, 3, out double mag))   { ShowRowError(i, "배율 값이 올바르지 않습니다.");    return null; }
+                if (fl <= 0 && mag <= 0)                           { ShowRowError(i, "초점거리 또는 배율 중 하나는 0보다 커야 합니다."); return null; }
+                if (!TryParseCellNonNeg(row, 4, out double minWD)) { ShowRowError(i, "최소WD 값이 올바르지 않습니다.");   return null; }
+                if (!TryParseCellNonNeg(row, 5, out double imageCircle)) { ShowRowError(i, "이미지서클 값이 올바르지 않습니다."); return null; }
 
                 list.Add(new CameraCalcControl.LensEntry
                 {
                     name = name, manufacturer = manufacturer,
-                    focalLength = fl, minWD = minWD, imageCircle = imageCircle,
+                    focalLength = fl, magnification = mag > 0 ? mag : (double?)null,
+                    minWD = minWD, imageCircle = imageCircle,
                 });
             }
             return list;
         }
 
-        private static bool TryParseCell(DataGridViewRow row, int col, out double val)
-            => double.TryParse(row.Cells[col].Value?.ToString(), out val) && val > 0;
+        private static bool TryParseCellNonNeg(DataGridViewRow row, int col, out double val)
+            => double.TryParse(row.Cells[col].Value?.ToString(), out val) && val >= 0;
 
         private void ShowRowError(int rowIdx, string msg)
         {
@@ -145,6 +150,21 @@ namespace TestUtilApp.UI
             dgvLenses.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9f, FontStyle.Bold);
             dgvLenses.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
             dgvLenses.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(20, 26, 36);
+            dgvLenses.RowHeadersDefaultCellStyle.BackColor = Color.FromArgb(22, 30, 45);
+            dgvLenses.RowHeadersDefaultCellStyle.ForeColor = Color.FromArgb(120, 140, 165);
+            dgvLenses.RowHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(35, 55, 90);
+            dgvLenses.RowPostPaint += (s, e) =>
+            {
+                var fmt = new System.Drawing.StringFormat
+                {
+                    Alignment = System.Drawing.StringAlignment.Center,
+                    LineAlignment = System.Drawing.StringAlignment.Center
+                };
+                var rect = new Rectangle(e.RowBounds.Left, e.RowBounds.Top,
+                    dgvLenses.RowHeadersWidth - 2, e.RowBounds.Height);
+                using (var br = new SolidBrush(Color.FromArgb(120, 140, 165)))
+                    e.Graphics.DrawString((e.RowIndex + 1).ToString(), dgvLenses.Font, br, rect, fmt);
+            };
 
             foreach (Button btn in new[] { btnAdd, btnDelete, btnSave, btnCancel })
             {

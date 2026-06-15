@@ -105,9 +105,18 @@ namespace TestUtilApp.UI
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
             this.splitMain.Panel1.SuspendLayout();
             this.splitMain.Panel2.SuspendLayout();
+            this.pnlSearchFilter  = new System.Windows.Forms.Panel();
+            this.chkMinPixFilter  = new System.Windows.Forms.CheckBox();
+            this.txtMinPixCount   = new System.Windows.Forms.TextBox();
+            this.lblMinPixUnit    = new System.Windows.Forms.Label();
+            this.lblCamKeyword    = new System.Windows.Forms.Label();
+            this.txtCamKeyword    = new System.Windows.Forms.TextBox();
+            this.lblLensKeyword   = new System.Windows.Forms.Label();
+            this.txtLensKeyword   = new System.Windows.Forms.TextBox();
             this.splitMain.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.tabReverse.SuspendLayout();
+            this.pnlSearchFilter.SuspendLayout();
             this.grpRevInput.SuspendLayout();
             this.grpRevRes.SuspendLayout();
             this.pnlCatalogBar.SuspendLayout();
@@ -161,6 +170,7 @@ namespace TestUtilApp.UI
             this.tabReverse.Controls.Add(this.grpRevInput);
             this.tabReverse.Controls.Add(this.grpRevRes);
             this.tabReverse.Controls.Add(this.pnlCatalogBar);
+            this.tabReverse.Controls.Add(this.pnlSearchFilter);
             this.tabReverse.Controls.Add(this.dgvResults);
             this.tabReverse.Location = new System.Drawing.Point(4, 30);
             this.tabReverse.Name = "tabReverse";
@@ -312,7 +322,7 @@ namespace TestUtilApp.UI
             this.btnRevCalc.Text = "조합 찾기";
             this.btnRevCalc.UseVisualStyleBackColor = false;
             this.btnRevCalc.Click += new System.EventHandler(this.btnRevCalc_Click);
-            // 
+            //
             // grpRevRes
             // 
             this.grpRevRes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -375,7 +385,83 @@ namespace TestUtilApp.UI
             this.pnlCatalogBar.Name = "pnlCatalogBar";
             this.pnlCatalogBar.Size = new System.Drawing.Size(576, 64);
             this.pnlCatalogBar.TabIndex = 2;
-            // 
+            //
+            // pnlSearchFilter
+            //
+            this.pnlSearchFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlSearchFilter.Controls.Add(this.lblCamKeyword);
+            this.pnlSearchFilter.Controls.Add(this.txtCamKeyword);
+            this.pnlSearchFilter.Controls.Add(this.lblLensKeyword);
+            this.pnlSearchFilter.Controls.Add(this.txtLensKeyword);
+            this.pnlSearchFilter.Controls.Add(this.chkMinPixFilter);
+            this.pnlSearchFilter.Controls.Add(this.txtMinPixCount);
+            this.pnlSearchFilter.Controls.Add(this.lblMinPixUnit);
+            this.pnlSearchFilter.Location = new System.Drawing.Point(4, 296);
+            this.pnlSearchFilter.Name = "pnlSearchFilter";
+            this.pnlSearchFilter.Size = new System.Drawing.Size(576, 34);
+            this.pnlSearchFilter.TabIndex = 5;
+            //
+            // lblCamKeyword
+            //
+            this.lblCamKeyword.AutoSize = true;
+            this.lblCamKeyword.Location = new System.Drawing.Point(6, 9);
+            this.lblCamKeyword.Name = "lblCamKeyword";
+            this.lblCamKeyword.TabIndex = 0;
+            this.lblCamKeyword.Text = "카메라 :";
+            //
+            // txtCamKeyword
+            //
+            this.txtCamKeyword.Location = new System.Drawing.Point(62, 6);
+            this.txtCamKeyword.Name = "txtCamKeyword";
+            this.txtCamKeyword.Size = new System.Drawing.Size(130, 23);
+            this.txtCamKeyword.TabIndex = 1;
+            this.txtCamKeyword.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCamKeyword_KeyDown);
+            //
+            // lblLensKeyword
+            //
+            this.lblLensKeyword.AutoSize = true;
+            this.lblLensKeyword.Location = new System.Drawing.Point(200, 9);
+            this.lblLensKeyword.Name = "lblLensKeyword";
+            this.lblLensKeyword.TabIndex = 2;
+            this.lblLensKeyword.Text = "렌즈 :";
+            //
+            // txtLensKeyword
+            //
+            this.txtLensKeyword.Location = new System.Drawing.Point(248, 6);
+            this.txtLensKeyword.Name = "txtLensKeyword";
+            this.txtLensKeyword.Size = new System.Drawing.Size(130, 23);
+            this.txtLensKeyword.TabIndex = 3;
+            this.txtLensKeyword.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtLensKeyword_KeyDown);
+            //
+            // chkMinPixFilter
+            //
+            this.chkMinPixFilter.AutoSize = true;
+            this.chkMinPixFilter.Location = new System.Drawing.Point(388, 8);
+            this.chkMinPixFilter.Name = "chkMinPixFilter";
+            this.chkMinPixFilter.TabIndex = 4;
+            this.chkMinPixFilter.Text = "최소 픽셀 수 ≥";
+            this.chkMinPixFilter.UseVisualStyleBackColor = false;
+            this.chkMinPixFilter.CheckedChanged += new System.EventHandler(this.chkMinPixFilter_CheckedChanged);
+            //
+            // txtMinPixCount
+            //
+            this.txtMinPixCount.Location = new System.Drawing.Point(488, 6);
+            this.txtMinPixCount.Name = "txtMinPixCount";
+            this.txtMinPixCount.Size = new System.Drawing.Size(48, 23);
+            this.txtMinPixCount.TabIndex = 5;
+            this.txtMinPixCount.Text = "10";
+            this.txtMinPixCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtMinPixCount.TextChanged += new System.EventHandler(this.txtMinPixCount_TextChanged);
+            //
+            // lblMinPixUnit
+            //
+            this.lblMinPixUnit.AutoSize = true;
+            this.lblMinPixUnit.Location = new System.Drawing.Point(540, 9);
+            this.lblMinPixUnit.Name = "lblMinPixUnit";
+            this.lblMinPixUnit.TabIndex = 6;
+            this.lblMinPixUnit.Text = "px";
+            //
             // lblCatalogInfo
             // 
             this.lblCatalogInfo.AutoSize = true;
@@ -482,13 +568,13 @@ namespace TestUtilApp.UI
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvResults.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dgvResults.Location = new System.Drawing.Point(4, 296);
+            this.dgvResults.Location = new System.Drawing.Point(4, 334);
             this.dgvResults.MultiSelect = false;
             this.dgvResults.Name = "dgvResults";
             this.dgvResults.ReadOnly = true;
             this.dgvResults.RowHeadersVisible = false;
             this.dgvResults.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvResults.Size = new System.Drawing.Size(576, 367);
+            this.dgvResults.Size = new System.Drawing.Size(576, 329);
             this.dgvResults.TabIndex = 1;
             this.dgvResults.SelectionChanged += new System.EventHandler(this.dgvResults_SelectionChanged);
             // 
@@ -1116,6 +1202,8 @@ namespace TestUtilApp.UI
             this.splitMain.ResumeLayout(false);
             this.tabMain.ResumeLayout(false);
             this.tabReverse.ResumeLayout(false);
+            this.pnlSearchFilter.ResumeLayout(false);
+            this.pnlSearchFilter.PerformLayout();
             this.grpRevInput.ResumeLayout(false);
             this.grpRevInput.PerformLayout();
             this.grpRevRes.ResumeLayout(false);
@@ -1173,6 +1261,14 @@ namespace TestUtilApp.UI
         private System.Windows.Forms.TextBox txtRevMinFeat;
         private System.Windows.Forms.Label lblRevMinFeatUnit;
         private System.Windows.Forms.Button btnRevCalc;
+        private System.Windows.Forms.Panel    pnlSearchFilter;
+        private System.Windows.Forms.Label    lblCamKeyword;
+        private System.Windows.Forms.TextBox  txtCamKeyword;
+        private System.Windows.Forms.Label    lblLensKeyword;
+        private System.Windows.Forms.TextBox  txtLensKeyword;
+        private System.Windows.Forms.CheckBox chkMinPixFilter;
+        private System.Windows.Forms.TextBox  txtMinPixCount;
+        private System.Windows.Forms.Label    lblMinPixUnit;
         private System.Windows.Forms.DataGridView dgvResults;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCamera;
         private System.Windows.Forms.DataGridViewTextBoxColumn colFL;

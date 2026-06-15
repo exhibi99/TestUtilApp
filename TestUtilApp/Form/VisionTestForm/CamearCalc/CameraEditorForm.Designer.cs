@@ -38,7 +38,8 @@ namespace TestUtilApp.UI
             this.dgvCameras.Name = "dgvCameras";
             this.dgvCameras.Size = new System.Drawing.Size(740, 460);
             this.dgvCameras.TabIndex = 0;
-            this.dgvCameras.RowHeadersVisible = false;
+            this.dgvCameras.RowHeadersVisible = true;
+            this.dgvCameras.RowHeadersWidth = 44;
             this.dgvCameras.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvCameras.AllowUserToAddRows = false;
             this.dgvCameras.AllowUserToDeleteRows = false;

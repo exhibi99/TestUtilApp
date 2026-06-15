@@ -1,6 +1,38 @@
 [
   {
-    "name": "Basler a2A1920-51gcBAS",
+    "name": "Basler a2A640-240gmSWIR",
+    "sensorX": 3.28,
+    "sensorY": 2.6,
+    "pixelUm": 5.0,
+    "pixelW": 656,
+    "pixelH": 520
+  },
+  {
+    "name": "Basler a2A640-240umSWIR",
+    "sensorX": 3.28,
+    "sensorY": 2.6,
+    "pixelUm": 5.0,
+    "pixelW": 656,
+    "pixelH": 520
+  },
+  {
+    "name": "Basler a2A1280-80gmSWIR",
+    "sensorX": 6.48,
+    "sensorY": 5.16,
+    "pixelUm": 5.0,
+    "pixelW": 1296,
+    "pixelH": 1032
+  },
+  {
+    "name": "Basler a2A1280-125umSWIR",
+    "sensorX": 6.48,
+    "sensorY": 5.16,
+    "pixelUm": 5.0,
+    "pixelW": 1296,
+    "pixelH": 1032
+  },
+  {
+    "name": "Basler a2A1920-51gc",
     "sensorX": 6.68,
     "sensorY": 4.2,
     "pixelUm": 3.45,
@@ -8,7 +40,39 @@
     "pixelH": 1216
   },
   {
-    "name": "Basler a2A2048-37gcBAS",
+    "name": "Basler a2A1920-51gm",
+    "sensorX": 6.68,
+    "sensorY": 4.2,
+    "pixelUm": 3.45,
+    "pixelW": 1936,
+    "pixelH": 1216
+  },
+  {
+    "name": "Basler a2A1920-160uc",
+    "sensorX": 6.68,
+    "sensorY": 4.2,
+    "pixelUm": 3.45,
+    "pixelW": 1936,
+    "pixelH": 1216
+  },
+  {
+    "name": "Basler a2A1920-160um",
+    "sensorX": 6.68,
+    "sensorY": 4.2,
+    "pixelUm": 3.45,
+    "pixelW": 1936,
+    "pixelH": 1216
+  },
+  {
+    "name": "Basler a2A2048-35gmSWIR",
+    "sensorX": 7.18,
+    "sensorY": 5.33,
+    "pixelUm": 3.45,
+    "pixelW": 2080,
+    "pixelH": 1544
+  },
+  {
+    "name": "Basler a2A2048-37gc",
     "sensorX": 4.64,
     "sensorY": 3.49,
     "pixelUm": 2.25,
@@ -16,7 +80,63 @@
     "pixelH": 1552
   },
   {
-    "name": "Basler a2A2440-98g5cBAS",
+    "name": "Basler a2A2048-37gm",
+    "sensorX": 4.64,
+    "sensorY": 3.49,
+    "pixelUm": 2.25,
+    "pixelW": 2064,
+    "pixelH": 1552
+  },
+  {
+    "name": "Basler a2A2048-110umSWIR",
+    "sensorX": 7.18,
+    "sensorY": 5.33,
+    "pixelUm": 3.45,
+    "pixelW": 2080,
+    "pixelH": 1544
+  },
+  {
+    "name": "Basler a2A2048-114g5c",
+    "sensorX": 4.64,
+    "sensorY": 3.49,
+    "pixelUm": 2.25,
+    "pixelW": 2064,
+    "pixelH": 1552
+  },
+  {
+    "name": "Basler a2A2048-114g5m",
+    "sensorX": 4.64,
+    "sensorY": 3.49,
+    "pixelUm": 2.25,
+    "pixelW": 2064,
+    "pixelH": 1552
+  },
+  {
+    "name": "Basler a2A2048-114uc",
+    "sensorX": 4.64,
+    "sensorY": 3.49,
+    "pixelUm": 2.25,
+    "pixelW": 2064,
+    "pixelH": 1552
+  },
+  {
+    "name": "Basler a2A2048-114um",
+    "sensorX": 4.64,
+    "sensorY": 3.49,
+    "pixelUm": 2.25,
+    "pixelW": 2064,
+    "pixelH": 1552
+  },
+  {
+    "name": "Basler a2A2048-173cmSWIR",
+    "sensorX": 7.18,
+    "sensorY": 5.33,
+    "pixelUm": 3.45,
+    "pixelW": 2080,
+    "pixelH": 1544
+  },
+  {
+    "name": "Basler a2A2440-98g5c",
     "sensorX": 8.5,
     "sensorY": 7.09,
     "pixelUm": 3.45,
@@ -24,7 +144,71 @@
     "pixelH": 2056
   },
   {
-    "name": "Basler a2A2448-23gcBAS",
+    "name": "Basler a2A2440-98g5m",
+    "sensorX": 8.5,
+    "sensorY": 7.09,
+    "pixelUm": 3.45,
+    "pixelW": 2464,
+    "pixelH": 2056
+  },
+  {
+    "name": "Basler a2A2448-23gc",
+    "sensorX": 6.77,
+    "sensorY": 5.66,
+    "pixelUm": 2.74,
+    "pixelW": 2472,
+    "pixelH": 2064
+  },
+  {
+    "name": "Basler a2A2448-23gm",
+    "sensorX": 6.77,
+    "sensorY": 5.66,
+    "pixelUm": 2.74,
+    "pixelW": 2472,
+    "pixelH": 2064
+  },
+  {
+    "name": "Basler a2A2448-75uc",
+    "sensorX": 6.77,
+    "sensorY": 5.66,
+    "pixelUm": 2.74,
+    "pixelW": 2472,
+    "pixelH": 2064
+  },
+  {
+    "name": "Basler a2A2448-75um",
+    "sensorX": 6.77,
+    "sensorY": 5.66,
+    "pixelUm": 2.74,
+    "pixelW": 2472,
+    "pixelH": 2064
+  },
+  {
+    "name": "Basler a2A2448-105g5c",
+    "sensorX": 6.77,
+    "sensorY": 5.66,
+    "pixelUm": 2.74,
+    "pixelW": 2472,
+    "pixelH": 2064
+  },
+  {
+    "name": "Basler a2A2448-105g5m",
+    "sensorX": 6.77,
+    "sensorY": 5.66,
+    "pixelUm": 2.74,
+    "pixelW": 2472,
+    "pixelH": 2064
+  },
+  {
+    "name": "Basler a2A2448-120cc",
+    "sensorX": 6.77,
+    "sensorY": 5.66,
+    "pixelUm": 2.74,
+    "pixelW": 2472,
+    "pixelH": 2064
+  },
+  {
+    "name": "Basler a2A2448-120cm",
     "sensorX": 6.77,
     "sensorY": 5.66,
     "pixelUm": 2.74,
@@ -40,7 +224,15 @@
     "pixelH": 2064
   },
   {
-    "name": "Basler a2A2464-23gcBAS",
+    "name": "Basler a2A2448-210cm",
+    "sensorX": 6.75,
+    "sensorY": 5.66,
+    "pixelUm": 2.74,
+    "pixelW": 2464,
+    "pixelH": 2064
+  },
+  {
+    "name": "Basler a2A2464-23gc",
     "sensorX": 8.45,
     "sensorY": 7.07,
     "pixelUm": 3.45,
@@ -48,7 +240,71 @@
     "pixelH": 2048
   },
   {
-    "name": "Basler a2A2590-22gcBAS",
+    "name": "Basler a2A2464-23gm",
+    "sensorX": 8.45,
+    "sensorY": 7.07,
+    "pixelUm": 3.45,
+    "pixelW": 2448,
+    "pixelH": 2048
+  },
+  {
+    "name": "Basler a2A2464-77uc",
+    "sensorX": 8.45,
+    "sensorY": 7.07,
+    "pixelUm": 3.45,
+    "pixelW": 2448,
+    "pixelH": 2048
+  },
+  {
+    "name": "Basler a2A2464-77um",
+    "sensorX": 8.45,
+    "sensorY": 7.07,
+    "pixelUm": 3.45,
+    "pixelW": 2448,
+    "pixelH": 2048
+  },
+  {
+    "name": "Basler a2A2464-115g5c",
+    "sensorX": 8.45,
+    "sensorY": 7.07,
+    "pixelUm": 3.45,
+    "pixelW": 2448,
+    "pixelH": 2048
+  },
+  {
+    "name": "Basler a2A2464-115g5m",
+    "sensorX": 8.45,
+    "sensorY": 7.07,
+    "pixelUm": 3.45,
+    "pixelW": 2448,
+    "pixelH": 2048
+  },
+  {
+    "name": "Basler a2A2560-20gmSWIR",
+    "sensorX": 8.94,
+    "sensorY": 7.09,
+    "pixelUm": 3.45,
+    "pixelW": 2592,
+    "pixelH": 2056
+  },
+  {
+    "name": "Basler a2A2560-70umSWIR",
+    "sensorX": 8.94,
+    "sensorY": 7.09,
+    "pixelUm": 3.45,
+    "pixelW": 2592,
+    "pixelH": 2056
+  },
+  {
+    "name": "Basler a2A2560-131cmSWIR",
+    "sensorX": 8.94,
+    "sensorY": 7.09,
+    "pixelUm": 3.45,
+    "pixelW": 2592,
+    "pixelH": 2056
+  },
+  {
+    "name": "Basler a2A2590-22gc",
     "sensorX": 5.22,
     "sensorY": 3.92,
     "pixelUm": 2.0,
@@ -56,7 +312,31 @@
     "pixelH": 1960
   },
   {
-    "name": "Basler a2A2600-20gcBAS",
+    "name": "Basler a2A2590-22gm",
+    "sensorX": 5.22,
+    "sensorY": 3.92,
+    "pixelUm": 2.0,
+    "pixelW": 2612,
+    "pixelH": 1960
+  },
+  {
+    "name": "Basler a2A2590-60uc",
+    "sensorX": 5.22,
+    "sensorY": 3.92,
+    "pixelUm": 2.0,
+    "pixelW": 2612,
+    "pixelH": 1960
+  },
+  {
+    "name": "Basler a2A2590-60um",
+    "sensorX": 5.22,
+    "sensorY": 3.92,
+    "pixelUm": 2.0,
+    "pixelW": 2612,
+    "pixelH": 1960
+  },
+  {
+    "name": "Basler a2A2600-20gc",
     "sensorX": 6.5,
     "sensorY": 5.4,
     "pixelUm": 2.5,
@@ -64,7 +344,31 @@
     "pixelH": 2160
   },
   {
-    "name": "Basler a2A2840-14gcBAS",
+    "name": "Basler a2A2600-20gm",
+    "sensorX": 6.5,
+    "sensorY": 5.4,
+    "pixelUm": 2.5,
+    "pixelW": 2600,
+    "pixelH": 2160
+  },
+  {
+    "name": "Basler a2A2600-64uc",
+    "sensorX": 6.5,
+    "sensorY": 5.4,
+    "pixelUm": 2.5,
+    "pixelW": 2600,
+    "pixelH": 2160
+  },
+  {
+    "name": "Basler a2A2600-64um",
+    "sensorX": 6.5,
+    "sensorY": 5.4,
+    "pixelUm": 2.5,
+    "pixelW": 2600,
+    "pixelH": 2160
+  },
+  {
+    "name": "Basler a2A2840-14gc",
     "sensorX": 7.83,
     "sensorY": 7.8,
     "pixelUm": 2.74,
@@ -72,7 +376,63 @@
     "pixelH": 2848
   },
   {
-    "name": "Basler a2A3536-9gcBAS",
+    "name": "Basler a2A2840-14gm",
+    "sensorX": 7.83,
+    "sensorY": 7.8,
+    "pixelUm": 2.74,
+    "pixelW": 2856,
+    "pixelH": 2848
+  },
+  {
+    "name": "Basler a2A2840-48uc",
+    "sensorX": 7.83,
+    "sensorY": 7.8,
+    "pixelUm": 2.74,
+    "pixelW": 2856,
+    "pixelH": 2848
+  },
+  {
+    "name": "Basler a2A2840-48um",
+    "sensorX": 7.83,
+    "sensorY": 7.8,
+    "pixelUm": 2.74,
+    "pixelW": 2856,
+    "pixelH": 2848
+  },
+  {
+    "name": "Basler a2A2840-67g5c",
+    "sensorX": 7.83,
+    "sensorY": 7.8,
+    "pixelUm": 2.74,
+    "pixelW": 2856,
+    "pixelH": 2848
+  },
+  {
+    "name": "Basler a2A2840-67g5m",
+    "sensorX": 7.83,
+    "sensorY": 7.8,
+    "pixelUm": 2.74,
+    "pixelW": 2856,
+    "pixelH": 2848
+  },
+  {
+    "name": "Basler a2A2840-86cc",
+    "sensorX": 7.83,
+    "sensorY": 7.8,
+    "pixelUm": 2.74,
+    "pixelW": 2856,
+    "pixelH": 2848
+  },
+  {
+    "name": "Basler a2A2840-86cm",
+    "sensorX": 7.83,
+    "sensorY": 7.8,
+    "pixelUm": 2.74,
+    "pixelW": 2856,
+    "pixelH": 2848
+  },
+  {
+    "name": "Basler a2A3536-9gc",
     "sensorX": 7.07,
     "sensorY": 7.1,
     "pixelUm": 2.0,
@@ -80,7 +440,47 @@
     "pixelH": 3552
   },
   {
-    "name": "Basler a2A3840-13gcBAS",
+    "name": "Basler a2A3536-9gm",
+    "sensorX": 7.07,
+    "sensorY": 7.1,
+    "pixelUm": 2.0,
+    "pixelW": 3536,
+    "pixelH": 3552
+  },
+  {
+    "name": "Basler a2A3536-31uc",
+    "sensorX": 7.07,
+    "sensorY": 7.1,
+    "pixelUm": 2.0,
+    "pixelW": 3536,
+    "pixelH": 3552
+  },
+  {
+    "name": "Basler a2A3536-31um",
+    "sensorX": 7.07,
+    "sensorY": 7.1,
+    "pixelUm": 2.0,
+    "pixelW": 3536,
+    "pixelH": 3552
+  },
+  {
+    "name": "Basler a2A3536-42g5c",
+    "sensorX": 7.07,
+    "sensorY": 7.1,
+    "pixelUm": 2.0,
+    "pixelW": 3536,
+    "pixelH": 3552
+  },
+  {
+    "name": "Basler a2A3536-42g5m",
+    "sensorX": 7.07,
+    "sensorY": 7.1,
+    "pixelUm": 2.0,
+    "pixelW": 3536,
+    "pixelH": 3552
+  },
+  {
+    "name": "Basler a2A3840-13gc",
     "sensorX": 7.72,
     "sensorY": 4.36,
     "pixelUm": 2.0,
@@ -88,7 +488,31 @@
     "pixelH": 2178
   },
   {
-    "name": "Basler a2A4096-9gcBAS",
+    "name": "Basler a2A3840-13gm",
+    "sensorX": 7.72,
+    "sensorY": 4.36,
+    "pixelUm": 2.0,
+    "pixelW": 3860,
+    "pixelH": 2178
+  },
+  {
+    "name": "Basler a2A3840-45uc",
+    "sensorX": 7.72,
+    "sensorY": 4.36,
+    "pixelUm": 2.0,
+    "pixelW": 3860,
+    "pixelH": 2178
+  },
+  {
+    "name": "Basler a2A3840-45um",
+    "sensorX": 7.72,
+    "sensorY": 4.36,
+    "pixelUm": 2.0,
+    "pixelW": 3860,
+    "pixelH": 2178
+  },
+  {
+    "name": "Basler a2A4096-9gc",
     "sensorX": 11.31,
     "sensorY": 8.24,
     "pixelUm": 2.74,
@@ -96,7 +520,63 @@
     "pixelH": 3008
   },
   {
-    "name": "Basler a2A4200-12gcBAS",
+    "name": "Basler a2A4096-9gm",
+    "sensorX": 11.31,
+    "sensorY": 8.24,
+    "pixelUm": 2.74,
+    "pixelW": 4128,
+    "pixelH": 3008
+  },
+  {
+    "name": "Basler a2A4096-30uc",
+    "sensorX": 11.31,
+    "sensorY": 8.24,
+    "pixelUm": 2.74,
+    "pixelW": 4128,
+    "pixelH": 3008
+  },
+  {
+    "name": "Basler a2A4096-30um",
+    "sensorX": 11.31,
+    "sensorY": 8.24,
+    "pixelUm": 2.74,
+    "pixelW": 4128,
+    "pixelH": 3008
+  },
+  {
+    "name": "Basler a2A4096-44g5c",
+    "sensorX": 11.31,
+    "sensorY": 8.24,
+    "pixelUm": 2.74,
+    "pixelW": 4128,
+    "pixelH": 3008
+  },
+  {
+    "name": "Basler a2A4096-44g5m",
+    "sensorX": 11.31,
+    "sensorY": 8.24,
+    "pixelUm": 2.74,
+    "pixelW": 4128,
+    "pixelH": 3008
+  },
+  {
+    "name": "Basler a2A4096-67cc",
+    "sensorX": 11.31,
+    "sensorY": 8.24,
+    "pixelUm": 2.74,
+    "pixelW": 4128,
+    "pixelH": 3008
+  },
+  {
+    "name": "Basler a2A4096-67cm",
+    "sensorX": 11.31,
+    "sensorY": 8.24,
+    "pixelUm": 2.74,
+    "pixelW": 4128,
+    "pixelH": 3008
+  },
+  {
+    "name": "Basler a2A4200-12gc",
     "sensorX": 10.5,
     "sensorY": 5.4,
     "pixelUm": 2.5,
@@ -104,7 +584,31 @@
     "pixelH": 2160
   },
   {
-    "name": "Basler a2A4504-5gcBAS",
+    "name": "Basler a2A4200-12gm",
+    "sensorX": 10.5,
+    "sensorY": 5.4,
+    "pixelUm": 2.5,
+    "pixelW": 4200,
+    "pixelH": 2160
+  },
+  {
+    "name": "Basler a2A4200-40uc",
+    "sensorX": 10.5,
+    "sensorY": 5.4,
+    "pixelUm": 2.5,
+    "pixelW": 4200,
+    "pixelH": 2160
+  },
+  {
+    "name": "Basler a2A4200-40um",
+    "sensorX": 10.5,
+    "sensorY": 5.4,
+    "pixelUm": 2.5,
+    "pixelW": 4200,
+    "pixelH": 2160
+  },
+  {
+    "name": "Basler a2A4504-5gc",
     "sensorX": 12.36,
     "sensorY": 12.36,
     "pixelUm": 2.74,
@@ -112,7 +616,63 @@
     "pixelH": 4512
   },
   {
-    "name": "Basler a2A4508-6gcBAS",
+    "name": "Basler a2A4504-5gm",
+    "sensorX": 12.36,
+    "sensorY": 12.36,
+    "pixelUm": 2.74,
+    "pixelW": 4512,
+    "pixelH": 4512
+  },
+  {
+    "name": "Basler a2A4504-18uc",
+    "sensorX": 12.36,
+    "sensorY": 12.36,
+    "pixelUm": 2.74,
+    "pixelW": 4512,
+    "pixelH": 4512
+  },
+  {
+    "name": "Basler a2A4504-18um",
+    "sensorX": 12.36,
+    "sensorY": 12.36,
+    "pixelUm": 2.74,
+    "pixelW": 4512,
+    "pixelH": 4512
+  },
+  {
+    "name": "Basler a2A4504-27g5c",
+    "sensorX": 12.36,
+    "sensorY": 12.36,
+    "pixelUm": 2.74,
+    "pixelW": 4512,
+    "pixelH": 4512
+  },
+  {
+    "name": "Basler a2A4504-27g5m",
+    "sensorX": 12.36,
+    "sensorY": 12.36,
+    "pixelUm": 2.74,
+    "pixelW": 4512,
+    "pixelH": 4512
+  },
+  {
+    "name": "Basler a2A4504-42cc",
+    "sensorX": 12.36,
+    "sensorY": 12.36,
+    "pixelUm": 2.74,
+    "pixelW": 4512,
+    "pixelH": 4512
+  },
+  {
+    "name": "Basler a2A4504-42cm",
+    "sensorX": 12.36,
+    "sensorY": 12.36,
+    "pixelUm": 2.74,
+    "pixelW": 4512,
+    "pixelH": 4512
+  },
+  {
+    "name": "Basler a2A4508-6gc",
     "sensorX": 11.27,
     "sensorY": 10.24,
     "pixelUm": 2.5,
@@ -120,7 +680,31 @@
     "pixelH": 4096
   },
   {
-    "name": "Basler a2A5060-4gcBAS",
+    "name": "Basler a2A4508-6gm",
+    "sensorX": 11.27,
+    "sensorY": 10.24,
+    "pixelUm": 2.5,
+    "pixelW": 4508,
+    "pixelH": 4096
+  },
+  {
+    "name": "Basler a2A4508-20uc",
+    "sensorX": 11.27,
+    "sensorY": 10.24,
+    "pixelUm": 2.5,
+    "pixelW": 4508,
+    "pixelH": 4096
+  },
+  {
+    "name": "Basler a2A4508-20um",
+    "sensorX": 11.27,
+    "sensorY": 10.24,
+    "pixelUm": 2.5,
+    "pixelW": 4508,
+    "pixelH": 4096
+  },
+  {
+    "name": "Basler a2A5060-4gc",
     "sensorX": 12.67,
     "sensorY": 12.67,
     "pixelUm": 2.5,
@@ -128,7 +712,31 @@
     "pixelH": 5068
   },
   {
-    "name": "Basler a2A5060-21g5cBAS",
+    "name": "Basler a2A5060-4gm",
+    "sensorX": 12.67,
+    "sensorY": 12.67,
+    "pixelUm": 2.5,
+    "pixelW": 5068,
+    "pixelH": 5068
+  },
+  {
+    "name": "Basler a2A5060-15uc",
+    "sensorX": 12.67,
+    "sensorY": 12.67,
+    "pixelUm": 2.5,
+    "pixelW": 5068,
+    "pixelH": 5068
+  },
+  {
+    "name": "Basler a2A5060-15um",
+    "sensorX": 12.67,
+    "sensorY": 12.67,
+    "pixelUm": 2.5,
+    "pixelW": 5068,
+    "pixelH": 5068
+  },
+  {
+    "name": "Basler a2A5060-21g5c",
     "sensorX": 12.66,
     "sensorY": 12.67,
     "pixelUm": 2.5,
@@ -136,7 +744,31 @@
     "pixelH": 5068
   },
   {
-    "name": "Basler a2A5320-7gcBAS",
+    "name": "Basler a2A5060-21g5m",
+    "sensorX": 12.66,
+    "sensorY": 12.67,
+    "pixelUm": 2.5,
+    "pixelW": 5064,
+    "pixelH": 5068
+  },
+  {
+    "name": "Basler a2A5060-35cc",
+    "sensorX": 12.66,
+    "sensorY": 12.67,
+    "pixelUm": 2.5,
+    "pixelW": 5064,
+    "pixelH": 5068
+  },
+  {
+    "name": "Basler a2A5060-35cm",
+    "sensorX": 12.66,
+    "sensorY": 12.67,
+    "pixelUm": 2.5,
+    "pixelW": 5064,
+    "pixelH": 5068
+  },
+  {
+    "name": "Basler a2A5320-7gc",
     "sensorX": 14.6,
     "sensorY": 8.33,
     "pixelUm": 2.74,
@@ -144,7 +776,119 @@
     "pixelH": 3040
   },
   {
-    "name": "Basler a2A5328-4gcBAS",
+    "name": "Basler a2A5320-7gm",
+    "sensorX": 14.6,
+    "sensorY": 8.33,
+    "pixelUm": 2.74,
+    "pixelW": 5328,
+    "pixelH": 3040
+  },
+  {
+    "name": "Basler a2A5320-23uc",
+    "sensorX": 14.6,
+    "sensorY": 8.33,
+    "pixelUm": 2.74,
+    "pixelW": 5328,
+    "pixelH": 3040
+  },
+  {
+    "name": "Basler a2A5320-23um",
+    "sensorX": 14.6,
+    "sensorY": 8.33,
+    "pixelUm": 2.74,
+    "pixelW": 5328,
+    "pixelH": 3040
+  },
+  {
+    "name": "Basler a2A5320-34g5c",
+    "sensorX": 14.6,
+    "sensorY": 8.33,
+    "pixelUm": 2.74,
+    "pixelW": 5328,
+    "pixelH": 3040
+  },
+  {
+    "name": "Basler a2A5320-34g5m",
+    "sensorX": 14.6,
+    "sensorY": 8.33,
+    "pixelUm": 2.74,
+    "pixelW": 5328,
+    "pixelH": 3040
+  },
+  {
+    "name": "Basler a2A5320-52cc",
+    "sensorX": 14.6,
+    "sensorY": 8.33,
+    "pixelUm": 2.74,
+    "pixelW": 5328,
+    "pixelH": 3040
+  },
+  {
+    "name": "Basler a2A5320-52cm",
+    "sensorX": 14.6,
+    "sensorY": 8.33,
+    "pixelUm": 2.74,
+    "pixelW": 5328,
+    "pixelH": 3040
+  },
+  {
+    "name": "Basler a2A5328-4gc",
+    "sensorX": 14.6,
+    "sensorY": 12.63,
+    "pixelUm": 2.74,
+    "pixelW": 5328,
+    "pixelH": 4608
+  },
+  {
+    "name": "Basler a2A5328-4gm",
+    "sensorX": 14.6,
+    "sensorY": 12.63,
+    "pixelUm": 2.74,
+    "pixelW": 5328,
+    "pixelH": 4608
+  },
+  {
+    "name": "Basler a2A5328-15uc",
+    "sensorX": 14.6,
+    "sensorY": 12.63,
+    "pixelUm": 2.74,
+    "pixelW": 5328,
+    "pixelH": 4608
+  },
+  {
+    "name": "Basler a2A5328-15um",
+    "sensorX": 14.6,
+    "sensorY": 12.63,
+    "pixelUm": 2.74,
+    "pixelW": 5328,
+    "pixelH": 4608
+  },
+  {
+    "name": "Basler a2A5328-22g5c",
+    "sensorX": 14.6,
+    "sensorY": 12.63,
+    "pixelUm": 2.74,
+    "pixelW": 5328,
+    "pixelH": 4608
+  },
+  {
+    "name": "Basler a2A5328-22g5m",
+    "sensorX": 14.6,
+    "sensorY": 12.63,
+    "pixelUm": 2.74,
+    "pixelW": 5328,
+    "pixelH": 4608
+  },
+  {
+    "name": "Basler a2A5328-35cc",
+    "sensorX": 14.6,
+    "sensorY": 12.63,
+    "pixelUm": 2.74,
+    "pixelW": 5328,
+    "pixelH": 4608
+  },
+  {
+    "name": "Basler a2A5328-35cm",
     "sensorX": 14.6,
     "sensorY": 12.63,
     "pixelUm": 2.74,
@@ -168,6 +912,30 @@
     "pixelH": 512
   },
   {
+    "name": "Basler acA640-300gm",
+    "sensorX": 3.23,
+    "sensorY": 2.46,
+    "pixelUm": 4.8,
+    "pixelW": 672,
+    "pixelH": 512
+  },
+  {
+    "name": "Basler acA640-750uc",
+    "sensorX": 3.23,
+    "sensorY": 2.46,
+    "pixelUm": 4.8,
+    "pixelW": 672,
+    "pixelH": 512
+  },
+  {
+    "name": "Basler acA640-750um",
+    "sensorX": 3.23,
+    "sensorY": 2.46,
+    "pixelUm": 4.8,
+    "pixelW": 672,
+    "pixelH": 512
+  },
+  {
     "name": "Basler acA720-290gc",
     "sensorX": 5.02,
     "sensorY": 3.75,
@@ -176,7 +944,55 @@
     "pixelH": 544
   },
   {
+    "name": "Basler acA720-290gm",
+    "sensorX": 5.02,
+    "sensorY": 3.75,
+    "pixelUm": 6.9,
+    "pixelW": 728,
+    "pixelH": 544
+  },
+  {
+    "name": "Basler acA720-520uc",
+    "sensorX": 5.02,
+    "sensorY": 3.75,
+    "pixelUm": 6.9,
+    "pixelW": 728,
+    "pixelH": 544
+  },
+  {
+    "name": "Basler acA720-520um",
+    "sensorX": 5.02,
+    "sensorY": 3.75,
+    "pixelUm": 6.9,
+    "pixelW": 728,
+    "pixelH": 544
+  },
+  {
     "name": "Basler acA800-200gc",
+    "sensorX": 3.99,
+    "sensorY": 3.03,
+    "pixelUm": 4.8,
+    "pixelW": 832,
+    "pixelH": 632
+  },
+  {
+    "name": "Basler acA800-200gm",
+    "sensorX": 3.99,
+    "sensorY": 3.03,
+    "pixelUm": 4.8,
+    "pixelW": 832,
+    "pixelH": 632
+  },
+  {
+    "name": "Basler acA800-510uc",
+    "sensorX": 3.99,
+    "sensorY": 3.03,
+    "pixelUm": 4.8,
+    "pixelW": 832,
+    "pixelH": 632
+  },
+  {
+    "name": "Basler acA800-510um",
     "sensorX": 3.99,
     "sensorY": 3.03,
     "pixelUm": 4.8,
@@ -200,6 +1016,22 @@
     "pixelH": 1026
   },
   {
+    "name": "Basler acA1300-60gc",
+    "sensorX": 6.78,
+    "sensorY": 5.43,
+    "pixelUm": 5.3,
+    "pixelW": 1280,
+    "pixelH": 1024
+  },
+  {
+    "name": "Basler acA1300-60gm",
+    "sensorX": 6.79,
+    "sensorY": 5.44,
+    "pixelUm": 5.3,
+    "pixelW": 1282,
+    "pixelH": 1026
+  },
+  {
     "name": "Basler acA1300-75gc",
     "sensorX": 6.14,
     "sensorY": 4.92,
@@ -208,7 +1040,55 @@
     "pixelH": 1024
   },
   {
+    "name": "Basler acA1300-75gm",
+    "sensorX": 6.14,
+    "sensorY": 4.92,
+    "pixelUm": 4.8,
+    "pixelW": 1280,
+    "pixelH": 1024
+  },
+  {
+    "name": "Basler acA1300-200uc",
+    "sensorX": 6.14,
+    "sensorY": 4.92,
+    "pixelUm": 4.8,
+    "pixelW": 1280,
+    "pixelH": 1024
+  },
+  {
+    "name": "Basler acA1300-200um",
+    "sensorX": 6.14,
+    "sensorY": 4.92,
+    "pixelUm": 4.8,
+    "pixelW": 1280,
+    "pixelH": 1024
+  },
+  {
     "name": "Basler acA1440-73gc",
+    "sensorX": 5.02,
+    "sensorY": 3.75,
+    "pixelUm": 3.45,
+    "pixelW": 1456,
+    "pixelH": 1088
+  },
+  {
+    "name": "Basler acA1440-73gm",
+    "sensorX": 5.02,
+    "sensorY": 3.75,
+    "pixelUm": 3.45,
+    "pixelW": 1456,
+    "pixelH": 1088
+  },
+  {
+    "name": "Basler acA1440-220uc",
+    "sensorX": 5.02,
+    "sensorY": 3.75,
+    "pixelUm": 3.45,
+    "pixelW": 1456,
+    "pixelH": 1088
+  },
+  {
+    "name": "Basler acA1440-220um",
     "sensorX": 5.02,
     "sensorY": 3.75,
     "pixelUm": 3.45,
@@ -240,7 +1120,55 @@
     "pixelH": 1080
   },
   {
+    "name": "Basler acA1920-25gm",
+    "sensorX": 4.22,
+    "sensorY": 2.38,
+    "pixelUm": 2.2,
+    "pixelW": 1920,
+    "pixelH": 1080
+  },
+  {
+    "name": "Basler acA1920-25uc",
+    "sensorX": 4.22,
+    "sensorY": 2.38,
+    "pixelUm": 2.2,
+    "pixelW": 1920,
+    "pixelH": 1080
+  },
+  {
+    "name": "Basler acA1920-25um",
+    "sensorX": 4.22,
+    "sensorY": 2.38,
+    "pixelUm": 2.2,
+    "pixelW": 1920,
+    "pixelH": 1080
+  },
+  {
     "name": "Basler acA1920-40gc",
+    "sensorX": 11.34,
+    "sensorY": 7.13,
+    "pixelUm": 5.86,
+    "pixelW": 1936,
+    "pixelH": 1216
+  },
+  {
+    "name": "Basler acA1920-40gm",
+    "sensorX": 11.34,
+    "sensorY": 7.13,
+    "pixelUm": 5.86,
+    "pixelW": 1936,
+    "pixelH": 1216
+  },
+  {
+    "name": "Basler acA1920-40uc",
+    "sensorX": 11.34,
+    "sensorY": 7.13,
+    "pixelUm": 5.86,
+    "pixelW": 1936,
+    "pixelH": 1216
+  },
+  {
+    "name": "Basler acA1920-40um",
     "sensorX": 11.34,
     "sensorY": 7.13,
     "pixelUm": 5.86,
@@ -254,6 +1182,62 @@
     "pixelUm": 4.8,
     "pixelW": 1984,
     "pixelH": 1264
+  },
+  {
+    "name": "Basler acA1920-48gm",
+    "sensorX": 9.52,
+    "sensorY": 6.07,
+    "pixelUm": 4.8,
+    "pixelW": 1984,
+    "pixelH": 1264
+  },
+  {
+    "name": "Basler acA1920-50gc",
+    "sensorX": 11.34,
+    "sensorY": 7.13,
+    "pixelUm": 5.86,
+    "pixelW": 1936,
+    "pixelH": 1216
+  },
+  {
+    "name": "Basler acA1920-50gm",
+    "sensorX": 11.34,
+    "sensorY": 7.13,
+    "pixelUm": 5.86,
+    "pixelW": 1936,
+    "pixelH": 1216
+  },
+  {
+    "name": "Basler acA1920-150uc",
+    "sensorX": 9.52,
+    "sensorY": 6.07,
+    "pixelUm": 4.8,
+    "pixelW": 1984,
+    "pixelH": 1264
+  },
+  {
+    "name": "Basler acA1920-150um",
+    "sensorX": 9.52,
+    "sensorY": 6.07,
+    "pixelUm": 4.8,
+    "pixelW": 1984,
+    "pixelH": 1264
+  },
+  {
+    "name": "Basler acA1920-155uc",
+    "sensorX": 11.34,
+    "sensorY": 7.13,
+    "pixelUm": 5.86,
+    "pixelW": 1936,
+    "pixelH": 1216
+  },
+  {
+    "name": "Basler acA1920-155um",
+    "sensorX": 11.34,
+    "sensorY": 7.13,
+    "pixelUm": 5.86,
+    "pixelW": 1936,
+    "pixelH": 1216
   },
   {
     "name": "Basler acA2000-50gc",
@@ -280,6 +1264,14 @@
     "pixelH": 1086
   },
   {
+    "name": "Basler acA2000-165um",
+    "sensorX": 11.26,
+    "sensorY": 5.98,
+    "pixelUm": 5.5,
+    "pixelW": 2048,
+    "pixelH": 1088
+  },
+  {
     "name": "Basler acA2040-25gc",
     "sensorX": 11.25,
     "sensorY": 11.25,
@@ -304,6 +1296,30 @@
     "pixelH": 1544
   },
   {
+    "name": "Basler acA2040-35gm",
+    "sensorX": 7.12,
+    "sensorY": 5.33,
+    "pixelUm": 3.45,
+    "pixelW": 2064,
+    "pixelH": 1544
+  },
+  {
+    "name": "Basler acA2040-55uc",
+    "sensorX": 7.12,
+    "sensorY": 5.33,
+    "pixelUm": 3.45,
+    "pixelW": 2064,
+    "pixelH": 1544
+  },
+  {
+    "name": "Basler acA2040-55um",
+    "sensorX": 7.12,
+    "sensorY": 5.33,
+    "pixelUm": 3.45,
+    "pixelW": 2064,
+    "pixelH": 1544
+  },
+  {
     "name": "Basler acA2040-90uc",
     "sensorX": 11.22,
     "sensorY": 11.25,
@@ -312,7 +1328,87 @@
     "pixelH": 2046
   },
   {
+    "name": "Basler acA2040-90um",
+    "sensorX": 11.26,
+    "sensorY": 11.26,
+    "pixelUm": 5.5,
+    "pixelW": 2048,
+    "pixelH": 2048
+  },
+  {
+    "name": "Basler acA2040-120uc",
+    "sensorX": 7.12,
+    "sensorY": 5.33,
+    "pixelUm": 3.45,
+    "pixelW": 2064,
+    "pixelH": 1544
+  },
+  {
+    "name": "Basler acA2040-120um",
+    "sensorX": 7.12,
+    "sensorY": 5.33,
+    "pixelUm": 3.45,
+    "pixelW": 2064,
+    "pixelH": 1544
+  },
+  {
+    "name": "Basler acA2440-20gc",
+    "sensorX": 8.5,
+    "sensorY": 7.09,
+    "pixelUm": 3.45,
+    "pixelW": 2464,
+    "pixelH": 2056
+  },
+  {
+    "name": "Basler acA2440-20gm",
+    "sensorX": 8.5,
+    "sensorY": 7.09,
+    "pixelUm": 3.45,
+    "pixelW": 2464,
+    "pixelH": 2056
+  },
+  {
+    "name": "Basler acA2440-35uc",
+    "sensorX": 8.5,
+    "sensorY": 7.09,
+    "pixelUm": 3.45,
+    "pixelW": 2464,
+    "pixelH": 2056
+  },
+  {
+    "name": "Basler acA2440-35um",
+    "sensorX": 8.5,
+    "sensorY": 7.09,
+    "pixelUm": 3.45,
+    "pixelW": 2464,
+    "pixelH": 2056
+  },
+  {
+    "name": "Basler acA2440-75uc",
+    "sensorX": 8.5,
+    "sensorY": 7.09,
+    "pixelUm": 3.45,
+    "pixelW": 2464,
+    "pixelH": 2056
+  },
+  {
+    "name": "Basler acA2440-75um",
+    "sensorX": 8.5,
+    "sensorY": 7.09,
+    "pixelUm": 3.45,
+    "pixelW": 2464,
+    "pixelH": 2056
+  },
+  {
     "name": "Basler acA2500-14gc",
+    "sensorX": 5.7,
+    "sensorY": 4.27,
+    "pixelUm": 2.2,
+    "pixelW": 2592,
+    "pixelH": 1942
+  },
+  {
+    "name": "Basler acA2500-14gm",
     "sensorX": 5.7,
     "sensorY": 4.27,
     "pixelUm": 2.2,
@@ -344,7 +1440,55 @@
     "pixelH": 2048
   },
   {
+    "name": "Basler acA2500-20gm",
+    "sensorX": 12.44,
+    "sensorY": 9.83,
+    "pixelUm": 4.8,
+    "pixelW": 2592,
+    "pixelH": 2048
+  },
+  {
+    "name": "Basler acA2500-60uc",
+    "sensorX": 12.44,
+    "sensorY": 9.83,
+    "pixelUm": 4.8,
+    "pixelW": 2592,
+    "pixelH": 2048
+  },
+  {
+    "name": "Basler acA2500-60um",
+    "sensorX": 12.44,
+    "sensorY": 9.83,
+    "pixelUm": 4.8,
+    "pixelW": 2592,
+    "pixelH": 2048
+  },
+  {
     "name": "Basler acA3088-16gc",
+    "sensorX": 7.41,
+    "sensorY": 4.95,
+    "pixelUm": 2.4,
+    "pixelW": 3088,
+    "pixelH": 2064
+  },
+  {
+    "name": "Basler acA3088-16gm",
+    "sensorX": 7.41,
+    "sensorY": 4.95,
+    "pixelUm": 2.4,
+    "pixelW": 3088,
+    "pixelH": 2064
+  },
+  {
+    "name": "Basler acA3088-57uc",
+    "sensorX": 7.41,
+    "sensorY": 4.95,
+    "pixelUm": 2.4,
+    "pixelW": 3088,
+    "pixelH": 2064
+  },
+  {
+    "name": "Basler acA3088-57um",
     "sensorX": 7.41,
     "sensorY": 4.95,
     "pixelUm": 2.4,
@@ -360,7 +1504,55 @@
     "pixelH": 2748
   },
   {
+    "name": "Basler acA3800-10gm",
+    "sensorX": 6.41,
+    "sensorY": 4.59,
+    "pixelUm": 1.67,
+    "pixelW": 3840,
+    "pixelH": 2748
+  },
+  {
+    "name": "Basler acA3800-14uc",
+    "sensorX": 6.41,
+    "sensorY": 4.59,
+    "pixelUm": 1.67,
+    "pixelW": 3840,
+    "pixelH": 2748
+  },
+  {
+    "name": "Basler acA3800-14um",
+    "sensorX": 6.41,
+    "sensorY": 4.59,
+    "pixelUm": 1.67,
+    "pixelW": 3840,
+    "pixelH": 2748
+  },
+  {
     "name": "Basler acA4024-8gc",
+    "sensorX": 7.44,
+    "sensorY": 5.62,
+    "pixelUm": 1.85,
+    "pixelW": 4024,
+    "pixelH": 3036
+  },
+  {
+    "name": "Basler acA4024-8gm",
+    "sensorX": 7.44,
+    "sensorY": 5.62,
+    "pixelUm": 1.85,
+    "pixelW": 4024,
+    "pixelH": 3036
+  },
+  {
+    "name": "Basler acA4024-29uc",
+    "sensorX": 7.44,
+    "sensorY": 5.62,
+    "pixelUm": 1.85,
+    "pixelW": 4024,
+    "pixelH": 3036
+  },
+  {
+    "name": "Basler acA4024-29um",
     "sensorX": 7.44,
     "sensorY": 5.62,
     "pixelUm": 1.85,
@@ -376,7 +1568,87 @@
     "pixelH": 2176
   },
   {
+    "name": "Basler acA4096-11gm",
+    "sensorX": 14.19,
+    "sensorY": 7.51,
+    "pixelUm": 3.45,
+    "pixelW": 4112,
+    "pixelH": 2176
+  },
+  {
+    "name": "Basler acA4096-30uc",
+    "sensorX": 14.19,
+    "sensorY": 7.51,
+    "pixelUm": 3.45,
+    "pixelW": 4112,
+    "pixelH": 2176
+  },
+  {
+    "name": "Basler acA4096-30um",
+    "sensorX": 14.19,
+    "sensorY": 7.51,
+    "pixelUm": 3.45,
+    "pixelW": 4112,
+    "pixelH": 2176
+  },
+  {
+    "name": "Basler acA4096-40uc",
+    "sensorX": 14.19,
+    "sensorY": 7.51,
+    "pixelUm": 3.45,
+    "pixelW": 4112,
+    "pixelH": 2176
+  },
+  {
+    "name": "Basler acA4096-40um",
+    "sensorX": 14.19,
+    "sensorY": 7.51,
+    "pixelUm": 3.45,
+    "pixelW": 4112,
+    "pixelH": 2176
+  },
+  {
     "name": "Basler acA4112-8gc",
+    "sensorX": 14.19,
+    "sensorY": 10.38,
+    "pixelUm": 3.45,
+    "pixelW": 4112,
+    "pixelH": 3008
+  },
+  {
+    "name": "Basler acA4112-8gm",
+    "sensorX": 14.19,
+    "sensorY": 10.38,
+    "pixelUm": 3.45,
+    "pixelW": 4112,
+    "pixelH": 3008
+  },
+  {
+    "name": "Basler acA4112-20uc",
+    "sensorX": 14.19,
+    "sensorY": 10.38,
+    "pixelUm": 3.45,
+    "pixelW": 4112,
+    "pixelH": 3008
+  },
+  {
+    "name": "Basler acA4112-20um",
+    "sensorX": 14.19,
+    "sensorY": 10.38,
+    "pixelUm": 3.45,
+    "pixelW": 4112,
+    "pixelH": 3008
+  },
+  {
+    "name": "Basler acA4112-30uc",
+    "sensorX": 14.19,
+    "sensorY": 10.38,
+    "pixelUm": 3.45,
+    "pixelW": 4112,
+    "pixelH": 3008
+  },
+  {
+    "name": "Basler acA4112-30um",
     "sensorX": 14.19,
     "sensorY": 10.38,
     "pixelUm": 3.45,
@@ -392,12 +1664,60 @@
     "pixelH": 3672
   },
   {
+    "name": "Basler acA5472-5gm",
+    "sensorX": 13.19,
+    "sensorY": 8.81,
+    "pixelUm": 2.4,
+    "pixelW": 5496,
+    "pixelH": 3672
+  },
+  {
+    "name": "Basler acA5472-17uc",
+    "sensorX": 13.19,
+    "sensorY": 8.81,
+    "pixelUm": 2.4,
+    "pixelW": 5496,
+    "pixelH": 3672
+  },
+  {
+    "name": "Basler acA5472-17um",
+    "sensorX": 13.19,
+    "sensorY": 8.81,
+    "pixelUm": 2.4,
+    "pixelW": 5496,
+    "pixelH": 3672
+  },
+  {
     "name": "Basler boA1936-400cc",
     "sensorX": 8.71,
     "sensorY": 6.62,
     "pixelUm": 4.5,
     "pixelW": 1936,
     "pixelH": 1472
+  },
+  {
+    "name": "Basler boA1936-400cm",
+    "sensorX": 8.71,
+    "sensorY": 6.62,
+    "pixelUm": 4.5,
+    "pixelW": 1936,
+    "pixelH": 1472
+  },
+  {
+    "name": "Basler boA2448-250cc",
+    "sensorX": 6.75,
+    "sensorY": 5.66,
+    "pixelUm": 2.74,
+    "pixelW": 2464,
+    "pixelH": 2064
+  },
+  {
+    "name": "Basler boA2448-250cm",
+    "sensorX": 6.75,
+    "sensorY": 5.66,
+    "pixelUm": 2.74,
+    "pixelW": 2464,
+    "pixelH": 2064
   },
   {
     "name": "Basler boA2832-190cc",
@@ -408,6 +1728,62 @@
     "pixelH": 2848
   },
   {
+    "name": "Basler boA2832-190cm",
+    "sensorX": 7.8,
+    "sensorY": 7.8,
+    "pixelUm": 2.74,
+    "pixelW": 2848,
+    "pixelH": 2848
+  },
+  {
+    "name": "Basler boA4096-93cc",
+    "sensorX": 14.19,
+    "sensorY": 7.51,
+    "pixelUm": 3.45,
+    "pixelW": 4112,
+    "pixelH": 2176
+  },
+  {
+    "name": "Basler boA4096-93cm",
+    "sensorX": 14.19,
+    "sensorY": 7.51,
+    "pixelUm": 3.45,
+    "pixelW": 4112,
+    "pixelH": 2176
+  },
+  {
+    "name": "Basler boA4096-180cc",
+    "sensorX": 11.31,
+    "sensorY": 8.24,
+    "pixelUm": 2.74,
+    "pixelW": 4128,
+    "pixelH": 3008
+  },
+  {
+    "name": "Basler boA4096-180cm",
+    "sensorX": 11.31,
+    "sensorY": 8.24,
+    "pixelUm": 2.74,
+    "pixelW": 4128,
+    "pixelH": 3008
+  },
+  {
+    "name": "Basler boA4112-68cc",
+    "sensorX": 14.19,
+    "sensorY": 10.38,
+    "pixelUm": 3.45,
+    "pixelW": 4112,
+    "pixelH": 3008
+  },
+  {
+    "name": "Basler boA4112-68cm",
+    "sensorX": 14.19,
+    "sensorY": 10.38,
+    "pixelUm": 3.45,
+    "pixelW": 4112,
+    "pixelH": 3008
+  },
+  {
     "name": "Basler boA4500-45cc",
     "sensorX": 14.23,
     "sensorY": 14.23,
@@ -416,7 +1792,39 @@
     "pixelH": 4448
   },
   {
+    "name": "Basler boA4500-45cm",
+    "sensorX": 14.23,
+    "sensorY": 14.23,
+    "pixelUm": 3.2,
+    "pixelW": 4448,
+    "pixelH": 4448
+  },
+  {
+    "name": "Basler boA4504-100cc",
+    "sensorX": 12.36,
+    "sensorY": 12.36,
+    "pixelUm": 2.74,
+    "pixelW": 4512,
+    "pixelH": 4512
+  },
+  {
+    "name": "Basler boA4504-100cm",
+    "sensorX": 12.36,
+    "sensorY": 12.36,
+    "pixelUm": 2.74,
+    "pixelW": 4512,
+    "pixelH": 4512
+  },
+  {
     "name": "Basler boA5320-150cc",
+    "sensorX": 14.47,
+    "sensorY": 8.33,
+    "pixelUm": 2.74,
+    "pixelW": 5280,
+    "pixelH": 3040
+  },
+  {
+    "name": "Basler boA5320-150cm",
     "sensorX": 14.47,
     "sensorY": 8.33,
     "pixelUm": 2.74,
@@ -432,7 +1840,23 @@
     "pixelH": 4608
   },
   {
+    "name": "Basler boA5328-100cm",
+    "sensorX": 14.47,
+    "sensorY": 12.63,
+    "pixelUm": 2.74,
+    "pixelW": 5280,
+    "pixelH": 4608
+  },
+  {
     "name": "Basler boA6500-36cc",
+    "sensorX": 20.99,
+    "sensorY": 15.83,
+    "pixelUm": 3.2,
+    "pixelW": 6560,
+    "pixelH": 4948
+  },
+  {
+    "name": "Basler boA6500-36cm",
     "sensorX": 20.99,
     "sensorY": 15.83,
     "pixelUm": 3.2,
@@ -448,12 +1872,36 @@
     "pixelH": 5468
   },
   {
+    "name": "Basler boA8100-16cm",
+    "sensorX": 26.21,
+    "sensorY": 17.5,
+    "pixelUm": 3.2,
+    "pixelW": 8192,
+    "pixelH": 5468
+  },
+  {
     "name": "Basler boA13440-17cm",
     "sensorX": 46.15,
     "sensorY": 32.87,
     "pixelUm": 3.45,
     "pixelW": 13376,
     "pixelH": 9528
+  },
+  {
+    "name": "Basler daA720-520uc",
+    "sensorX": 5.02,
+    "sensorY": 3.75,
+    "pixelUm": 6.9,
+    "pixelW": 728,
+    "pixelH": 544
+  },
+  {
+    "name": "Basler daA720-520um",
+    "sensorX": 5.02,
+    "sensorY": 3.75,
+    "pixelUm": 6.9,
+    "pixelW": 728,
+    "pixelH": 544
   },
   {
     "name": "Basler daA1280-54uc",
@@ -464,27 +1912,435 @@
     "pixelH": 960
   },
   {
-    "name": "IMX174 (2/3\")",
-    "sensorX": 13.13,
-    "sensorY": 8.76,
-    "pixelUm": 5.86,
-    "pixelW": 2240,
-    "pixelH": 1494
+    "name": "Basler daA1280-54um",
+    "sensorX": 4.8,
+    "sensorY": 3.6,
+    "pixelUm": 3.75,
+    "pixelW": 1280,
+    "pixelH": 960
   },
   {
-    "name": "IMX250 (2/3\")",
-    "sensorX": 8.45,
-    "sensorY": 7.07,
+    "name": "Basler daA1440-220uc",
+    "sensorX": 5.02,
+    "sensorY": 3.75,
     "pixelUm": 3.45,
-    "pixelW": 2448,
-    "pixelH": 2048
+    "pixelW": 1456,
+    "pixelH": 1088
   },
   {
-    "name": "IMX265 (1/1.8\")",
-    "sensorX": 6.6,
-    "sensorY": 4.95,
+    "name": "Basler daA1440-220um",
+    "sensorX": 5.02,
+    "sensorY": 3.75,
     "pixelUm": 3.45,
+    "pixelW": 1456,
+    "pixelH": 1088
+  },
+  {
+    "name": "Basler daA1600-60uc",
+    "sensorX": 7.2,
+    "sensorY": 5.4,
+    "pixelUm": 4.5,
+    "pixelW": 1600,
+    "pixelH": 1200
+  },
+  {
+    "name": "Basler daA1600-60um",
+    "sensorX": 7.2,
+    "sensorY": 5.4,
+    "pixelUm": 4.5,
+    "pixelW": 1600,
+    "pixelH": 1200
+  },
+  {
+    "name": "Basler daA1920-15um",
+    "sensorX": 4.22,
+    "sensorY": 2.38,
+    "pixelUm": 2.2,
     "pixelW": 1920,
-    "pixelH": 1440
+    "pixelH": 1080
+  },
+  {
+    "name": "Basler daA1920-30uc",
+    "sensorX": 4.22,
+    "sensorY": 2.38,
+    "pixelUm": 2.2,
+    "pixelW": 1920,
+    "pixelH": 1080
+  },
+  {
+    "name": "Basler daA1920-30um",
+    "sensorX": 4.22,
+    "sensorY": 2.38,
+    "pixelUm": 2.2,
+    "pixelW": 1920,
+    "pixelH": 1080
+  },
+  {
+    "name": "Basler daA1920-160uc",
+    "sensorX": 6.68,
+    "sensorY": 4.2,
+    "pixelUm": 3.45,
+    "pixelW": 1936,
+    "pixelH": 1216
+  },
+  {
+    "name": "Basler daA1920-160um",
+    "sensorX": 6.68,
+    "sensorY": 4.2,
+    "pixelUm": 3.45,
+    "pixelW": 1936,
+    "pixelH": 1216
+  },
+  {
+    "name": "Basler daA2448-70uc",
+    "sensorX": 6.77,
+    "sensorY": 5.66,
+    "pixelUm": 2.74,
+    "pixelW": 2472,
+    "pixelH": 2064
+  },
+  {
+    "name": "Basler daA2448-70um",
+    "sensorX": 6.77,
+    "sensorY": 5.66,
+    "pixelUm": 2.74,
+    "pixelW": 2472,
+    "pixelH": 2064
+  },
+  {
+    "name": "Basler daA2500-14uc",
+    "sensorX": 5.7,
+    "sensorY": 4.28,
+    "pixelUm": 2.2,
+    "pixelW": 2592,
+    "pixelH": 1944
+  },
+  {
+    "name": "Basler daA2500-14um",
+    "sensorX": 5.7,
+    "sensorY": 4.28,
+    "pixelUm": 2.2,
+    "pixelW": 2592,
+    "pixelH": 1944
+  },
+  {
+    "name": "Basler daA3840-45uc",
+    "sensorX": 7.72,
+    "sensorY": 4.36,
+    "pixelUm": 2.0,
+    "pixelW": 3860,
+    "pixelH": 2178
+  },
+  {
+    "name": "Basler daA3840-45um",
+    "sensorX": 7.72,
+    "sensorY": 4.36,
+    "pixelUm": 2.0,
+    "pixelW": 3860,
+    "pixelH": 2178
+  },
+  {
+    "name": "Basler dmA720-290gc",
+    "sensorX": 5.02,
+    "sensorY": 3.75,
+    "pixelUm": 6.9,
+    "pixelW": 728,
+    "pixelH": 544
+  },
+  {
+    "name": "Basler dmA720-290gm",
+    "sensorX": 5.02,
+    "sensorY": 3.75,
+    "pixelUm": 6.9,
+    "pixelW": 728,
+    "pixelH": 544
+  },
+  {
+    "name": "Basler dmA1440-73gc",
+    "sensorX": 5.02,
+    "sensorY": 3.75,
+    "pixelUm": 3.45,
+    "pixelW": 1456,
+    "pixelH": 1088
+  },
+  {
+    "name": "Basler dmA1440-73gm",
+    "sensorX": 5.02,
+    "sensorY": 3.75,
+    "pixelUm": 3.45,
+    "pixelW": 1456,
+    "pixelH": 1088
+  },
+  {
+    "name": "Basler dmA1920-51gc",
+    "sensorX": 6.68,
+    "sensorY": 4.2,
+    "pixelUm": 3.45,
+    "pixelW": 1936,
+    "pixelH": 1216
+  },
+  {
+    "name": "Basler dmA1920-51gm",
+    "sensorX": 6.68,
+    "sensorY": 4.2,
+    "pixelUm": 3.45,
+    "pixelW": 1936,
+    "pixelH": 1216
+  },
+  {
+    "name": "Basler dmA2048-37gc",
+    "sensorX": 4.64,
+    "sensorY": 3.49,
+    "pixelUm": 2.25,
+    "pixelW": 2064,
+    "pixelH": 1552
+  },
+  {
+    "name": "Basler dmA2048-37gm",
+    "sensorX": 4.64,
+    "sensorY": 3.49,
+    "pixelUm": 2.25,
+    "pixelW": 2064,
+    "pixelH": 1552
+  },
+  {
+    "name": "Basler dmA2448-23gc",
+    "sensorX": 6.77,
+    "sensorY": 5.66,
+    "pixelUm": 2.74,
+    "pixelW": 2472,
+    "pixelH": 2064
+  },
+  {
+    "name": "Basler dmA2448-23gm",
+    "sensorX": 6.77,
+    "sensorY": 5.66,
+    "pixelUm": 2.74,
+    "pixelW": 2472,
+    "pixelH": 2064
+  },
+  {
+    "name": "Basler dmA2840-14gc",
+    "sensorX": 7.83,
+    "sensorY": 7.8,
+    "pixelUm": 2.74,
+    "pixelW": 2856,
+    "pixelH": 2848
+  },
+  {
+    "name": "Basler dmA2840-14gm",
+    "sensorX": 7.83,
+    "sensorY": 7.8,
+    "pixelUm": 2.74,
+    "pixelW": 2856,
+    "pixelH": 2848
+  },
+  {
+    "name": "Basler dmA3536-9gc",
+    "sensorX": 7.07,
+    "sensorY": 7.1,
+    "pixelUm": 2.0,
+    "pixelW": 3536,
+    "pixelH": 3552
+  },
+  {
+    "name": "Basler dmA3536-9gm",
+    "sensorX": 7.07,
+    "sensorY": 7.1,
+    "pixelUm": 2.0,
+    "pixelW": 3536,
+    "pixelH": 3552
+  },
+  {
+    "name": "Basler dmA4096-9gc",
+    "sensorX": 11.31,
+    "sensorY": 8.24,
+    "pixelUm": 2.74,
+    "pixelW": 4128,
+    "pixelH": 3008
+  },
+  {
+    "name": "Basler dmA4096-9gm",
+    "sensorX": 11.31,
+    "sensorY": 8.24,
+    "pixelUm": 2.74,
+    "pixelW": 4128,
+    "pixelH": 3008
+  },
+  {
+    "name": "Basler puA1280-54uc",
+    "sensorX": 4.8,
+    "sensorY": 3.6,
+    "pixelUm": 3.75,
+    "pixelW": 1280,
+    "pixelH": 960
+  },
+  {
+    "name": "Basler puA1280-54um",
+    "sensorX": 4.8,
+    "sensorY": 3.6,
+    "pixelUm": 3.75,
+    "pixelW": 1280,
+    "pixelH": 960
+  },
+  {
+    "name": "Basler puA1600-60uc",
+    "sensorX": 7.2,
+    "sensorY": 5.4,
+    "pixelUm": 4.5,
+    "pixelW": 1600,
+    "pixelH": 1200
+  },
+  {
+    "name": "Basler puA1600-60um",
+    "sensorX": 7.2,
+    "sensorY": 5.4,
+    "pixelUm": 4.5,
+    "pixelW": 1600,
+    "pixelH": 1200
+  },
+  {
+    "name": "Basler puA1920-30uc",
+    "sensorX": 4.22,
+    "sensorY": 2.38,
+    "pixelUm": 2.2,
+    "pixelW": 1920,
+    "pixelH": 1080
+  },
+  {
+    "name": "Basler puA1920-30um",
+    "sensorX": 4.22,
+    "sensorY": 2.38,
+    "pixelUm": 2.2,
+    "pixelW": 1920,
+    "pixelH": 1080
+  },
+  {
+    "name": "Basler puA2500-14uc",
+    "sensorX": 5.7,
+    "sensorY": 4.28,
+    "pixelUm": 2.2,
+    "pixelW": 2592,
+    "pixelH": 1944
+  },
+  {
+    "name": "Basler puA2500-14um",
+    "sensorX": 5.7,
+    "sensorY": 4.28,
+    "pixelUm": 2.2,
+    "pixelW": 2592,
+    "pixelH": 1944
+  },
+  {
+    "name": "Basler r2L2048-29gc",
+    "sensorX": 14.34,
+    "sensorY": 0.01,
+    "pixelUm": 7.0,
+    "pixelW": 2048,
+    "pixelH": 1
+  },
+  {
+    "name": "Basler r2L2048-58gm",
+    "sensorX": 14.34,
+    "sensorY": 0.01,
+    "pixelUm": 7.0,
+    "pixelW": 2048,
+    "pixelH": 1
+  },
+  {
+    "name": "Basler r2L2048-62cc",
+    "sensorX": 14.34,
+    "sensorY": 0.01,
+    "pixelUm": 7.0,
+    "pixelW": 2048,
+    "pixelH": 1
+  },
+  {
+    "name": "Basler r2L2048-62g5c",
+    "sensorX": 14.34,
+    "sensorY": 0.01,
+    "pixelUm": 7.0,
+    "pixelW": 2048,
+    "pixelH": 1
+  },
+  {
+    "name": "Basler r2L2048-172cm",
+    "sensorX": 14.34,
+    "sensorY": 0.01,
+    "pixelUm": 7.0,
+    "pixelW": 2048,
+    "pixelH": 1
+  },
+  {
+    "name": "Basler r2L2048-172g5m",
+    "sensorX": 14.34,
+    "sensorY": 0.01,
+    "pixelUm": 7.0,
+    "pixelW": 2048,
+    "pixelH": 1
+  },
+  {
+    "name": "Basler r2L4096-14gc",
+    "sensorX": 14.34,
+    "sensorY": 0.0,
+    "pixelUm": 3.5,
+    "pixelW": 4096,
+    "pixelH": 1
+  },
+  {
+    "name": "Basler r2L4096-29gm",
+    "sensorX": 14.34,
+    "sensorY": 0.0,
+    "pixelUm": 3.5,
+    "pixelW": 4096,
+    "pixelH": 1
+  },
+  {
+    "name": "Basler r2L4096-42cc",
+    "sensorX": 14.34,
+    "sensorY": 0.0,
+    "pixelUm": 3.5,
+    "pixelW": 4096,
+    "pixelH": 1
+  },
+  {
+    "name": "Basler r2L4096-42g5c",
+    "sensorX": 14.34,
+    "sensorY": 0.0,
+    "pixelUm": 3.5,
+    "pixelW": 4096,
+    "pixelH": 1
+  },
+  {
+    "name": "Basler r2L4096-84cm",
+    "sensorX": 14.34,
+    "sensorY": 0.0,
+    "pixelUm": 3.5,
+    "pixelW": 4096,
+    "pixelH": 1
+  },
+  {
+    "name": "Basler r2L4096-84g5m",
+    "sensorX": 14.34,
+    "sensorY": 0.0,
+    "pixelUm": 3.5,
+    "pixelW": 4096,
+    "pixelH": 1
+  },
+  {
+    "name": "Basler r2L8192-80cc",
+    "sensorX": 57.34,
+    "sensorY": 0.01,
+    "pixelUm": 7.0,
+    "pixelW": 8192,
+    "pixelH": 1
+  },
+  {
+    "name": "Basler r2L16384-120cm",
+    "sensorX": 57.34,
+    "sensorY": 0.01,
+    "pixelUm": 3.5,
+    "pixelW": 16384,
+    "pixelH": 2
   }
 ]

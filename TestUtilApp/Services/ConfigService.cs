@@ -7,21 +7,24 @@ namespace TestUtilApp.Services
 {
     public class ConfigService
     {
-        private const string CONFIG_FILE_NAME = "config.json";
+        private const string CONFIG_FILE_NAME = "SettingConfig.json";
+        private const string CONFIG_FOLDER_NAME = "Config";
         private readonly string _configFilePath;
         private readonly string _projectRootConfigPath;
 
         public ConfigService()
         {
             string appDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            _configFilePath = Path.Combine(appDirectory, CONFIG_FILE_NAME);
+            string configFolder = Path.Combine(appDirectory, CONFIG_FOLDER_NAME);
+            Directory.CreateDirectory(configFolder);
+            _configFilePath = Path.Combine(configFolder, CONFIG_FILE_NAME);
 
             // 프로젝트 루트 경로 찾기 (bin\Debug 또는 bin\Release에서 3단계 상위)
             _projectRootConfigPath = FindProjectRootConfigPath(appDirectory);
         }
 
         /// <summary>
-        /// 프로젝트 루트 폴더의 config.json 경로 찾기
+        /// 프로젝트 루트 폴더의 Config\SettingConfig.json 경로 찾기
         /// </summary>
         private string FindProjectRootConfigPath(string appDirectory)
         {
@@ -39,7 +42,7 @@ namespace TestUtilApp.Services
                         // bin의 부모 = 프로젝트 루트
                         if (current.Parent != null)
                         {
-                            string projectRootPath = Path.Combine(current.Parent.FullName, CONFIG_FILE_NAME);
+                            string projectRootPath = Path.Combine(current.Parent.FullName, CONFIG_FOLDER_NAME, CONFIG_FILE_NAME);
                             return projectRootPath;
                         }
                     }
@@ -59,14 +62,14 @@ namespace TestUtilApp.Services
         {
             try
             {
-                // 1. 프로젝트 루트와 실행 폴더의 config.json 동기화
+                // 1. 프로젝트 루트와 실행 폴더의 SettingConfig.json 동기화
                 bool needsCopy = false;
 
                 if (!string.IsNullOrEmpty(_projectRootConfigPath) && File.Exists(_projectRootConfigPath))
                 {
                     if (!File.Exists(_configFilePath))
                     {
-                        // 실행 폴더에 config.json이 없으면 복사
+                        // 실행 폴더에 SettingConfig.json이 없으면 복사
                         needsCopy = true;
                     }
                     else
@@ -84,7 +87,7 @@ namespace TestUtilApp.Services
 
                     if (needsCopy)
                     {
-                        // 프로젝트 루트의 config.json을 실행 폴더로 복사
+                        // 프로젝트 루트의 SettingConfig.json을 실행 폴더로 복사
                         File.Copy(_projectRootConfigPath, _configFilePath, true);
                     }
                 }
@@ -186,7 +189,7 @@ namespace TestUtilApp.Services
                     catch (Exception ex)
                     {
                         // 프로젝트 루트 저장 실패는 무시 (실행 폴더는 이미 저장됨)
-                        System.Diagnostics.Debug.WriteLine($"Failed to save project root config.json: {ex.Message}");
+                        System.Diagnostics.Debug.WriteLine($"Failed to save project root SettingConfig.json: {ex.Message}");
                     }
                 }
             }
