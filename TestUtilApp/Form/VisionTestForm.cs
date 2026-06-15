@@ -8,6 +8,7 @@ namespace TestUtilApp.UI
     {
         private OpenCvControl _openCvControl;
         private CameraCalcControl _cameraCalcControl;
+        private CameraLightControl _cameraLightControl;
         private UserControl _currentControl;
         private Button _activeNavigationButton;
 
@@ -33,6 +34,7 @@ namespace TestUtilApp.UI
         {
             _openCvControl = new OpenCvControl();
             _cameraCalcControl = new CameraCalcControl();
+            _cameraLightControl = new CameraLightControl();
         }
 
         private void LoadControlToPanel(UserControl control)
@@ -83,10 +85,18 @@ namespace TestUtilApp.UI
             UpdateStatusLabel("Camera Calc");
         }
 
+        private void btnCameraLight_Click(object sender, EventArgs e)
+        {
+            LoadControlToPanel(_cameraLightControl);
+            UpdateButtonStates(btnCameraLight);
+            UpdateStatusLabel("Camera/Light");
+        }
+
         private void RestoreNavigationButtonStates()
         {
             UiTheme.ApplyNavigationButtonDefault(btnOpenCv);
             UiTheme.ApplyNavigationButtonDefault(btnCameraCalc);
+            UiTheme.ApplyNavigationButtonDefault(btnCameraLight);
 
             if (_activeNavigationButton != null)
             {

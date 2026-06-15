@@ -20,6 +20,7 @@ namespace TestUtilApp.UI
             this.topPanel = new System.Windows.Forms.Panel();
             this.btnOpenCv = new System.Windows.Forms.Button();
             this.btnCameraCalc = new System.Windows.Forms.Button();
+            this.btnCameraLight = new System.Windows.Forms.Button();
             this.contentPanel = new System.Windows.Forms.Panel();
             this.bottomPanel = new System.Windows.Forms.Panel();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
@@ -34,6 +35,7 @@ namespace TestUtilApp.UI
             this.topPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(28)))), ((int)(((byte)(55)))));
             this.topPanel.Controls.Add(this.btnOpenCv);
             this.topPanel.Controls.Add(this.btnCameraCalc);
+            this.topPanel.Controls.Add(this.btnCameraLight);
             this.topPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.topPanel.Location = new System.Drawing.Point(0, 0);
             this.topPanel.Name = "topPanel";
@@ -68,6 +70,20 @@ namespace TestUtilApp.UI
             this.btnCameraCalc.Text = "Camera Calc";
             this.btnCameraCalc.UseVisualStyleBackColor = false;
             this.btnCameraCalc.Click += new System.EventHandler(this.btnCameraCalc_Click);
+            //
+            // btnCameraLight
+            //
+            this.btnCameraLight.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(42)))), ((int)(((byte)(75)))));
+            this.btnCameraLight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCameraLight.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnCameraLight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.btnCameraLight.Location = new System.Drawing.Point(293, 12);
+            this.btnCameraLight.Name = "btnCameraLight";
+            this.btnCameraLight.Size = new System.Drawing.Size(130, 69);
+            this.btnCameraLight.TabIndex = 2;
+            this.btnCameraLight.Text = "Camera/Light";
+            this.btnCameraLight.UseVisualStyleBackColor = false;
+            this.btnCameraLight.Click += new System.EventHandler(this.btnCameraLight_Click);
             //
             // contentPanel
             //
@@ -132,6 +148,7 @@ namespace TestUtilApp.UI
         private System.Windows.Forms.Panel topPanel;
         private System.Windows.Forms.Button btnOpenCv;
         private System.Windows.Forms.Button btnCameraCalc;
+        private System.Windows.Forms.Button btnCameraLight;
         private System.Windows.Forms.Panel contentPanel;
         private System.Windows.Forms.Panel bottomPanel;
         private System.Windows.Forms.StatusStrip statusStrip;
