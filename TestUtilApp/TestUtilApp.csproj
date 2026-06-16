@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;BASLER_PYLON</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -30,7 +30,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;BASLER_PYLON</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -114,9 +114,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
-    <!-- Basler pylon 7.5 SDK — BASLER_PYLON 심볼 정의 시 활성화 -->
+    <!-- Basler pylon SDK — BASLER_PYLON 심볼 정의 시 활성화 -->
     <Reference Include="Basler.Pylon" Condition="'$(DefineConstants)' != '' And $(DefineConstants.Contains('BASLER_PYLON'))">
-      <HintPath>C:\Program Files\Basler\pylon 7\Development\lib\dotnet\Basler.Pylon.dll</HintPath>
+      <HintPath>..\packages\Basler.Pylon.NET.x64.8.0.0.10\lib\native\Basler.Pylon.dll</HintPath>
       <Private>true</Private>
     </Reference>
     <Reference Include="System.Xml" />
@@ -369,6 +369,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form\VisionTestForm\CamearCalc\CameraCalcControl.resx">
       <DependentUpon>CameraCalcControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\VisionTestForm\CameraLight\CameraLightControl.resx">
+      <DependentUpon>CameraLightControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\VisionTestForm\CameraLight\Dialog\LightSettingsDialog.resx">
+      <DependentUpon>LightSettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form\VisionTestForm\OpenCV\Dialog\AcquireDialog.resx">
       <DependentUpon>AcquireDialog.cs</DependentUpon>

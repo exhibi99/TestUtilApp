@@ -34,19 +34,29 @@ namespace TestUtilApp.CameraLight
         {
             string prev = Config.Identifier;
             cmbCamera.Items.Clear();
-            cmbCamera.Items.Add("(첫번째 카메라)");
 
 #if BASLER_PYLON
             try
             {
-                foreach (var info in CameraFinder.Enumerate())
+                var cameras = CameraFinder.Enumerate();
+                string firstSn = cameras.Count > 0 ? cameras[0][CameraInfoKey.SerialNumber] : null;
+                cmbCamera.Items.Add(firstSn != null
+                    ? $"(첫번째 연결 카메라 ({firstSn}))"
+                    : "(첫번째 카메라 - 미감지)");
+
+                foreach (var info in cameras)
                 {
                     string sn    = info[CameraInfoKey.SerialNumber];
                     string model = info[CameraInfoKey.ModelName];
                     cmbCamera.Items.Add($"{sn}  [{model}]");
                 }
             }
-            catch { }
+            catch
+            {
+                cmbCamera.Items.Add("(첫번째 카메라 - 미감지)");
+            }
+#else
+            cmbCamera.Items.Add("(첫번째 카메라)");
 #endif
 
             int idx = 0;

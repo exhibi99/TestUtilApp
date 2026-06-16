@@ -6,10 +6,8 @@ using System.Threading;
 
 /*
  * 빌드 조건:
- *   1. Basler pylon 7.5 설치 (Basler_pylon_7.5.0.15658.exe)
- *   2. 프로젝트 참조에 Basler.Pylon.dll 추가
- *      경로: C:\Program Files\Basler\pylon 7\Development\lib\dotnet\Basler.Pylon.dll
- *   3. 프로젝트 속성 → 빌드 → 조건부 컴파일 기호에  BASLER_PYLON  추가
+ *   1. packages\Basler.Pylon.NET.x64.8.0.0.10\lib\native\Basler.Pylon.dll (로컬 패키지)
+ *   2. 프로젝트 속성 → 빌드 → 조건부 컴파일 기호에  BASLER_PYLON  추가
  */
 
 #if BASLER_PYLON
@@ -152,10 +150,9 @@ namespace TestUtilApp.CameraLight
             Bitmap bmp = null;
             GrabResult result = GrabResult.Timeout;
 
-            if (_camera.StreamGrabber.RetrieveResult(timeoutMs, out IGrabResult grabResult,
-                TimeoutHandling.Return))
+            using (var grabResult = _camera.StreamGrabber.RetrieveResult(timeoutMs, TimeoutHandling.Return))
             {
-                using (grabResult)
+                if (grabResult != null)
                 {
                     if (grabResult.GrabSucceeded)
                     {
@@ -164,6 +161,7 @@ namespace TestUtilApp.CameraLight
                     }
                     else
                     {
+                        System.Diagnostics.Debug.WriteLine($"[BaslerCamera] GrabSingle failed: {grabResult.ErrorDescription} (code={grabResult.ErrorCode})");
                         result = GrabResult.Error;
                     }
                 }
@@ -194,11 +192,13 @@ namespace TestUtilApp.CameraLight
 
         private void OnImageGrabbed(object sender, ImageGrabbedEventArgs e)
         {
+            // ProvidedByUser(GrabSingle) 모드에서는 RetrieveResult가 직접 결과를 처리하므로 무시
+            if (!_isLive) return;
             try
             {
                 using (var grabResult = e.GrabResult)
                 {
-                    if (!grabResult.GrabSucceeded || !_isLive) return;
+                    if (!grabResult.GrabSucceeded) return;
                     var bmp = ConvertToBitmap(grabResult);
                     _liveCallback?.Invoke(bmp);
                 }

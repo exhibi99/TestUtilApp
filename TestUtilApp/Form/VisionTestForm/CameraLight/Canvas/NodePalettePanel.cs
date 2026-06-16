@@ -85,14 +85,14 @@ namespace TestUtilApp.CameraLight
                 string icon;
                 switch (kind)
                 {
-                    case NodeKind.Camera:          icon = "Cam";   break;
-                    case NodeKind.LightController: icon = "Lgt";   break;
-                    case NodeKind.COMPort:         icon = "COM";   break;
+                    case NodeKind.Camera:          icon = "Camera";  break;
+                    case NodeKind.LightController: icon = "Light";   break;
+                    case NodeKind.COMPort:         icon = "COM";     break;
                     default:                       icon = "□";     break;
                 }
                 using (var br = new SolidBrush(color))
                     g.DrawString(icon, new Font("Segoe UI", 8f, System.Drawing.FontStyle.Bold), br,
-                        new RectangleF(rc.X + 8, rc.Y + 6, 28, 18));
+                        new RectangleF(rc.X + 8, rc.Y + 6, 52, 18));
 
                 // 레이블
                 using (var br = new SolidBrush(CText))

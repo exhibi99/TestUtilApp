@@ -32,26 +32,6 @@ namespace TestUtilApp.UI
 
         public void OnActivated() { }
 
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            AdjustSplitters();
-        }
-
-        private void AdjustSplitters()
-        {
-            if (Width <= 100) return;
-            try
-            {
-                // 우측 PictureBox = 1/2, 팔레트 ≈ 1/7
-                int leftW   = Math.Max(50, Width / 2);
-                int palW    = Math.Max(80, Width / 7);
-                _splitOuter.SplitterDistance = leftW;
-                _splitInner.SplitterDistance = palW;
-            }
-            catch { }
-        }
-
         // ── 초기화 ──────────────────────────────────────────────────
 
         private void SetupCanvas()
@@ -92,6 +72,7 @@ namespace TestUtilApp.UI
                 BackColor = Color.Black,
                 SizeMode  = PictureBoxSizeMode.Zoom,
             };
+
             tab.Controls.Add(pb);
             _tabRight.TabPages.Add(tab);
             _previewBoxes[area.Id] = pb;
@@ -344,6 +325,48 @@ namespace TestUtilApp.UI
             camNode.StatusText = "Live";
             camNode.IsActive   = true;
             _canvas.RefreshNode(camNode);
+        }
+
+        // ── 이미지 저장 ─────────────────────────────────────────────
+
+        private void btnSave_Click(object sender, EventArgs e) => SaveCurrentPreviewImage();
+
+        private void SaveCurrentPreviewImage()
+        {
+            // 현재 선택된 탭의 PictureBox 이미지 저장
+            var selected = _tabRight.SelectedTab;
+            if (selected == null) return;
+
+            PictureBox pb = null;
+            foreach (Control c in selected.Controls)
+                if (c is PictureBox box) { pb = box; break; }
+
+            if (pb?.Image == null)
+            {
+                MessageBox.Show("저장할 이미지가 없습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            using (var dlg = new SaveFileDialog())
+            {
+                dlg.Title      = "이미지 저장";
+                dlg.Filter     = "PNG 이미지 (*.png)|*.png|JPEG 이미지 (*.jpg)|*.jpg|BMP 이미지 (*.bmp)|*.bmp";
+                dlg.FilterIndex = 1;
+                dlg.DefaultExt  = "png";
+                dlg.FileName    = $"capture_{DateTime.Now:yyyyMMdd_HHmmss}";
+
+                if (dlg.ShowDialog(this) != DialogResult.OK) return;
+
+                System.Drawing.Imaging.ImageFormat fmt;
+                switch (dlg.FilterIndex)
+                {
+                    case 2:  fmt = System.Drawing.Imaging.ImageFormat.Jpeg; break;
+                    case 3:  fmt = System.Drawing.Imaging.ImageFormat.Bmp;  break;
+                    default: fmt = System.Drawing.Imaging.ImageFormat.Png;  break;
+                }
+
+                pb.Image.Save(dlg.FileName, fmt);
+            }
         }
 
         // ── 카메라 설정 실시간 반영 ──────────────────────────────────
