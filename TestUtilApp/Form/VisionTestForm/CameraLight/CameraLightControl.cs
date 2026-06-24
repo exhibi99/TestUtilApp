@@ -15,12 +15,9 @@ namespace TestUtilApp.UI
         private readonly Dictionary<Guid, ILightController> _lights      = new Dictionary<Guid, ILightController>();
         private readonly Dictionary<Guid, ISerialPort>      _serialPorts = new Dictionary<Guid, ISerialPort>();
 
-        // 우측 탭 → PictureBox 매핑 (ImageArea 노드 ID 기준)
+        // 우측 탭 → PictureBox/TabPage 매핑 (ImageArea 노드 ID 기준)
         private readonly Dictionary<Guid, PictureBox> _previewBoxes = new Dictionary<Guid, PictureBox>();
-
-        // ── 고정 ImageArea 노드 ──────────────────────────────────────
-        private CameraLightNode _imageArea1;
-        private CameraLightNode _imageArea2;
+        private readonly Dictionary<Guid, TabPage>    _previewTabs  = new Dictionary<Guid, TabPage>();
 
         public CameraLightControl()
         {
@@ -36,26 +33,27 @@ namespace TestUtilApp.UI
 
         private void SetupCanvas()
         {
-            // 캔버스에 ImageArea 노드 2개 미리 배치 (고정)
-            _imageArea1 = new CameraLightNode(NodeKind.ImageArea, "ImageArea 1", new Point(340, 60),  pinned: true);
-            _imageArea2 = new CameraLightNode(NodeKind.ImageArea, "ImageArea 2", new Point(340, 200), pinned: true);
-
-            _canvas.AddNode(_imageArea1);
-            _canvas.AddNode(_imageArea2);
-
-            // 캔버스 이벤트
+            // 캔버스 이벤트 먼저 구독 (NodeAdded도 포함)
+            _canvas.NodeAdded          += OnNodeAdded;
             _canvas.NodeDoubleClicked  += OnNodeDoubleClicked;
             _canvas.ConnectionAdded    += OnConnectionAdded;
             _canvas.ConnectionRemoved  += OnConnectionRemoved;
             _canvas.NodeRemoved        += OnNodeRemoved;
             _canvas.NodeActionRequested += OnNodeActionRequested;
+
+            // 기본 ImageArea 1개 배치 (삭제/추가 자유)
+            _canvas.AddNode(new CameraLightNode(NodeKind.ImageArea, "ImageArea 1", new Point(340, 60)));
         }
 
         private void SetupRightPanel()
         {
-            // 탭 2개 (ImageArea 1, 2)
-            AddPreviewTab(_imageArea1);
-            AddPreviewTab(_imageArea2);
+            // 탭은 NodeAdded 이벤트에서 동적으로 생성됨
+        }
+
+        private void OnNodeAdded(CameraLightNode node)
+        {
+            if (node.Kind == NodeKind.ImageArea)
+                AddPreviewTab(node);
         }
 
         private void AddPreviewTab(CameraLightNode area)
@@ -76,6 +74,7 @@ namespace TestUtilApp.UI
             tab.Controls.Add(pb);
             _tabRight.TabPages.Add(tab);
             _previewBoxes[area.Id] = pb;
+            _previewTabs[area.Id]  = tab;
         }
 
         // ── 노드 더블클릭 → 설정 다이얼로그 ────────────────────────
@@ -116,8 +115,8 @@ namespace TestUtilApp.UI
 
         private void FocusImageAreaTab(CameraLightNode area)
         {
-            if (_imageArea1 == area) _tabRight.SelectedIndex = 0;
-            else if (_imageArea2 == area) _tabRight.SelectedIndex = 1;
+            if (_previewTabs.TryGetValue(area.Id, out var tab))
+                _tabRight.SelectedIndex = _tabRight.TabPages.IndexOf(tab);
         }
 
         // ── 연결 추가 ────────────────────────────────────────────────
@@ -131,8 +130,55 @@ namespace TestUtilApp.UI
                 ConnectComPortToLight(conn.Source, conn.Target);
         }
 
+        // excludeNode 를 제외한 다른 Camera 노드 중 동일 Identifier 로 연결된 노드 반환
+        private CameraLightNode FindDuplicateCameraNode(CameraLightNode excludeNode, string identifier)
+        {
+            foreach (var n in _canvas.Nodes)
+            {
+                if (n == excludeNode || n.Kind != NodeKind.Camera) continue;
+                if (!_cameras.TryGetValue(n.Id, out var cam) || !cam.IsConnected) continue;
+                if (n.CameraConfig.Identifier == identifier) return n;
+            }
+            return null;
+        }
+
+        // 이미 연결된 카메라들을 제외하고 사용 가능한 첫 번째 카메라를 camNode 에 자동 할당
+        private bool TryAutoAssignCamera(CameraLightNode camNode)
+        {
+            var usedIds = new System.Collections.Generic.HashSet<string>();
+            foreach (var n in _canvas.Nodes)
+            {
+                if (n == camNode || n.Kind != NodeKind.Camera) continue;
+                if (_cameras.TryGetValue(n.Id, out var c) && c.IsConnected)
+                    usedIds.Add(n.CameraConfig.Identifier);
+            }
+
+            foreach (var (serial, _) in CameraSettingsDialog.EnumeratePhysicalCameras())
+            {
+                if (!usedIds.Contains(serial))
+                {
+                    camNode.CameraConfig.Identifier = serial;
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private void ConnectCameraToImageArea(CameraLightNode camNode, CameraLightNode areaNode)
         {
+            // Identifier 가 비어 있거나 이미 다른 카메라가 사용 중이면 → 미사용 카메라 자동 할당
+            bool needAssign = string.IsNullOrWhiteSpace(camNode.CameraConfig.Identifier)
+                           || FindDuplicateCameraNode(camNode, camNode.CameraConfig.Identifier) != null;
+
+            if (needAssign && !TryAutoAssignCamera(camNode))
+            {
+                var conn = _canvas.FindConnection(camNode, areaNode);
+                if (conn != null) _canvas.RemoveConnection(conn);
+                MessageBox.Show("사용 가능한 카메라가 없습니다.\n연결된 카메라 수를 확인하세요.",
+                    "카메라 없음", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             if (!_cameras.ContainsKey(camNode.Id))
                 _cameras[camNode.Id] = new BaslerCamera();
 
@@ -140,7 +186,10 @@ namespace TestUtilApp.UI
             try
             {
                 camera.Connect(camNode.CameraConfig.Identifier);
+                // "" 로 연결한 경우에도 실제 시리얼로 갱신 → 이후 중복 감지 정상 동작
+                camNode.CameraConfig.Identifier = camera.ConnectedSerial;
                 camera.SetExposure(camNode.CameraConfig.ExposureUs);
+                camera.SetGain(camNode.CameraConfig.Gain);
                 camera.SetTriggerMode(camNode.CameraConfig.TriggerMode);
 
                 camNode.StatusText  = "Ready";
@@ -244,6 +293,17 @@ namespace TestUtilApp.UI
             if (_cameras.TryGetValue(node.Id, out var cam))     { cam.Dispose();  _cameras.Remove(node.Id); }
             if (_lights.TryGetValue(node.Id, out var lt))       { lt.Dispose();   _lights.Remove(node.Id); }
             if (_serialPorts.TryGetValue(node.Id, out var sp))  { sp.Dispose();   _serialPorts.Remove(node.Id); }
+
+            // ImageArea 제거 시 미리보기 탭도 제거
+            if (node.Kind == NodeKind.ImageArea)
+            {
+                if (_previewTabs.TryGetValue(node.Id, out var tab))
+                {
+                    _tabRight.TabPages.Remove(tab);
+                    _previewTabs.Remove(node.Id);
+                }
+                _previewBoxes.Remove(node.Id);
+            }
         }
 
         // ── 카메라 액션 (우클릭 메뉴) ───────────────────────────────────
@@ -318,8 +378,14 @@ namespace TestUtilApp.UI
 
             camera.StartLive(frame =>
             {
+                // BeginInvoke(비동기): 배경 스레드가 UI 스레드를 기다리지 않아
+                // StopLive/Disconnect 호출 시 데드락 방지
                 if (IsDisposed || pb.IsDisposed) return;
-                Invoke((Action)(() => { pb.Image = frame; }));
+                BeginInvoke((Action)(() =>
+                {
+                    if (!IsDisposed && !pb.IsDisposed)
+                        pb.Image = frame;
+                }));
             });
 
             camNode.StatusText = "Live";
@@ -374,9 +440,48 @@ namespace TestUtilApp.UI
         private void ApplyCameraConfig(CameraLightNode node)
         {
             if (!_cameras.TryGetValue(node.Id, out var cam) || !cam.IsConnected) return;
-            cam.SetExposure(node.CameraConfig.ExposureUs);
-            cam.SetGain(node.CameraConfig.Gain);
-            cam.SetTriggerMode(node.CameraConfig.TriggerMode);
+
+            // 재연결 전 중복 Identifier 확인 — 중복이면 다른 카메라 자동 선택
+            if (FindDuplicateCameraNode(node, node.CameraConfig.Identifier) != null)
+            {
+                if (!TryAutoAssignCamera(node))
+                {
+                    MessageBox.Show("사용 가능한 다른 카메라가 없습니다.", "카메라 부족",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+
+            bool wasLive = node.StatusText == "Live";
+            if (wasLive) cam.StopLive();
+
+            // Identifier 변경 반영을 위해 재연결
+            cam.Disconnect();
+            try
+            {
+                cam.Connect(node.CameraConfig.Identifier);
+                node.CameraConfig.Identifier = cam.ConnectedSerial;
+                cam.SetExposure(node.CameraConfig.ExposureUs);
+                cam.SetGain(node.CameraConfig.Gain);
+                cam.SetTriggerMode(node.CameraConfig.TriggerMode);
+                node.StatusText = "Ready";
+                node.IsActive   = true;
+
+                if (wasLive)
+                {
+                    foreach (var conn in _canvas.Connections)
+                        if (conn.Source == node && conn.Target.Kind == NodeKind.ImageArea)
+                        { StartLiveForNode(node, cam, conn.Target); break; }
+                }
+            }
+            catch (Exception ex)
+            {
+                node.StatusText = "Error";
+                node.IsActive   = false;
+                MessageBox.Show($"카메라 재연결 실패: {ex.Message}", "연결 오류",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            _canvas.RefreshNode(node);
         }
 
         // ── 종료 처리 ────────────────────────────────────────────────

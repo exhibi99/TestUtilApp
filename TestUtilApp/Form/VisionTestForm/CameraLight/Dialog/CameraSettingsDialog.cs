@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -22,6 +23,10 @@ namespace TestUtilApp.CameraLight
 
         public CameraConfig Config { get; }
 
+        // 콤보 아이템 내부 데이터: (serial, model)
+        private readonly List<(string serial, string model)> _cameraList
+            = new List<(string, string)>();
+
         public CameraSettingsDialog(CameraConfig config)
         {
             Config = config;
@@ -30,45 +35,50 @@ namespace TestUtilApp.CameraLight
             LoadValues();
         }
 
+        // ── 카메라 열거 ───────────────────────────────────────────────
+
         private void EnumerateCameras()
         {
-            string prev = Config.Identifier;
+            _cameraList.Clear();
             cmbCamera.Items.Clear();
 
 #if BASLER_PYLON
             try
             {
-                var cameras = CameraFinder.Enumerate();
-                string firstSn = cameras.Count > 0 ? cameras[0][CameraInfoKey.SerialNumber] : null;
-                cmbCamera.Items.Add(firstSn != null
-                    ? $"(첫번째 연결 카메라 ({firstSn}))"
-                    : "(첫번째 카메라 - 미감지)");
-
-                foreach (var info in cameras)
+                foreach (var info in CameraFinder.Enumerate())
                 {
                     string sn    = info[CameraInfoKey.SerialNumber];
                     string model = info[CameraInfoKey.ModelName];
-                    cmbCamera.Items.Add($"{sn}  [{model}]");
+                    _cameraList.Add((sn, model));
+                    cmbCamera.Items.Add($"{model}  ({sn})");
                 }
             }
-            catch
-            {
-                cmbCamera.Items.Add("(첫번째 카메라 - 미감지)");
-            }
+            catch { }
 #else
-            cmbCamera.Items.Add("(첫번째 카메라)");
+            // Stub 모드: 가상 카메라 2개 표시
+            _cameraList.Add(("stub_1", "StubCamera"));
+            _cameraList.Add(("stub_2", "StubCamera"));
+            foreach (var (sn, model) in _cameraList)
+                cmbCamera.Items.Add($"{model}  ({sn})");
 #endif
 
-            int idx = 0;
-            if (!string.IsNullOrWhiteSpace(prev))
+            if (_cameraList.Count == 0)
             {
-                for (int i = 1; i < cmbCamera.Items.Count; i++)
+                UpdateSelectedLabel(-1);
+                btnOk.Enabled = false;
+                return;
+            }
+
+            btnOk.Enabled = true;
+
+            // 이전에 선택된 카메라 복원, 없으면 첫 번째 선택
+            int idx = 0;
+            if (!string.IsNullOrWhiteSpace(Config.Identifier))
+            {
+                for (int i = 0; i < _cameraList.Count; i++)
                 {
-                    if (cmbCamera.Items[i].ToString().StartsWith(prev))
-                    {
-                        idx = i;
-                        break;
-                    }
+                    if (_cameraList[i].serial == Config.Identifier)
+                    { idx = i; break; }
                 }
             }
             cmbCamera.SelectedIndex = idx;
@@ -76,27 +86,57 @@ namespace TestUtilApp.CameraLight
 
         private void LoadValues()
         {
-            numExposure.Value = (decimal)Config.ExposureUs;
+            numExposure.Value = (decimal)Math.Max((double)numExposure.Minimum,
+                                   Math.Min((double)numExposure.Maximum, Config.ExposureUs));
+        }
+
+        // ── 이벤트 ───────────────────────────────────────────────────
+
+        private void cmbCamera_SelectedIndexChanged(object sender, EventArgs e)
+            => UpdateSelectedLabel(cmbCamera.SelectedIndex);
+
+        private void UpdateSelectedLabel(int idx)
+        {
+            if (idx < 0 || idx >= _cameraList.Count)
+            {
+                lblSelected.Text = _cameraList.Count == 0
+                    ? "연결된 카메라가 없습니다."
+                    : "";
+                return;
+            }
+            var (sn, model) = _cameraList[idx];
+            lblSelected.Text = $"Selected Camera:  {model}  /  S/N: {sn}";
         }
 
         private void btnRefresh_Click(object sender, EventArgs e)
-        {
-            EnumerateCameras();
-        }
+            => EnumerateCameras();
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            if (cmbCamera.SelectedIndex <= 0)
-            {
-                Config.Identifier = "";
-            }
-            else
-            {
-                string item = cmbCamera.SelectedItem?.ToString() ?? "";
-                int sp = item.IndexOf(' ');
-                Config.Identifier = sp > 0 ? item.Substring(0, sp) : item;
-            }
+            int idx = cmbCamera.SelectedIndex;
+            Config.Identifier = (idx >= 0 && idx < _cameraList.Count)
+                ? _cameraList[idx].serial
+                : "";
             Config.ExposureUs = (double)numExposure.Value;
+        }
+
+        // ── 카메라 열거 유틸 (CameraLightControl 에서도 사용) ──────────
+
+        public static List<(string serial, string model)> EnumeratePhysicalCameras()
+        {
+            var result = new List<(string, string)>();
+#if BASLER_PYLON
+            try
+            {
+                foreach (var info in CameraFinder.Enumerate())
+                    result.Add((info[CameraInfoKey.SerialNumber], info[CameraInfoKey.ModelName]));
+            }
+            catch { }
+#else
+            result.Add(("stub_1", "StubCamera"));
+            result.Add(("stub_2", "StubCamera"));
+#endif
+            return result;
         }
     }
 }

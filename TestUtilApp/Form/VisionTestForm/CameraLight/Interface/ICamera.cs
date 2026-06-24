@@ -9,6 +9,8 @@ namespace TestUtilApp.CameraLight
     public interface ICamera : IDisposable
     {
         bool IsConnected { get; }
+        /// <summary>연결 후 실제 카메라 시리얼 번호. 연결 전에는 empty string.</summary>
+        string ConnectedSerial { get; }
 
         void Connect(string identifier);
         void Disconnect();

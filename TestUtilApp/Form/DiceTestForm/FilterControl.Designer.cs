@@ -56,6 +56,8 @@ namespace TestUtilApp.UI
             this.labelIncludeKeywordsProfile3 = new System.Windows.Forms.Label();
             this.txtIncludeKeywordsProfile3 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.chkMultiFolderSelect = new System.Windows.Forms.CheckBox();
+            this.lstSubFolders = new System.Windows.Forms.CheckedListBox();
             this.txtTargetFolder = new System.Windows.Forms.TextBox();
             this.btnBrowseTarget = new System.Windows.Forms.Button();
             this.groupBoxOptions = new System.Windows.Forms.GroupBox();
@@ -94,6 +96,8 @@ namespace TestUtilApp.UI
             this.groupBoxSettings.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(25)))), ((int)(((byte)(31)))));
             this.groupBoxSettings.Controls.Add(this.tabFilterProfiles);
             this.groupBoxSettings.Controls.Add(this.label1);
+            this.groupBoxSettings.Controls.Add(this.chkMultiFolderSelect);
+            this.groupBoxSettings.Controls.Add(this.lstSubFolders);
             this.groupBoxSettings.Controls.Add(this.txtTargetFolder);
             this.groupBoxSettings.Controls.Add(this.btnBrowseTarget);
             this.groupBoxSettings.Dock = System.Windows.Forms.DockStyle.Top;
@@ -681,7 +685,33 @@ namespace TestUtilApp.UI
             this.label1.Size = new System.Drawing.Size(96, 20);
             this.label1.TabIndex = 0;
             this.label1.Text = "Target Folder";
-            // 
+            //
+            // chkMultiFolderSelect
+            //
+            this.chkMultiFolderSelect.AutoSize = true;
+            this.chkMultiFolderSelect.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.chkMultiFolderSelect.Location = new System.Drawing.Point(130, 28);
+            this.chkMultiFolderSelect.Name = "chkMultiFolderSelect";
+            this.chkMultiFolderSelect.Size = new System.Drawing.Size(160, 24);
+            this.chkMultiFolderSelect.TabIndex = 10;
+            this.chkMultiFolderSelect.Text = "Multi Folder Select";
+            this.chkMultiFolderSelect.UseVisualStyleBackColor = false;
+            this.chkMultiFolderSelect.CheckedChanged += new System.EventHandler(this.chkMultiFolderSelect_CheckedChanged);
+            //
+            // lstSubFolders
+            //
+            this.lstSubFolders.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstSubFolders.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(17)))), ((int)(((byte)(22)))));
+            this.lstSubFolders.CheckOnClick = true;
+            this.lstSubFolders.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.lstSubFolders.FormattingEnabled = true;
+            this.lstSubFolders.Location = new System.Drawing.Point(13, 88);
+            this.lstSubFolders.Name = "lstSubFolders";
+            this.lstSubFolders.Size = new System.Drawing.Size(1146, 124);
+            this.lstSubFolders.TabIndex = 11;
+            this.lstSubFolders.Visible = false;
+            //
             // txtTargetFolder
             // 
             this.txtTargetFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -950,6 +980,8 @@ namespace TestUtilApp.UI
         private System.Windows.Forms.TabPage tabProfile2;
         private System.Windows.Forms.TabPage tabProfile3;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox chkMultiFolderSelect;
+        private System.Windows.Forms.CheckedListBox lstSubFolders;
         private System.Windows.Forms.TextBox txtTargetFolder;
         private System.Windows.Forms.Button btnBrowseTarget;
         private System.Windows.Forms.GroupBox groupBoxFolderFilterProfile1;

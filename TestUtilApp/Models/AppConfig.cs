@@ -244,6 +244,18 @@ namespace TestUtilApp.Models
         public string LastTargetFolder { get; set; }
 
         [Category("Path")]
+        [DisplayName("Multi Folder Select Enabled")]
+        [Description("Whether multi-folder selection mode is enabled")]
+        [JsonProperty]
+        public bool MultiTargetFolderEnabled { get; set; }
+
+        [Category("Path")]
+        [DisplayName("Last Selected Sub Folders")]
+        [Description("Subfolder names checked in multi-folder selection mode")]
+        [JsonProperty]
+        public List<string> LastSelectedSubFolders { get; set; }
+
+        [Category("Path")]
         [DisplayName("Last Output Folder")]
         [Description("Last selected custom output folder")]
         [JsonProperty]

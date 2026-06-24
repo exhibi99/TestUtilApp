@@ -75,6 +75,7 @@ namespace TestUtilApp.CameraLight
         public event Action<CameraLightNode>               NodeDoubleClicked;
         public event Action<NodeConnection>                ConnectionAdded;
         public event Action<NodeConnection>                ConnectionRemoved;
+        public event Action<CameraLightNode>               NodeAdded;
         public event Action<CameraLightNode>               NodeRemoved;
         /// <summary>우클릭 메뉴에서 카메라 액션 선택 시 발생. action = "GrabOnce" | "StartLive" | "StopLive"</summary>
         public event Action<CameraLightNode, string>       NodeActionRequested;
@@ -93,6 +94,7 @@ namespace TestUtilApp.CameraLight
         public void AddNode(CameraLightNode node)
         {
             _nodes.Add(node);
+            NodeAdded?.Invoke(node);
             UpdateScrollSize();
             Invalidate();
         }
@@ -102,6 +104,15 @@ namespace TestUtilApp.CameraLight
 
         public NodeConnection FindConnection(CameraLightNode source, CameraLightNode target)
             => _connections.Find(c => c.Source == source && c.Target == target);
+
+        public void RemoveConnection(NodeConnection conn)
+        {
+            if (_connections.Remove(conn))
+            {
+                ConnectionRemoved?.Invoke(conn);
+                Invalidate();
+            }
+        }
 
         public void RefreshNode(CameraLightNode node)
         {
@@ -491,10 +502,11 @@ namespace TestUtilApp.CameraLight
             string label;
             switch (kind)
             {
-                case NodeKind.Camera:          label = $"Camera {CountOf(kind) + 1}";    break;
-                case NodeKind.COMPort:         label = $"COM Port {CountOf(kind) + 1}";  break;
-                case NodeKind.LightController: label = $"Light Ctrl {CountOf(kind) + 1}"; break;
-                default:                       label = kind.ToString();                   break;
+                case NodeKind.Camera:          label = $"Camera {CountOf(kind) + 1}";       break;
+                case NodeKind.ImageArea:       label = $"ImageArea {CountOf(kind) + 1}";    break;
+                case NodeKind.COMPort:         label = $"COM Port {CountOf(kind) + 1}";     break;
+                case NodeKind.LightController: label = $"Light Ctrl {CountOf(kind) + 1}";  break;
+                default:                       label = kind.ToString();                      break;
             }
 
             AddNode(new CameraLightNode(kind, label, canvasPt));

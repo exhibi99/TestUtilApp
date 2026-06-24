@@ -15,6 +15,11 @@ namespace TestUtilApp.UI
     {
         private const int FilterProfileCount = 3;
 
+        private const int TabProfilesTopSingle = 95;
+        private const int TabProfilesTopMulti = 225;
+        private const int GroupBoxSettingsHeightSingle = 450;
+        private const int GroupBoxSettingsHeightMulti = 580;
+
         private AppConfig _config;
         private ConfigService _configService;
         private TextBox[] _includeKeywordTextBoxes;
@@ -54,6 +59,12 @@ namespace TestUtilApp.UI
             {
                 txtTargetFolder.Text = _config.FileFilter.LastTargetFolder;
             }
+
+            if (_config.FileFilter.MultiTargetFolderEnabled)
+            {
+                chkMultiFolderSelect.Checked = true;
+                RefreshSubFolderList(_config.FileFilter.LastSelectedSubFolders);
+            }
             if (!string.IsNullOrEmpty(_config.FileFilter.OutputPostfix))
             {
                 txtOutputPostfix.Text = _config.FileFilter.OutputPostfix;
@@ -66,13 +77,13 @@ namespace TestUtilApp.UI
             rbOutputCustom.Checked = _config.FileFilter.UseCustomOutputFolder;
             rbOutputAuto.Checked = !_config.FileFilter.UseCustomOutputFolder;
 
-            bool useCopyFolderCount = _config.FileFilter.CopyFolderCount > 0;
-            chkCopyFolderCount.Checked = useCopyFolderCount;
-            if (useCopyFolderCount)
+            // Copy Folder Count는 항상 off로 시작 (의도치 않은 적용 방지)
+            chkCopyFolderCount.Checked = false;
+            if (_config.FileFilter.CopyFolderCount > 0)
             {
                 numCopyFolderCount.Value = Math.Max(1, Math.Min(_config.FileFilter.CopyFolderCount, (int)numCopyFolderCount.Maximum));
             }
-            numCopyFolderCount.Enabled = useCopyFolderCount;
+            numCopyFolderCount.Enabled = false;
 
             SetConditionControlsEnabled(true);
             UpdateOutputControlsEnabled();
@@ -253,6 +264,11 @@ namespace TestUtilApp.UI
                 }
                 _config.FileFilter.LastTargetFolder = selected;
 
+                if (chkMultiFolderSelect.Checked)
+                {
+                    RefreshSubFolderList(null);
+                }
+
                 try
                 {
                     _configService.SaveConfig(_config);
@@ -262,6 +278,58 @@ namespace TestUtilApp.UI
                     AppendLog($"Settings Save failed: {ex.Message}");
                 }
             }
+        }
+
+        private void chkMultiFolderSelect_CheckedChanged(object sender, EventArgs e)
+        {
+            bool multi = chkMultiFolderSelect.Checked;
+            lstSubFolders.Visible = multi;
+            tabFilterProfiles.Top = multi ? TabProfilesTopMulti : TabProfilesTopSingle;
+            groupBoxSettings.Height = multi ? GroupBoxSettingsHeightMulti : GroupBoxSettingsHeightSingle;
+
+            if (multi)
+            {
+                RefreshSubFolderList(null);
+            }
+
+            EnsureFileFilterConfig();
+            _config.FileFilter.MultiTargetFolderEnabled = multi;
+            try { _configService.SaveConfig(_config); } catch { }
+        }
+
+        private void RefreshSubFolderList(List<string> previouslyChecked)
+        {
+            lstSubFolders.Items.Clear();
+
+            string rootFolder = txtTargetFolder.Text;
+            if (string.IsNullOrEmpty(rootFolder) || !Directory.Exists(rootFolder))
+            {
+                return;
+            }
+
+            var subDirs = Directory.GetDirectories(rootFolder, "*", SearchOption.TopDirectoryOnly)
+                                   .OrderBy(d => d)
+                                   .ToArray();
+
+            foreach (string dir in subDirs)
+            {
+                string name = Path.GetFileName(dir);
+                bool check = previouslyChecked != null && previouslyChecked.Contains(name, StringComparer.OrdinalIgnoreCase);
+                lstSubFolders.Items.Add(name, check);
+            }
+        }
+
+        private List<string> GetCheckedSubFolders()
+        {
+            var result = new List<string>();
+            string rootFolder = txtTargetFolder.Text;
+
+            foreach (string name in lstSubFolders.CheckedItems)
+            {
+                result.Add(Path.Combine(rootFolder, name));
+            }
+
+            return result;
         }
 
         private void conditionFilter_CheckedChanged(object sender, EventArgs e)
@@ -456,6 +524,20 @@ namespace TestUtilApp.UI
                 return;
             }
 
+            bool isMultiMode = chkMultiFolderSelect.Checked;
+            List<string> checkedSubFolders = null;
+
+            if (isMultiMode)
+            {
+                checkedSubFolders = GetCheckedSubFolders();
+                if (checkedSubFolders.Count == 0)
+                {
+                    MessageBox.Show("Please select at least one subfolder.", "Input Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+
             string targetFolder = txtTargetFolder.Text;
             bool useCustomOutputFolder = rbOutputCustom.Checked;
             string outputFolder;
@@ -485,9 +567,13 @@ namespace TestUtilApp.UI
                 return;
             }
 
+            string confirmTarget = isMultiMode
+                ? $"{targetFolder}\n  (selected: {checkedSubFolders.Count} subfolder(s))"
+                : targetFolder;
+
             var result = MessageBox.Show(
                 $"Do you want to copy allowed files from the selected folder?\n\n" +
-                $"Target folder: {targetFolder}\n" +
+                $"Target folder: {confirmTarget}\n" +
                 $"Output folder: {outputFolder}",
                 "Confirm Execution",
                 MessageBoxButtons.YesNo,
@@ -506,6 +592,7 @@ namespace TestUtilApp.UI
                 txtLog.Clear();
 
                 UpdateConfigFromUI();
+                SaveMultiFolderState();
                 var activeProfile = GetActiveFilterProfile();
                 List<string> includeFolderKeywords = new List<string>(activeProfile.IncludeFolderKeywords);
                 List<string> includeFileKeywords = new List<string>(activeProfile.IncludeFileKeywords);
@@ -517,19 +604,29 @@ namespace TestUtilApp.UI
                 bool useExtensionExcludeFilter = activeProfile.UseExtensionExcludeFilter;
                 int copyFolderCount = chkCopyFolderCount.Checked ? (int)numCopyFolderCount.Value : 0;
 
-                AppendLog($"File filtering started: {targetFolder}");
+                if (isMultiMode)
+                {
+                    AppendLog($"File filtering started (multi-folder): {targetFolder}");
+                    AppendLog($"Selected subfolders: {string.Join(", ", checkedSubFolders.Select(Path.GetFileName))}");
+                }
+                else
+                {
+                    AppendLog($"File filtering started: {targetFolder}");
+                }
                 AppendLog($"Filter preset: {activeProfile.Name}");
                 AppendLog("Execution mode: copy");
                 AppendLog($"Output mode: {(useCustomOutputFolder ? "Selected folder" : "Target folder postfix")}");
                 AppendLog($"Output folder: {outputFolder}");
                 AppendLog($"Copy Folder Count: {(copyFolderCount > 0 ? $"Max {copyFolderCount} (random selection)" : "Disabled (all folders)")}");
 
+                List<string> subFoldersSnapshot = checkedSubFolders;
+
                 // Asynchronous processing
                 System.Threading.Tasks.Task.Run(() =>
                 {
                     try
                     {
-                        ExecuteCopyMode(targetFolder, useFolderIncludeFilter, includeFolderKeywords, useFileIncludeFilter, includeFileKeywords, useFileExcludeFilter, excludeFileKeywords, useExtensionExcludeFilter, excludeExtensions, outputFolder, !useCustomOutputFolder, copyFolderCount);
+                        ExecuteCopyMode(targetFolder, useFolderIncludeFilter, includeFolderKeywords, useFileIncludeFilter, includeFileKeywords, useFileExcludeFilter, excludeFileKeywords, useExtensionExcludeFilter, excludeExtensions, outputFolder, !useCustomOutputFolder, copyFolderCount, subFoldersSnapshot);
 
                         this.Invoke(new Action(() =>
                         {
@@ -569,6 +666,16 @@ namespace TestUtilApp.UI
             {
                 AppendLog("Settings saved.");
             }
+        }
+
+        private void SaveMultiFolderState()
+        {
+            EnsureFileFilterConfig();
+            _config.FileFilter.MultiTargetFolderEnabled = chkMultiFolderSelect.Checked;
+            _config.FileFilter.LastSelectedSubFolders = lstSubFolders.CheckedItems
+                .Cast<string>()
+                .ToList();
+            try { _configService.SaveConfig(_config); } catch { }
         }
 
         public bool CommitCurrentSettings()
@@ -694,12 +801,27 @@ namespace TestUtilApp.UI
             List<string> excludeExtensions,
             string outputFolder,
             bool clearOutputFolder,
-            int copyFolderCount)
+            int copyFolderCount,
+            List<string> selectedSubFolders = null)
         {
             AppendFilterSummary(useFolderIncludeFilter, includeFolderKeywords, useFileIncludeFilter, includeFileKeywords, useFileExcludeFilter, excludeFileKeywords, useExtensionExcludeFilter, excludeExtensions);
 
             // Target 폴더 찾기
-            List<string> targetFolders = GetTargetFolders(targetFolder, includeFolderKeywords, useFolderIncludeFilter);
+            List<string> targetFolders;
+            if (selectedSubFolders != null && selectedSubFolders.Count > 0)
+            {
+                // 멀티 모드: 선택된 하위 폴더 각각 내부에서 필터 적용
+                targetFolders = new List<string>();
+                foreach (string subFolder in selectedSubFolders)
+                {
+                    var subResults = GetTargetFolders(subFolder, includeFolderKeywords, useFolderIncludeFilter);
+                    targetFolders.AddRange(subResults);
+                }
+            }
+            else
+            {
+                targetFolders = GetTargetFolders(targetFolder, includeFolderKeywords, useFolderIncludeFilter);
+            }
             targetFolders = ApplyFileIncludeFolderFilter(targetFolders, useFileIncludeFilter, includeFileKeywords);
             targetFolders = ExcludeOutputFolderFromTargets(targetFolders, outputFolder);
 
@@ -1010,6 +1132,8 @@ namespace TestUtilApp.UI
             }
 
             btnBrowseTarget.Enabled = enabled;
+            chkMultiFolderSelect.Enabled = enabled;
+            lstSubFolders.Enabled = enabled;
             // tabFilterProfiles 는 작업 중에도 표시 (내부 TextBox 만 비활성화)
             SetConditionControlsEnabled(enabled);
             UpdateOutputControlsEnabled(enabled);

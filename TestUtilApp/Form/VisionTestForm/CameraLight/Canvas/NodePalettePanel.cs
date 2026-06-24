@@ -20,6 +20,7 @@ namespace TestUtilApp.CameraLight
             = new List<(NodeKind, string, Color)>
         {
             (NodeKind.Camera,          "Camera",        Color.FromArgb(42, 148, 255)),
+            (NodeKind.ImageArea,       "Image Area",    Color.FromArgb(46, 180, 80)),
             (NodeKind.LightController, "Light Ctrl",    Color.FromArgb(230, 200, 40)),
             (NodeKind.COMPort,         "COM Port",      Color.FromArgb(230, 140, 30)),
         };
@@ -86,6 +87,7 @@ namespace TestUtilApp.CameraLight
                 switch (kind)
                 {
                     case NodeKind.Camera:          icon = "Camera";  break;
+                    case NodeKind.ImageArea:       icon = "Image";   break;
                     case NodeKind.LightController: icon = "Light";   break;
                     case NodeKind.COMPort:         icon = "COM";     break;
                     default:                       icon = "□";     break;

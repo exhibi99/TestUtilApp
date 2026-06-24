@@ -27,8 +27,8 @@ namespace TestUtilApp.CameraLight
         private Version            _sfncVer;
 
         // ── 이미지 상태 ──────────────────────────────────────────────
-        private Action<Bitmap> _liveCallback;
-        private bool           _isLive;
+        private Action<Bitmap>  _liveCallback;
+        private volatile bool   _isLive;   // 배경 스레드에서 즉시 인식되도록 volatile
 
         // ── 캐시 파라미터 ────────────────────────────────────────────
         private int    _width;
@@ -37,7 +37,8 @@ namespace TestUtilApp.CameraLight
 
         // ── ICamera ─────────────────────────────────────────────────
 
-        public bool IsConnected => _camera?.IsOpen ?? false;
+        public bool   IsConnected    => _camera?.IsOpen ?? false;
+        public string ConnectedSerial { get; private set; } = "";
 
         /// <summary>
         /// identifier : 카메라 시리얼 번호 (예: "12345678").
@@ -46,6 +47,7 @@ namespace TestUtilApp.CameraLight
         public void Connect(string identifier)
         {
             Disconnect();
+            ConnectedSerial = "";
 
             if (string.IsNullOrWhiteSpace(identifier))
             {
@@ -70,6 +72,8 @@ namespace TestUtilApp.CameraLight
             _camera.CameraOpened += Configuration.AcquireContinuous;
             _camera.Open();
 
+            // 실제 연결된 카메라 시리얼 저장 (identifier="" 로 열었을 때도 확정됨)
+            ConnectedSerial = _camera.CameraInfo[CameraInfoKey.SerialNumber];
             _sfncVer = _camera.GetSfncVersion();
             RefreshImageParams();
 
@@ -80,6 +84,7 @@ namespace TestUtilApp.CameraLight
 
         public void Disconnect()
         {
+            ConnectedSerial = "";
             if (_camera == null) return;
 
             StopLive();
@@ -178,6 +183,8 @@ namespace TestUtilApp.CameraLight
             if (!IsConnected || _isLive) return;
             _liveCallback = onFrame;
             _isLive       = true;
+            // Live 미리보기는 항상 FreeRun — Software/Hardware 트리거 상태에선 OnImageGrabbed 호출 안됨
+            _camera.Parameters[PLCamera.TriggerMode].TrySetValue("Off");
             _camera.StreamGrabber.Start(GrabStrategy.LatestImages, GrabLoop.ProvidedByStreamGrabber);
         }
 
@@ -257,27 +264,25 @@ namespace TestUtilApp.CameraLight
 
 #else
 
-    // ── BASLER_PYLON 미정의 시 빌드 통과용 ──────────────────────────────
+    // ── BASLER_PYLON 미정의 시 → StubCamera 로 동작 (UI 테스트용) ─────────
     public class BaslerCamera : ICamera
     {
-        public bool IsConnected { get; private set; }
+        private readonly StubCamera _stub = new StubCamera();
 
-        public void Connect(string identifier)
-            => throw new NotSupportedException(
-                "Basler pylon 7.5 SDK를 설치하고 Basler.Pylon.dll 을 참조에 추가한 뒤\n" +
-                "프로젝트 빌드 기호에 BASLER_PYLON 을 추가하세요.");
-
-        public void Disconnect()       { IsConnected = false; }
-        public void SetExposure(double us)           { }
-        public void SetGain(double gain)             { }
-        public void SetTriggerMode(TriggerMode mode) { }
+        public bool   IsConnected    => _stub.IsConnected;
+        public string ConnectedSerial => _stub.ConnectedSerial;
+        public void Connect(string identifier)       => _stub.Connect(identifier);
+        public void Disconnect()                     => _stub.Disconnect();
+        public void SetExposure(double us)           => _stub.SetExposure(us);
+        public void SetGain(double gain)             => _stub.SetGain(gain);
+        public void SetTriggerMode(TriggerMode mode) => _stub.SetTriggerMode(mode);
 
         public (GrabResult result, Bitmap image) GrabSingle(int timeoutMs = 3000)
-            => (GrabResult.Error, null);
+            => _stub.GrabSingle(timeoutMs);
 
-        public void StartLive(Action<Bitmap> onFrame) { }
-        public void StopLive()                        { }
-        public void Dispose()                         { }
+        public void StartLive(Action<Bitmap> onFrame) => _stub.StartLive(onFrame);
+        public void StopLive()                        => _stub.StopLive();
+        public void Dispose()                         => _stub.Dispose();
     }
 
 #endif

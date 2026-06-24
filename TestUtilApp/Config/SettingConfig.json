@@ -36,7 +36,9 @@
     "MinConfidence": 0.7
   },
   "FileFilter": {
-    "LastTargetFolder": "C:\\CookAndroid\\android-studio",
+    "LastTargetFolder": "D:\\tmp11\\01_Data\\260527_FakeNG",
+    "MultiTargetFolderEnabled": true,
+    "LastSelectedSubFolders": null,
     "LastOutputFolder": "D:\\tmp11\\99_Test\\00_Filter_filtered22",
     "ActiveProfileIndex": 2,
     "ConditionProfiles": [

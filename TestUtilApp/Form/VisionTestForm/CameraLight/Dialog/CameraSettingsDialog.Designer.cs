@@ -15,6 +15,7 @@ namespace TestUtilApp.CameraLight
             this.lblCamera      = new System.Windows.Forms.Label();
             this.cmbCamera      = new System.Windows.Forms.ComboBox();
             this.btnRefresh     = new System.Windows.Forms.Button();
+            this.lblSelected    = new System.Windows.Forms.Label();
             this.lblExposure    = new System.Windows.Forms.Label();
             this.numExposure    = new System.Windows.Forms.NumericUpDown();
             this.btnOk          = new System.Windows.Forms.Button();
@@ -22,10 +23,11 @@ namespace TestUtilApp.CameraLight
             ((System.ComponentModel.ISupportInitialize)(this.numExposure)).BeginInit();
             this.SuspendLayout();
 
-            var c0    = System.Drawing.Color.FromArgb(18, 22, 35);
-            var c1    = System.Drawing.Color.FromArgb(25, 42, 75);
-            var cCyan = System.Drawing.Color.FromArgb(128, 255, 255);
-            var cGray = System.Drawing.Color.FromArgb(160, 169, 181);
+            var c0     = System.Drawing.Color.FromArgb(18, 22, 35);
+            var c1     = System.Drawing.Color.FromArgb(25, 42, 75);
+            var cCyan  = System.Drawing.Color.FromArgb(128, 255, 255);
+            var cGray  = System.Drawing.Color.FromArgb(160, 169, 181);
+            var cGreen = System.Drawing.Color.FromArgb(80, 200, 120);
 
             // ── lblCamera ──────────────────────────────────────────────
             this.lblCamera.AutoSize  = true;
@@ -39,6 +41,7 @@ namespace TestUtilApp.CameraLight
             this.cmbCamera.ForeColor     = cCyan;
             this.cmbCamera.Location      = new System.Drawing.Point(12, 36);
             this.cmbCamera.Size          = new System.Drawing.Size(260, 23);
+            this.cmbCamera.SelectedIndexChanged += new System.EventHandler(this.cmbCamera_SelectedIndexChanged);
 
             // ── btnRefresh ─────────────────────────────────────────────
             this.btnRefresh.BackColor = c1;
@@ -50,16 +53,23 @@ namespace TestUtilApp.CameraLight
             this.btnRefresh.Text      = "↺";
             this.btnRefresh.Click    += new System.EventHandler(this.btnRefresh_Click);
 
+            // ── lblSelected ────────────────────────────────────────────
+            this.lblSelected.AutoSize  = false;
+            this.lblSelected.ForeColor = cGreen;
+            this.lblSelected.Location  = new System.Drawing.Point(12, 66);
+            this.lblSelected.Size      = new System.Drawing.Size(304, 32);
+            this.lblSelected.Text      = "";
+
             // ── lblExposure ────────────────────────────────────────────
             this.lblExposure.AutoSize  = true;
             this.lblExposure.ForeColor = cGray;
-            this.lblExposure.Location  = new System.Drawing.Point(12, 74);
+            this.lblExposure.Location  = new System.Drawing.Point(12, 106);
             this.lblExposure.Text      = "Exposure (μs):";
 
             // ── numExposure ────────────────────────────────────────────
             this.numExposure.BackColor     = c1;
             this.numExposure.ForeColor     = cCyan;
-            this.numExposure.Location      = new System.Drawing.Point(12, 94);
+            this.numExposure.Location      = new System.Drawing.Point(12, 126);
             this.numExposure.Maximum       = new decimal(new int[] { 1000000, 0, 0, 0 });
             this.numExposure.Minimum       = new decimal(new int[] { 100, 0, 0, 0 });
             this.numExposure.Size          = new System.Drawing.Size(120, 23);
@@ -71,7 +81,7 @@ namespace TestUtilApp.CameraLight
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnOk.FlatStyle    = System.Windows.Forms.FlatStyle.Flat;
             this.btnOk.ForeColor    = cCyan;
-            this.btnOk.Location     = new System.Drawing.Point(140, 140);
+            this.btnOk.Location     = new System.Drawing.Point(140, 174);
             this.btnOk.Size         = new System.Drawing.Size(80, 28);
             this.btnOk.Text         = "OK";
             this.btnOk.Click       += new System.EventHandler(this.btnOk_Click);
@@ -81,7 +91,7 @@ namespace TestUtilApp.CameraLight
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.FlatStyle    = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancel.ForeColor    = cGray;
-            this.btnCancel.Location     = new System.Drawing.Point(230, 140);
+            this.btnCancel.Location     = new System.Drawing.Point(230, 174);
             this.btnCancel.Size         = new System.Drawing.Size(72, 28);
             this.btnCancel.Text         = "Cancel";
 
@@ -89,7 +99,7 @@ namespace TestUtilApp.CameraLight
             this.AcceptButton       = this.btnOk;
             this.BackColor          = c0;
             this.CancelButton       = this.btnCancel;
-            this.ClientSize         = new System.Drawing.Size(326, 186);
+            this.ClientSize         = new System.Drawing.Size(326, 218);
             this.FormBorderStyle    = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox        = false;
             this.MinimizeBox        = false;
@@ -98,6 +108,7 @@ namespace TestUtilApp.CameraLight
 
             this.Controls.AddRange(new System.Windows.Forms.Control[] {
                 this.lblCamera, this.cmbCamera, this.btnRefresh,
+                this.lblSelected,
                 this.lblExposure, this.numExposure,
                 this.btnOk, this.btnCancel
             });
@@ -110,6 +121,7 @@ namespace TestUtilApp.CameraLight
         private System.Windows.Forms.Label         lblCamera;
         private System.Windows.Forms.ComboBox      cmbCamera;
         private System.Windows.Forms.Button        btnRefresh;
+        private System.Windows.Forms.Label         lblSelected;
         private System.Windows.Forms.Label         lblExposure;
         private System.Windows.Forms.NumericUpDown numExposure;
         private System.Windows.Forms.Button        btnOk;
